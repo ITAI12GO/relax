@@ -1,8 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="en"><head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#10161a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Tank Showdown</title>
 <style>
 :root{
@@ -11,7 +12,6 @@
   --steel2:#26333b;
   --line:#3a4a55;
   --olive:#6f8046;
-  --olive-dk:#4d5a31;
   --sand:#cbb98f;
   --sand-dk:#9b8a63;
   --rust:#c2553a;
@@ -23,276 +23,412 @@
   --p2:#c07a4a;
   --danger:#cf4b38;
   --ok:#5ea87a;
+
+  /* everything that has to shrink on small screens lives here */
+  --gap:8px;
+  --pboxW:264px;
+  --fsBase:14px;
+  --fsSm:12px;
+  --fsXs:10.5px;
+  --hpH:13px;
+  --wepH:46px;
+  --padSz:52px;
+  --radius:10px;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;padding:0;height:100%;overflow:hidden;background:var(--ink)}
+html,body{margin:0;padding:0;height:100%;overflow:hidden;background:var(--ink);overscroll-behavior:none}
 body{
-  font:14px/1.5 "Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;
-  color:var(--paper);user-select:none;
+  font:var(--fsBase)/1.45 "Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;
+  color:var(--paper);user-select:none;-webkit-user-select:none;
 }
-button{font:inherit;cursor:pointer;color:inherit}
+button{font:inherit;cursor:pointer;color:inherit;margin:0}
 h1,h2,h3{margin:0;font-weight:650;letter-spacing:-.01em}
 .mono{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-variant-numeric:tabular-nums}
 
-/* ============ layout ============ */
-#app{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:
-   radial-gradient(120% 90% at 50% 0%,#223038 0%,#141c21 55%,#0c1216 100%)}
-#stage{position:relative;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center}
-#board{position:relative;width:min(100vw,calc(100vh * 1280/760));max-width:1280px}
-#cv{display:block;width:100%;height:auto;background:#7fa6c0;border-radius:4px}
+/* ============================================================
+   SHELL — a flex column: topbar / board / deck
+   In "overlay" mode the bar and deck float above a full-bleed board.
+   ============================================================ */
+#app{
+  position:fixed;inset:0;
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  background:radial-gradient(120% 90% at 50% 0%,#223038 0%,#141c21 55%,#0c1216 100%);
+  display:flex;
+}
+#stage{
+  position:relative;flex:1;min-width:0;min-height:0;
+  display:flex;flex-direction:column;touch-action:none;
+}
+#topbar{
+  flex:0 0 auto;display:flex;gap:var(--gap);align-items:stretch;
+  padding:var(--gap) var(--gap) 0;z-index:6;
+}
+#board{
+  flex:1 1 auto;min-height:0;position:relative;
+  display:flex;align-items:center;justify-content:center;
+  padding:calc(var(--gap)*.75) var(--gap);
+}
+#cv{
+  display:block;max-width:100%;max-height:100%;
+  border-radius:6px;background:#8fb0c4;
+  box-shadow:0 6px 26px rgba(0,0,0,.45);
+}
+#deck{
+  flex:0 0 auto;z-index:6;
+  padding:calc(var(--gap)*.75) var(--gap) var(--gap);
+  display:flex;flex-direction:column;gap:calc(var(--gap)*.7);
+}
 
-/* ============ screens ============ */
+/* overlay mode: bar + deck float on top of a full-bleed board */
+body.ov #topbar{position:absolute;top:0;left:0;right:0;pointer-events:none;justify-content:space-between}
+body.ov #topbar .pbox{pointer-events:auto}
+body.ov #board{position:absolute;inset:0;padding:0}
+body.ov #cv{border-radius:0;max-width:100%;box-shadow:none}
+body.ov #deck{
+  position:absolute;left:50%;bottom:var(--gap);transform:translateX(-50%);
+  width:calc(100% - var(--gap)*2);max-width:1180px;
+  background:rgba(16,22,26,.84);border:1px solid rgba(112,136,150,.35);
+  border-radius:12px;backdrop-filter:blur(6px);
+  padding:calc(var(--gap)*.7);
+}
+
+/* ============================================================
+   PLAYER PANELS
+   ============================================================ */
+.pbox{
+  flex:1 1 0;min-width:0;max-width:var(--pboxW);
+  background:rgba(16,22,26,.86);border:1px solid rgba(112,136,150,.35);
+  border-radius:var(--radius);padding:7px 10px;backdrop-filter:blur(6px);
+  transition:border-color .2s;
+}
+#pboxR{margin-left:auto;text-align:right}
+.pbox .nm{display:flex;align-items:center;gap:6px;font-weight:650;font-size:var(--fsSm);
+  margin-bottom:1px;white-space:nowrap;overflow:hidden}
+#pboxR .nm{flex-direction:row-reverse}
+.pbox .nm .who{font-size:var(--fsXs);color:var(--muted);font-weight:500;letter-spacing:.05em;text-transform:uppercase}
+.pbox .nm span:nth-child(2){overflow:hidden;text-overflow:ellipsis}
+.pbox .tk{font-size:var(--fsXs);color:var(--sand-dk);margin-bottom:4px;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis}
+.dotc{width:8px;height:8px;border-radius:50%;flex:none}
+.hp{height:var(--hpH);background:#0b1013;border-radius:4px;overflow:hidden;position:relative;
+  border:1px solid rgba(255,255,255,.07)}
+.hp i{position:absolute;inset:0;width:100%;transform-origin:left;transition:transform .28s ease;border-radius:3px}
+.hp .ghost{background:#8d3a2c;opacity:.55;transition:transform .7s .18s ease}
+.hp .real{background:linear-gradient(180deg,#68b07f,#4b8b62)}
+.hp b{position:absolute;inset:0;display:grid;place-items:center;font-size:var(--fsXs);
+  text-shadow:0 1px 2px rgba(0,0,0,.85);letter-spacing:.03em;font-weight:600}
+.sh{height:5px;margin-top:3px;background:#0b1013;border-radius:3px;overflow:hidden;display:none}
+.sh i{display:block;height:100%;background:linear-gradient(180deg,#6fc3d6,#3d8a9b);transform-origin:left}
+.buffs{display:flex;gap:4px;margin-top:5px;flex-wrap:wrap}
+#pboxR .buffs{justify-content:flex-end}
+.buff{font-size:var(--fsXs);padding:1px 5px;border-radius:4px;background:#2b3a2a;border:1px solid #46603f;color:#b9d6a8;white-space:nowrap}
+.buff.b2{background:#3a2f22;border-color:#6b5030;color:#e2c08a}
+.buff.b3{background:#22333a;border-color:#3a6070;color:#9fd0dd}
+
+/* turn indicator floats over the battlefield in every layout */
+#center{position:absolute;top:6px;left:50%;transform:translateX(-50%);text-align:center;z-index:4;
+  display:flex;align-items:center;gap:6px;pointer-events:none;max-width:90%}
+#turnPill{display:inline-flex;align-items:center;gap:6px;background:rgba(16,22,26,.88);
+  border:1px solid rgba(112,136,150,.35);border-radius:999px;padding:4px 11px;
+  font-weight:600;font-size:var(--fsSm);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#clock{font-size:var(--fsXs);color:var(--muted);background:rgba(16,22,26,.8);
+  border-radius:999px;padding:4px 9px;white-space:nowrap}
+#clock b{color:var(--paper)}
+
+/* ============================================================
+   DECK — weapons, gauges, pads, tools
+   ============================================================ */
+#weps{display:flex;gap:5px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+#weps::-webkit-scrollbar{display:none}
+.wep{
+  position:relative;flex:1 1 0;min-width:64px;height:var(--wepH);
+  background:#161f25;border:1px solid var(--line);border-radius:8px;
+  padding:5px 7px;text-align:left;overflow:hidden;transition:.12s;
+}
+.wep:hover{border-color:#5c7482}
+.wep.sel{border-color:var(--amber);background:#241f14}
+.wep .kb{position:absolute;top:3px;right:5px;font-size:9px;color:#68798a}
+.wep .wn{display:block;font-size:var(--fsXs);font-weight:640;white-space:nowrap;overflow:hidden;
+  text-overflow:ellipsis;padding-right:10px;line-height:1.25}
+.wep .wd{display:block;font-size:9.5px;color:var(--muted);white-space:nowrap;overflow:hidden;
+  text-overflow:ellipsis;line-height:1.3;margin-top:1px}
+.wep .cdfill{position:absolute;left:0;bottom:0;height:100%;width:100%;background:rgba(8,12,15,.8);
+  transform-origin:bottom;transform:scaleY(0);pointer-events:none}
+.wep .wn .sm{display:none}
+.wep .cdtxt{position:absolute;inset:0;display:none;align-items:flex-end;justify-content:flex-end;
+  padding:0 7px 3px 0;font-size:13px;font-weight:700;color:#e6ecf0}
+.wep.cool .cdtxt{display:flex}
+.wep.cool .wd{visibility:hidden}
+.wep.cool .wn{color:#8fa1ad}
+
+#deckrow{display:flex;gap:var(--gap);align-items:center}
+#gauges{display:flex;gap:6px;flex:1 1 auto;min-width:0}
+.gauge{display:flex;align-items:center;gap:5px;flex:1 1 0;min-width:0}
+.gauge .lb{font-size:9.5px;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;flex:none}
+.gauge .tr{flex:1 1 auto;min-width:24px;height:10px;background:#0b1013;border-radius:4px;
+  overflow:hidden;position:relative;border:1px solid rgba(255,255,255,.06)}
+.gauge .fl{position:absolute;inset:0;transform-origin:left;transform:scaleX(0);border-radius:3px}
+#pwFill{background:linear-gradient(90deg,#5ea87a,#e0a13c 62%,#cf4b38)}
+#mvFill{background:linear-gradient(90deg,#4f9c98,#6fc3d6)}
+#agFill{background:linear-gradient(90deg,#8a7fc0,#c0a4e0)}
+#pwTicks{position:absolute;inset:0;background-image:repeating-linear-gradient(90deg,transparent 0 19%,rgba(255,255,255,.10) 19% 20%)}
+.gauge .vv{font-size:var(--fsXs);flex:none;min-width:30px;text-align:right;color:#c6d1d8}
+
+#pads{display:none;gap:5px;align-items:center;flex:1 1 auto}
+body.hastouch #pads{display:flex}
+.pad{
+  width:var(--padSz);height:var(--padSz);flex:none;
+  background:#1b262d;border:1px solid var(--line);border-radius:10px;
+  display:grid;place-items:center;font-size:17px;font-weight:700;color:#cfdae1;
+  touch-action:none;
+}
+.pad:active,.pad.on{background:rgba(224,161,60,.4);border-color:var(--amber)}
+.pad.sp{margin-right:6px}
+#padF{flex:1 1 auto;width:auto;min-width:88px;background:rgba(194,85,58,.85);
+  border-color:#d3684c;font-size:var(--fsSm);letter-spacing:.05em}
+#padF:active{background:rgba(224,161,60,.85)}
+
+#tools{display:flex;gap:4px;flex:none}
+.tbtn{background:#161f25;border:1px solid var(--line);border-radius:8px;
+  width:34px;height:34px;display:grid;place-items:center;font-size:14px;padding:0}
+.tbtn:hover{background:#1f2b33}
+.tbtn.off{opacity:.38}
+.tbtn.wide{width:auto;padding:0 11px;font-size:var(--fsSm)}
+
+/* ============================================================
+   FLOATING MESSAGES
+   ============================================================ */
+#banner{
+  position:absolute;left:50%;top:36%;transform:translate(-50%,-50%) scale(.9);
+  font-size:clamp(18px,4.2vw,44px);font-weight:800;letter-spacing:-.02em;
+  text-shadow:0 3px 0 rgba(0,0,0,.5);opacity:0;transition:.3s;text-align:center;
+  pointer-events:none;z-index:3;width:92%;
+}
+#banner.on{opacity:1;transform:translate(-50%,-50%) scale(1)}
+#toast{
+  position:absolute;left:50%;bottom:10px;transform:translateX(-50%) translateY(10px);
+  background:rgba(12,17,20,.94);border:1px solid var(--line);border-radius:8px;
+  padding:6px 13px;font-size:var(--fsXs);opacity:0;transition:.2s;z-index:3;
+  max-width:92%;text-align:center;pointer-events:none;
+}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ============================================================
+   SCREENS
+   ============================================================ */
 .screen{
   position:fixed;inset:0;z-index:50;display:none;
-  align-items:center;justify-content:center;padding:18px;overflow:auto;
+  align-items:flex-start;justify-content:center;overflow-y:auto;overflow-x:hidden;
+  padding:calc(18px + env(safe-area-inset-top)) calc(18px + env(safe-area-inset-right))
+          calc(18px + env(safe-area-inset-bottom)) calc(18px + env(safe-area-inset-left));
   background:radial-gradient(120% 90% at 50% 10%,rgba(38,52,60,.97),rgba(10,15,18,.99));
+  touch-action:pan-y;-webkit-overflow-scrolling:touch;
 }
 .screen.on{display:flex}
-.panel{width:100%;max-width:920px;margin:auto}
-.kicker{font-size:11.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--sand-dk);margin-bottom:10px}
-.logo{
-  font-size:clamp(34px,7vw,64px);line-height:1;font-weight:800;letter-spacing:-.03em;
-  color:var(--paper);text-shadow:0 3px 0 #0b1013;
-}
+.panel{width:100%;max-width:940px;margin:auto}
+.kicker{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--sand-dk);margin-bottom:8px}
+.logo{font-size:clamp(30px,8vw,62px);line-height:1;font-weight:800;letter-spacing:-.03em;
+  color:var(--paper);text-shadow:0 3px 0 #0b1013}
 .logo span{color:var(--amber)}
-.sub{color:var(--muted);margin:12px 0 26px;max-width:560px;font-size:14.5px}
+.sub{color:var(--muted);margin:10px 0 22px;max-width:560px;font-size:clamp(13px,1.6vw,14.5px)}
 
-.stack{display:flex;flex-direction:column;gap:10px;max-width:420px}
+.stack{display:flex;flex-direction:column;gap:9px;max-width:430px}
 .opt{
-  display:flex;align-items:center;gap:14px;text-align:left;width:100%;
+  display:flex;align-items:center;gap:13px;text-align:left;width:100%;
   background:var(--steel);border:1px solid var(--line);border-radius:10px;
-  padding:14px 16px;transition:.14s;
+  padding:12px 14px;transition:.14s;
 }
-.opt:hover{background:var(--steel2);border-color:#4e6472;transform:translateX(3px)}
-.opt.sel{border-color:var(--amber);background:#2c3129;box-shadow:inset 3px 0 0 var(--amber)}
-.opt .ic{
-  width:38px;height:38px;flex:none;border-radius:8px;background:#0f1519;
-  display:grid;place-items:center;font-size:18px;border:1px solid var(--line)
-}
-.opt b{display:block;font-size:15px;font-weight:620}
-.opt small{color:var(--muted);font-size:12.5px;display:block;line-height:1.4}
+.opt:hover{background:var(--steel2);border-color:#4e6472}
+.opt .ic{width:36px;height:36px;flex:none;border-radius:8px;background:#0f1519;
+  display:grid;place-items:center;font-size:17px;border:1px solid var(--line)}
+.opt b{display:block;font-size:14.5px;font-weight:620}
+.opt small{color:var(--muted);font-size:12px;display:block;line-height:1.35}
 
-.btn{
-  border:1px solid var(--line);background:var(--steel);border-radius:9px;
-  padding:11px 20px;font-weight:600;font-size:14px;transition:.14s;
-}
+.btn{border:1px solid var(--line);background:var(--steel);border-radius:9px;
+  padding:11px 19px;font-weight:600;font-size:14px;transition:.14s}
 .btn:hover{background:var(--steel2);border-color:#57707f}
 .btn.pri{background:var(--amber);border-color:var(--amber);color:#231a08}
 .btn.pri:hover{background:#eeb04c;border-color:#eeb04c}
 .btn.pri:disabled{opacity:.4;cursor:not-allowed}
 .btn.ghost{background:transparent;border-color:transparent;color:var(--muted)}
 .btn.ghost:hover{color:var(--paper);background:rgba(255,255,255,.05)}
-.btn.sm{padding:7px 13px;font-size:13px;border-radius:8px}
-.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:26px}
+.row{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-top:22px}
 
-/* ============ tank select ============ */
-.tanks{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:12px}
+.tanks{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:10px}
 .tcard{
   background:var(--steel);border:1px solid var(--line);border-radius:12px;
-  padding:12px;text-align:left;transition:.14s;position:relative;overflow:hidden;
+  padding:11px;text-align:left;transition:.14s;position:relative;overflow:hidden;
   display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;
 }
-.tcard:hover{border-color:#5c7482;transform:translateY(-3px)}
+.tcard:hover{border-color:#5c7482}
 .tcard.sel{border-color:var(--amber);box-shadow:0 0 0 1px var(--amber),0 10px 26px rgba(0,0,0,.4)}
-.tcard canvas{display:block;width:100%;height:64px;image-rendering:auto}
-.tcard h3{font-size:14.5px;margin:6px 0 1px}
-.tcard .tag{font-size:11px;color:var(--sand-dk);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px}
+.tcard canvas{display:block;width:100%;height:58px}
+.tcard h3{font-size:14px;margin:6px 0 1px}
+.tcard .tag{font-size:10.5px;color:var(--sand-dk);letter-spacing:.06em;text-transform:uppercase;margin-bottom:7px}
+.tcard .note{font-size:11px;color:var(--muted);margin-top:7px;line-height:1.35}
 .bars{display:flex;flex-direction:column;gap:4px}
-.bar{display:flex;align-items:center;gap:6px;font-size:10.5px;color:var(--muted)}
-.bar .lb{width:52px;flex:none;letter-spacing:.03em}
+.bar{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--muted)}
+.bar .lb{width:48px;flex:none;letter-spacing:.02em}
 .bar .tr{flex:1;height:5px;background:#0f1519;border-radius:3px;overflow:hidden}
 .bar .fl{display:block;height:100%;border-radius:3px;background:var(--teal)}
-.bar .vv{width:26px;text-align:right;flex:none;color:#b9c6ce}
+.bar .vv{width:25px;text-align:right;flex:none;color:#b9c6ce}
+.ttl{font-size:clamp(20px,4vw,26px);margin-bottom:4px}
 .whoTurn{display:inline-flex;align-items:center;gap:8px;padding:5px 12px;border-radius:999px;
-  background:var(--steel);border:1px solid var(--line);font-size:12.5px;margin-bottom:14px}
-.dotc{width:9px;height:9px;border-radius:50%}
+  background:var(--steel);border:1px solid var(--line);font-size:12.5px;margin-bottom:12px}
 
-/* ============ HUD ============ */
-#hud{position:absolute;inset:0;pointer-events:none;font-size:12px}
-#hud .pointer{pointer-events:auto}
-.pbox{
-  position:absolute;top:10px;width:262px;background:rgba(16,22,26,.82);
-  border:1px solid rgba(112,136,150,.35);border-radius:10px;padding:9px 11px;backdrop-filter:blur(6px);
-}
-#pboxL{left:10px} #pboxR{right:10px}
-.pbox .nm{display:flex;align-items:center;gap:7px;font-weight:650;font-size:13px;margin-bottom:2px}
-.pbox .nm .who{font-size:10.5px;color:var(--muted);font-weight:500;letter-spacing:.06em;text-transform:uppercase}
-.pbox .tk{font-size:11px;color:var(--sand-dk);margin-bottom:6px}
-.hp{height:13px;background:#0b1013;border-radius:4px;overflow:hidden;position:relative;border:1px solid rgba(255,255,255,.07)}
-.hp i{position:absolute;inset:0;width:100%;transform-origin:left;transition:transform .28s ease;border-radius:3px}
-.hp .ghost{background:#8d3a2c;opacity:.55;transition:transform .7s .18s ease}
-.hp .real{background:linear-gradient(180deg,#68b07f,#4b8b62)}
-.hp b{position:absolute;inset:0;display:grid;place-items:center;font-size:10.5px;
-  text-shadow:0 1px 2px rgba(0,0,0,.8);letter-spacing:.04em}
-.sh{height:6px;margin-top:3px;background:#0b1013;border-radius:3px;overflow:hidden;display:none}
-.sh i{display:block;height:100%;background:linear-gradient(180deg,#6fc3d6,#3d8a9b);transform-origin:left}
-.buffs{display:flex;gap:4px;margin-top:6px;min-height:17px;flex-wrap:wrap}
-.buff{font-size:10px;padding:1px 6px;border-radius:4px;background:#2b3a2a;border:1px solid #46603f;color:#b9d6a8}
-.buff.b2{background:#3a2f22;border-color:#6b5030;color:#e2c08a}
-.buff.b3{background:#22333a;border-color:#3a6070;color:#9fd0dd}
-
-#center{position:absolute;top:10px;left:50%;transform:translateX(-50%);text-align:center;width:240px}
-#turnPill{display:inline-flex;align-items:center;gap:8px;background:rgba(16,22,26,.85);
-  border:1px solid rgba(112,136,150,.35);border-radius:999px;padding:6px 14px;font-weight:600;font-size:12.5px}
-#clock{margin-top:8px;font-size:11.5px;color:var(--muted);
-  display:inline-block;background:rgba(16,22,26,.7);border-radius:6px;padding:2px 9px}
-#clock b{color:var(--paper)}
-
-/* bottom control deck */
-#deck{
-  position:absolute;left:50%;bottom:8px;transform:translateX(-50%);
-  width:calc(100% - 20px);max-width:1180px;
-  background:rgba(16,22,26,.84);border:1px solid rgba(112,136,150,.35);
-  border-radius:12px;padding:8px 10px;backdrop-filter:blur(6px);
-  display:flex;gap:10px;align-items:stretch;
-}
-#weps{display:flex;gap:6px;flex:1;min-width:0}
-.wep{
-  position:relative;flex:1;min-width:0;background:#161f25;border:1px solid var(--line);
-  border-radius:8px;padding:6px 7px;text-align:left;overflow:hidden;transition:.12s;
-}
-.wep:hover{border-color:#5c7482}
-.wep.sel{border-color:var(--amber);background:#241f14}
-.wep .kb{position:absolute;top:4px;right:5px;font-size:9.5px;color:#68798a}
-.wep .wn{display:block;font-size:11.5px;font-weight:640;white-space:nowrap;overflow:hidden;
-  text-overflow:ellipsis;padding-right:12px}
-.wep .wd{display:block;font-size:10px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.wep .cdfill{position:absolute;left:0;bottom:0;height:100%;width:100%;background:rgba(8,12,15,.78);
-  transform-origin:bottom;transform:scaleY(0);pointer-events:none}
-.wep .cdtxt{position:absolute;inset:0;display:none;align-items:flex-end;justify-content:flex-start;
-  padding:0 0 5px 8px;font-size:15px;font-weight:700;color:#e6ecf0;letter-spacing:.02em}
-.wep.cool .cdtxt{display:flex}
-.wep.cool .wd{visibility:hidden}
-.wep.cool .wn{color:#8fa1ad}
-.wep .amo{position:absolute;bottom:3px;right:5px;font-size:9.5px;color:#8aa0ae}
-
-#gauges{width:250px;flex:none;display:flex;flex-direction:column;gap:5px;justify-content:center}
-.gauge{display:flex;align-items:center;gap:7px}
-.gauge .lb{width:42px;font-size:10px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;flex:none}
-.gauge .tr{flex:1;height:11px;background:#0b1013;border-radius:4px;overflow:hidden;position:relative;
-  border:1px solid rgba(255,255,255,.06)}
-.gauge .fl{position:absolute;inset:0;transform-origin:left;transform:scaleX(0);border-radius:3px}
-#pwFill{background:linear-gradient(90deg,#5ea87a,#e0a13c 62%,#cf4b38)}
-#mvFill{background:linear-gradient(90deg,#4f9c98,#6fc3d6)}
-.gauge .vv{width:38px;text-align:right;font-size:11px;flex:none}
-#pwTicks{position:absolute;inset:0;background-image:repeating-linear-gradient(90deg,transparent 0 24px,rgba(255,255,255,.10) 24px 25px)}
-
-#tools{display:flex;flex-direction:column;gap:5px;justify-content:center;flex:none}
-.tbtn{background:#161f25;border:1px solid var(--line);border-radius:7px;padding:5px 9px;font-size:11px}
-.tbtn:hover{background:#1f2b33}
-.tbtn.off{opacity:.45}
-
-/* touch pads */
-#pads{position:absolute;inset:0;display:none;pointer-events:none}
-body.touch #pads{display:block}
-.pad{
-  position:absolute;pointer-events:auto;background:rgba(22,31,37,.8);border:1px solid rgba(112,136,150,.4);
-  border-radius:12px;display:grid;place-items:center;font-size:18px;font-weight:700;color:#cfdae1;
-}
-.pad:active{background:rgba(224,161,60,.35)}
-#padL{left:10px;bottom:96px;width:52px;height:52px}
-#padR{left:70px;bottom:96px;width:52px;height:52px}
-#padU{right:132px;bottom:126px;width:52px;height:52px}
-#padD{right:132px;bottom:66px;width:52px;height:52px}
-#padF{right:14px;bottom:76px;width:108px;height:102px;border-radius:14px;background:rgba(194,85,58,.7);font-size:14px}
-
-/* banners */
-#banner{
-  position:absolute;left:50%;top:38%;transform:translate(-50%,-50%) scale(.9);
-  font-size:clamp(26px,4.6vw,48px);font-weight:800;letter-spacing:-.02em;
-  text-shadow:0 4px 0 rgba(0,0,0,.45);opacity:0;transition:.3s;text-align:center;white-space:nowrap;
-}
-#banner.on{opacity:1;transform:translate(-50%,-50%) scale(1)}
-#toast{
-  position:absolute;left:50%;bottom:96px;transform:translateX(-50%) translateY(10px);
-  background:rgba(12,17,20,.92);border:1px solid var(--line);border-radius:8px;
-  padding:7px 14px;font-size:12.5px;opacity:0;transition:.2s;white-space:nowrap;
-}
-#toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
-
-/* result */
-.resline{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.07);font-size:13.5px}
-.resline span:last-child{color:var(--paper);font-weight:600}
+.resline{display:flex;justify-content:space-between;gap:12px;padding:7px 0;
+  border-bottom:1px solid rgba(255,255,255,.07);font-size:13px}
+.resline span:last-child{color:var(--paper);font-weight:600;white-space:nowrap}
 .resline span:first-child{color:var(--muted)}
 
-/* help */
-.keys{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px 22px;margin-top:6px}
-.keyrow{display:flex;align-items:center;gap:9px;font-size:12.5px;color:var(--muted)}
+.keys{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:7px 20px;margin-top:6px}
+.keyrow{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
 kbd{background:#0f1519;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;
-  padding:2px 7px;font:inherit;font-size:11px;color:#cfdae1;min-width:22px;text-align:center;display:inline-block}
+  padding:2px 6px;font:inherit;font-size:10.5px;color:#cfdae1;min-width:20px;text-align:center;display:inline-block}
 
-@media(max-width:760px){
-  .pbox{width:min(42vw,220px);padding:7px 9px}
-  #center{width:150px;top:6px}
-  #deck{flex-wrap:wrap;padding:6px}
-  #gauges{width:100%;order:2}
-  #weps{order:1;width:100%}
-  #tools{order:3;flex-direction:row;width:100%}
-  .tbtn{flex:1}
+/* ============================================================
+   RESPONSIVE STEPS
+   ============================================================ */
+/* short viewports — landscape phones, split windows */
+@media (max-height:560px){
+  :root{--gap:6px;--pboxW:210px;--fsBase:13px;--fsSm:11px;--fsXs:9.5px;
+        --hpH:11px;--wepH:38px;--padSz:42px;}
+  .tbtn{width:30px;height:30px;font-size:12px}
+  #banner{top:32%}
+}
+@media (max-height:430px){
+  :root{--pboxW:180px;--wepH:34px;--padSz:38px;}
+  /* short landscape: trim the menu chrome so the action button stays on screen */
+  .screen{padding:10px 14px}
+  .screen .sub{display:none}
+  .kicker{margin-bottom:4px}
+  .ttl{font-size:19px;margin-bottom:8px}
+  .logo{font-size:clamp(22px,5.4vw,34px)}
+  .tcard canvas{height:42px}
+  .tcard .note{display:none}
+  .whoTurn{margin-bottom:8px;padding:3px 10px;font-size:11.5px}
+  .row{margin-top:12px}
+  .opt{padding:9px 12px}
+  .opt .ic{width:30px;height:30px;font-size:15px}
+  .stack{gap:7px}
   .wep .wd{display:none}
+  .wep .cdtxt{font-size:11.5px}
+  .pbox .tk{display:none}
+  .buffs{display:none}
+}
+/* narrow viewports — phones */
+@media (max-width:640px){
+  :root{--gap:6px;--pboxW:none;--fsSm:11px;--fsXs:9.5px;--wepH:42px;}
+  .wep{min-width:56px;padding:4px 6px}
+  .wep .wd{display:none}
+  .wep .kb{display:none}
+  .wep .wn{padding-right:0}
+  .wep .wn .lg{display:none}
+  .wep .wn .sm{display:inline}
+  .wep .cdtxt{font-size:12px;padding:0 6px 2px 0}
+  .gauge{gap:4px}
+  .gauge .lb{font-size:8.5px}
+  .gauge .vv{min-width:26px}
+  .tcard canvas{height:52px}
+  #deckrow{flex-wrap:wrap}
+  body.hastouch #gauges{flex-basis:100%;order:1}
+  body.hastouch #pads{order:2}
+  body.hastouch #tools{order:3}
+  .screen{padding:14px}
+  .row{margin-top:16px}
+  .sub{margin-bottom:16px}
+}
+@media (max-width:420px){
+  :root{--wepH:40px;--padSz:42px;}
+  .pbox{padding:6px 8px}
+  .pbox .tk{display:none}
+  .tanks{grid-template-columns:repeat(2,1fr);gap:8px}
+  .bar .lb{width:42px}
+  .tbtn{width:30px;height:30px;font-size:12px}
+  #padF{min-width:74px}
+  #pads{gap:4px}
+  .pad.sp{margin-right:4px}
+}
+@media (max-width:340px){
+  .gauge .lb{display:none}
+  #tools .tbtn.hideSm{display:none}
+}
+/* stacked layout keeps the deck readable on wide-but-short tablets */
+body:not(.ov) #deck{background:rgba(16,22,26,.55);border-radius:12px;
+  border:1px solid rgba(112,136,150,.22)}
+@media (pointer:coarse){
+  .btn,.opt,.tcard{min-height:44px}
 }
 </style>
 </head>
-<body>
+<body class="hastouch">
+
 <div id="app">
   <div id="stage">
+
+    <div id="topbar">
+      <div class="pbox" id="pboxL" style="border-color: rgba(224, 161, 60, 0.85);">
+        <div class="nm"><span class="dotc" style="background:var(--p1)"></span><span id="nmL">Alpha</span><span class="who" id="whoL">CPU</span></div>
+        <div class="tk" id="tkL">Vanguard · All-round</div>
+        <div class="hp"><i class="ghost" id="ghL" style="transform: scaleX(1);"></i><i class="real" id="hpL" style="transform: scaleX(1);"></i><b id="hvL">100 / 100</b></div>
+        <div class="sh" id="shL" style="display: none;"><i style="transform: scaleX(0);"></i></div>
+        <div class="buffs" id="bfL"></div>
+      </div>
+      <div class="pbox" id="pboxR" style="border-color: rgba(112, 136, 150, 0.35);">
+        <div class="nm"><span class="dotc" style="background:var(--p2)"></span><span id="nmR">Bravo</span><span class="who" id="whoR">CPU</span></div>
+        <div class="tk" id="tkR">Havoc · Assault</div>
+        <div class="hp"><i class="ghost" id="ghR" style="transform: scaleX(1);"></i><i class="real" id="hpR" style="transform: scaleX(1);"></i><b id="hvR">92 / 92</b></div>
+        <div class="sh" id="shR" style="display: none;"><i style="transform: scaleX(0);"></i></div>
+        <div class="buffs" id="bfR"></div>
+      </div>
+    </div>
+
     <div id="board">
-      <canvas id="cv" width="1280" height="760"></canvas>
-      <div id="hud">
-        <div class="pbox" id="pboxL">
-          <div class="nm"><span class="dotc" style="background:var(--p1)"></span><span id="nmL">Player 1</span><span class="who" id="whoL">Human</span></div>
-          <div class="tk" id="tkL">Vanguard</div>
-          <div class="hp"><i class="ghost" id="ghL"></i><i class="real" id="hpL"></i><b id="hvL">100 / 100</b></div>
-          <div class="sh" id="shL"><i></i></div>
-          <div class="buffs" id="bfL"></div>
-        </div>
-        <div class="pbox" id="pboxR">
-          <div class="nm"><span class="dotc" style="background:var(--p2)"></span><span id="nmR">Player 2</span><span class="who" id="whoR">AI</span></div>
-          <div class="tk" id="tkR">Havoc</div>
-          <div class="hp"><i class="ghost" id="ghR"></i><i class="real" id="hpR"></i><b id="hvR">100 / 100</b></div>
-          <div class="sh" id="shR"><i></i></div>
-          <div class="buffs" id="bfR"></div>
-        </div>
-        <div id="center">
-          <div id="turnPill"><span class="dotc" id="turnDot" style="background:var(--p1)"></span><span id="turnTxt">Player 1</span></div>
-          <div id="clock">Turn <b id="turnNo">1</b> · <b id="turnClock">30</b>s</div>
-        </div>
-        <div id="banner"></div>
-        <div id="toast"></div>
-        <div id="deck" class="pointer">
-          <div id="weps"></div>
-          <div id="gauges">
-            <div class="gauge">
-              <span class="lb">Power</span>
-              <span class="tr"><i class="fl" id="pwFill"></i><span id="pwTicks"></span></span>
-              <span class="vv mono" id="pwVal">0</span>
-            </div>
-            <div class="gauge">
-              <span class="lb">Angle</span>
-              <span class="tr"><i class="fl" id="agFill" style="background:linear-gradient(90deg,#8a7fc0,#c0a4e0)"></i></span>
-              <span class="vv mono" id="agVal">45°</span>
-            </div>
-            <div class="gauge">
-              <span class="lb">Move</span>
-              <span class="tr"><i class="fl" id="mvFill"></i></span>
-              <span class="vv mono" id="mvVal">100%</span>
-            </div>
+      <canvas id="cv" width="760" height="883" style="width: 428px; height: 497px;"></canvas>
+      <div id="center">
+        <span id="turnPill"><span class="dotc" id="turnDot" style="background: var(--p1);"></span><span id="turnTxt">Alpha</span></span>
+        <span id="clock">T<b id="turnNo">1</b> · <b id="turnClock">30</b>s</span>
+      </div>
+      <div id="banner"></div>
+      <div id="toast"></div>
+    </div>
+
+    <div id="deck">
+      <div id="weps"><button class="wep sel" data-i="0" title="AP Shell — 24 dmg · no cooldown"><span class="kb">1</span><span class="wn"><span class="lg">AP Shell</span><span class="sm">AP</span></span><span class="wd">24 dmg · no cooldown</span><span class="cdfill" style="transform: scaleY(0);"></span><span class="cdtxt"></span></button><button class="wep cool" data-i="1" title="Twin Rocket — 2 × 15 dmg · 14s"><span class="kb">2</span><span class="wn"><span class="lg">Twin Rocket</span><span class="sm">Twin</span></span><span class="wd">2 × 15 dmg · 14s</span><span class="cdfill" style="transform: scaleY(0.55);"></span><span class="cdtxt">8s</span></button><button class="wep cool" data-i="2" title="Heavy Mortar — 40 dmg · wide · 28s"><span class="kb">3</span><span class="wn"><span class="lg">Heavy Mortar</span><span class="sm">Mortar</span></span><span class="wd">40 dmg · wide · 28s</span><span class="cdfill" style="transform: scaleY(0.55);"></span><span class="cdtxt">16s</span></button><button class="wep cool" data-i="3" title="Cluster Pod — 5 × 12 dmg · 44s"><span class="kb">4</span><span class="wn"><span class="lg">Cluster Pod</span><span class="sm">Cluster</span></span><span class="wd">5 × 12 dmg · 44s</span><span class="cdfill" style="transform: scaleY(0.55);"></span><span class="cdtxt">25s</span></button><button class="wep cool" data-i="4" title="Thunderstrike — 52 dmg · flat · 72s"><span class="kb">5</span><span class="wn"><span class="lg">Thunderstrike</span><span class="sm">Rail</span></span><span class="wd">52 dmg · flat · 72s</span><span class="cdfill" style="transform: scaleY(0.55);"></span><span class="cdtxt">40s</span></button></div>
+      <div id="deckrow">
+        <div id="gauges">
+          <div class="gauge">
+            <span class="lb">Pwr</span>
+            <span class="tr"><i class="fl" id="pwFill" style="transform: scaleX(0);"></i><span id="pwTicks"></span></span>
+            <span class="vv mono" id="pwVal">0</span>
           </div>
-          <div id="tools">
-            <button class="tbtn" id="btnMusic">♪ Music</button>
-            <button class="tbtn" id="btnSfx">♫ SFX</button>
-            <button class="tbtn" id="btnQuit">Quit</button>
+          <div class="gauge">
+            <span class="lb">Ang</span>
+            <span class="tr"><i class="fl" id="agFill" style="transform: scaleX(0.266667);"></i></span>
+            <span class="vv mono" id="agVal">48°</span>
+          </div>
+          <div class="gauge">
+            <span class="lb">Mov</span>
+            <span class="tr"><i class="fl" id="mvFill" style="transform: scaleX(1);"></i></span>
+            <span class="vv mono" id="mvVal">100%</span>
           </div>
         </div>
         <div id="pads">
           <button class="pad" id="padL">◀</button>
-          <button class="pad" id="padR">▶</button>
+          <button class="pad sp" id="padR">▶</button>
           <button class="pad" id="padU">▲</button>
-          <button class="pad" id="padD">▼</button>
-          <button class="pad" id="padF">HOLD<br>TO FIRE</button>
+          <button class="pad sp" id="padD">▼</button>
+          <button class="pad" id="padF">FIRE</button>
+        </div>
+        <div id="tools">
+          <button class="tbtn" id="btnMusic" title="Music">♪</button>
+          <button class="tbtn" id="btnSfx" title="Sound effects">♫</button>
+          <button class="tbtn hideSm" id="btnFull" title="Fullscreen">⤢</button>
+          <button class="tbtn" id="btnQuit" title="Quit to menu">✕</button>
         </div>
       </div>
     </div>
+
   </div>
 </div>
 
@@ -306,13 +442,14 @@ kbd{background:#0f1519;border:1px solid var(--line);border-bottom-width:2px;bord
       <button class="btn pri" id="goStart">Start deployment</button>
       <button class="btn ghost" id="goHelp">Controls</button>
     </div>
-    <div class="keys" id="helpKeys" style="display:none;margin-top:22px">
+    <div class="keys" id="helpKeys" style="display:none;margin-top:20px">
       <div class="keyrow"><kbd>A</kbd><kbd>D</kbd> or <kbd>←</kbd><kbd>→</kbd> drive</div>
       <div class="keyrow"><kbd>W</kbd><kbd>S</kbd> or <kbd>↑</kbd><kbd>↓</kbd> raise / lower barrel</div>
       <div class="keyrow"><kbd>Space</kbd> hold to charge, release to fire</div>
       <div class="keyrow"><kbd>1</kbd>–<kbd>5</kbd> switch weapon</div>
       <div class="keyrow"><kbd>Q</kbd> / <kbd>E</kbd> cycle weapons</div>
       <div class="keyrow"><kbd>Esc</kbd> quit to menu</div>
+      <div class="keyrow">On a touchscreen, use the pads under the battlefield — hold FIRE to charge.</div>
     </div>
   </div>
 </div>
@@ -321,10 +458,10 @@ kbd{background:#0f1519;border:1px solid var(--line);border-bottom-width:2px;bord
 <div class="screen" id="scMode">
   <div class="panel" style="max-width:560px">
     <div class="kicker">Step 1 of 3</div>
-    <h1 style="font-size:26px;margin-bottom:4px">Choose a match type</h1>
-    <p class="sub" style="margin-bottom:20px">Who is behind each set of controls.</p>
+    <h1 class="ttl">Choose a match type</h1>
+    <p class="sub" style="margin-bottom:18px">Who is behind each set of controls.</p>
     <div class="stack">
-      <button class="opt" data-mode="pvp"><span class="ic">👥</span><span><b>Player vs Player</b><small>Two humans, same keyboard, alternating turns</small></span></button>
+      <button class="opt" data-mode="pvp"><span class="ic">👥</span><span><b>Player vs Player</b><small>Two humans taking turns on the same device</small></span></button>
       <button class="opt" data-mode="pvai"><span class="ic">🎯</span><span><b>Player vs AI</b><small>You take the left tank, the computer takes the right</small></span></button>
       <button class="opt" data-mode="aivai"><span class="ic">🤖</span><span><b>AI vs AI</b><small>Sit back and watch two gunnery computers argue</small></span></button>
     </div>
@@ -336,8 +473,8 @@ kbd{background:#0f1519;border:1px solid var(--line);border-bottom-width:2px;bord
 <div class="screen" id="scDiff">
   <div class="panel" style="max-width:560px">
     <div class="kicker">Step 2 of 3</div>
-    <h1 style="font-size:26px;margin-bottom:4px">Set the AI skill</h1>
-    <p class="sub" style="margin-bottom:20px">This changes how precisely the computer solves the firing problem, and how well it picks its shots.</p>
+    <h1 class="ttl">Set the AI skill</h1>
+    <p class="sub" style="margin-bottom:18px">This changes how precisely the computer solves the firing problem, and how well it picks its shots.</p>
     <div class="stack">
       <button class="opt" data-diff="easy"><span class="ic">🟢</span><span><b>Recruit</b><small>Sloppy ranging, wastes the big guns, rarely repositions</small></span></button>
       <button class="opt" data-diff="normal"><span class="ic">🟡</span><span><b>Gunner</b><small>Ranges in over two or three shots and picks sensible ordnance</small></span></button>
@@ -351,24 +488,24 @@ kbd{background:#0f1519;border:1px solid var(--line);border-bottom-width:2px;bord
 <div class="screen" id="scTank">
   <div class="panel">
     <div class="kicker">Step 3 of 3</div>
-    <h1 style="font-size:26px;margin-bottom:4px">Pick a hull</h1>
-    <p class="sub" style="margin-bottom:16px">Firepower scales every shell you fire. Armour divides every hit you take. Reload trims weapon cooldowns.</p>
+    <h1 class="ttl">Pick a hull</h1>
+    <p class="sub" style="margin-bottom:14px">Firepower scales every shell you fire. Armour divides every hit you take. Reload trims weapon cooldowns.</p>
     <div class="whoTurn"><span class="dotc" id="selDot" style="background:var(--p1)"></span><span id="selWho">Player 1 selecting</span></div>
     <div class="tanks" id="tankGrid"></div>
     <div class="row">
-      <button class="btn pri" id="tankGo" disabled>Confirm</button>
+      <button class="btn pri" id="tankGo" disabled="">Confirm</button>
       <button class="btn ghost" data-back="scMode">← Back</button>
-      <span id="selHint" style="color:var(--muted);font-size:12.5px"></span>
+      <span id="selHint" style="color:var(--muted);font-size:12px"></span>
     </div>
   </div>
 </div>
 
 <!-- ================= RESULT ================= -->
 <div class="screen" id="scEnd">
-  <div class="panel" style="max-width:480px">
+  <div class="panel" style="max-width:470px">
     <div class="kicker" id="endKick">Match over</div>
-    <h1 class="logo" style="font-size:clamp(28px,5vw,44px)" id="endTitle">Player 1 wins</h1>
-    <p class="sub" id="endSub" style="margin:10px 0 18px"></p>
+    <h1 class="logo" style="font-size:clamp(24px,6vw,42px)" id="endTitle">Player 1 wins</h1>
+    <p class="sub" id="endSub" style="margin:10px 0 16px"></p>
     <div id="endStats"></div>
     <div class="row">
       <button class="btn pri" id="endAgain">Rematch</button>
@@ -383,6 +520,8 @@ kbd{background:#0f1519;border:1px solid var(--line);border-bottom-width:2px;bord
 /* ============================================================
    TANK SHOWDOWN — core data, audio, terrain
    ============================================================ */
+/* World size is chosen to suit the screen — see fitWorld() — so every tuned
+   constant below is expressed relative to W/H rather than baked in. */
 var W = 1280, H = 760;
 var cv  = document.getElementById('cv');
 var ctx = cv.getContext('2d');
@@ -417,15 +556,15 @@ var HULLS = [
    cd is in seconds of real time; nothing exceeds 80s (< 1.5 min) */
 var WEPS = [
   { id:'shell',   name:'AP Shell',      dmg:24, blast:34, cd:0,  grav:1.00, spd:1.00,
-    col:'#e8dcc0', trail:'#cbb98f', size:4,  desc:'24 dmg · no cooldown' },
+    col:'#e8dcc0', trail:'#cbb98f', size:4,  desc:'24 dmg · no cooldown', short:'AP' },
   { id:'twin',    name:'Twin Rocket',   dmg:15, blast:26, cd:14, grav:0.82, spd:1.06, salvo:2,
-    col:'#f0c05a', trail:'#e0a13c', size:3.5,desc:'2 × 15 dmg · 14s' },
+    col:'#f0c05a', trail:'#e0a13c', size:3.5,desc:'2 × 15 dmg · 14s', short:'Twin' },
   { id:'mortar',  name:'Heavy Mortar',  dmg:40, blast:54, cd:28, grav:1.55, spd:1.14,
-    col:'#d68a6a', trail:'#b06a4a', size:5.5,desc:'40 dmg · wide · 28s' },
+    col:'#d68a6a', trail:'#b06a4a', size:5.5,desc:'40 dmg · wide · 28s', short:'Mortar' },
   { id:'cluster', name:'Cluster Pod',   dmg:12, blast:24, cd:44, grav:1.00, spd:1.00, cluster:5,
-    col:'#8fd0c0', trail:'#4f9c98', size:5,  desc:'5 × 12 dmg · 44s' },
+    col:'#8fd0c0', trail:'#4f9c98', size:5,  desc:'5 × 12 dmg · 44s', short:'Cluster' },
   { id:'rail',    name:'Thunderstrike', dmg:52, blast:58, cd:72, grav:0.50, spd:1.55,
-    col:'#b7a8f0', trail:'#8a7fc0', size:4.5,desc:'52 dmg · flat · 72s' }
+    col:'#b7a8f0', trail:'#8a7fc0', size:4.5,desc:'52 dmg · flat · 72s', short:'Rail' }
 ];
 var CD_CAP = 85;   /* hard ceiling — no weapon may exceed 1:25 after hull modifiers */
 
@@ -443,8 +582,17 @@ var DIFF = {
   hard:   { name:'Marksman', angErr:0.35, powErr:0.6,  smart:1.00, reposition:0.70, think:600 }
 };
 
-/* physics — PSCALE is tuned so a 45° shot at full power out-ranges the map */
+/* physics — PSCALE is solved so a 45° shot at full power just out-ranges the
+   map, whatever size the map happens to be on this screen */
 var GRAV = 0.148, PSCALE = 0.142;
+
+function setWorld(w, h){
+  W = Math.max(620, Math.round(w));
+  H = Math.max(400, Math.round(h));
+  cv.width = W; cv.height = H;
+  PSCALE = Math.sqrt(W * 1.07 * GRAV) / 100;
+  Terr.build();
+}
 
 /* ============================================================
    AUDIO — everything synthesised, no external files
@@ -656,27 +804,36 @@ var Terr = {
   gen:function(){
     if(!this.mask) this.build();
     this.mask.fill(0);
-    var base = H*0.66, prof = new Float32Array(W);
+    /* On a tall (portrait) map the ground line drops so the screen is mostly
+       sky — that is where the shells go — with a workable band of rock below.
+       Vertical relief is tied to VS, not raw H, so narrow maps don't end up
+       with cliffs no shell can clear. */
+    var rel = H/W;
+    var frac = clamp(0.66 + (rel-0.6)*0.14, 0.60, 0.80);
+    var VS = Math.min(H, W*0.85);
+    var base = H*frac, prof = new Float32Array(W);
+    this.groundY = base; this.vs = VS;
     var p1=rnd(0,TAU), p2=rnd(0,TAU), p3=rnd(0,TAU), p4=rnd(0,TAU);
-    var a1=rnd(26,54), a2=rnd(14,32), a3=rnd(6,16);
-    var f1=rnd(0.0016,0.0032), f2=rnd(0.004,0.008), f3=rnd(0.011,0.019);
-    var ridgeX = rnd(W*0.38,W*0.62), ridgeH = rnd(40,140), ridgeS = rnd(90,190);
-    var tiltAmt = rnd(-52,52);
+    var a1=rnd(0.034,0.071)*VS, a2=rnd(0.018,0.042)*VS, a3=rnd(0.008,0.021)*VS;
+    var f1=rnd(2.05,4.10)/W, f2=rnd(5.1,10.2)/W, f3=rnd(14,24)/W;
+    var ridgeX = rnd(W*0.38,W*0.62), ridgeH = rnd(0.053,0.185)*VS, ridgeS = rnd(0.070,0.148)*W;
+    var tiltAmt = rnd(-0.068,0.068)*VS;
+    var edge = Math.max(40, Math.round(W*0.07));
     for(var x=0;x<W;x++){
       var y = base
         + a1*Math.sin(x*f1+p1)
         + a2*Math.sin(x*f2+p2)
         + a3*Math.sin(x*f3+p3)
-        + 7*Math.sin(x*0.03+p4);
+        + 0.009*VS*Math.sin(x*38/W+p4);
       y -= ridgeH*Math.exp(-Math.pow((x-ridgeX)/ridgeS,2));
       y += tiltAmt*(x/W - 0.5);
       prof[x] = y;
     }
     /* soften the very edges so tanks always have a shelf */
-    for(var e=0;e<90;e++){
-      var k = e/90;
-      prof[e]      = lerp(base+16, prof[e], k);
-      prof[W-1-e]  = lerp(base+16, prof[W-1-e], k);
+    for(var e=0;e<edge;e++){
+      var k = e/edge;
+      prof[e]      = lerp(base+VS*0.021, prof[e], k);
+      prof[W-1-e]  = lerp(base+VS*0.021, prof[W-1-e], k);
     }
     /* smoothing pass */
     var sm = new Float32Array(W);
@@ -686,7 +843,7 @@ var Terr = {
       sm[i]=s/n;
     }
     for(var x2=0;x2<W;x2++){
-      var ty = clamp(Math.round(sm[x2]), 120, H-40);
+      var ty = clamp(Math.round(sm[x2]), Math.round(H*0.16), H-Math.round(H*0.05));
       this.top[x2] = ty;
       var off = ty*W + x2;
       for(var y2=ty;y2<H;y2++){ this.mask[off]=1; off+=W; }
@@ -697,28 +854,25 @@ var Terr = {
   },
   paint:function(){
     var g = this.tc;
+    var d = clamp(Math.min(H, W*0.85)/760, 0.62, 1.2);   /* strata thickness scale */
+    var L = [3,11,34,82,96,150].map(function(v){ return Math.round(v*d); });
     g.clearRect(0,0,W,H);
     for(var x=0;x<W;x++){
       var t = this.top[x];
-      /* deep rock */
-      g.fillStyle = '#4e5760'; g.fillRect(x,t+150,1,H-t-150);
-      /* rock */
-      g.fillStyle = '#5c666e'; g.fillRect(x,t+96,1,54);
-      /* clay band */
-      g.fillStyle = '#77644b'; g.fillRect(x,t+82,1,14);
-      /* subsoil */
-      g.fillStyle = '#836e51'; g.fillRect(x,t+34,1,48);
-      /* topsoil */
-      g.fillStyle = '#947c58'; g.fillRect(x,t+11,1,23);
-      /* turf */
-      g.fillStyle = '#6f8046'; g.fillRect(x,t+3,1,8);
-      g.fillStyle = '#8ba053'; g.fillRect(x,t,1,3);
+      g.fillStyle = '#4e5760'; g.fillRect(x,t+L[5],1,H-t-L[5]);      /* deep rock */
+      g.fillStyle = '#5c666e'; g.fillRect(x,t+L[4],1,L[5]-L[4]);     /* rock */
+      g.fillStyle = '#77644b'; g.fillRect(x,t+L[3],1,L[4]-L[3]);     /* clay band */
+      g.fillStyle = '#836e51'; g.fillRect(x,t+L[2],1,L[3]-L[2]);     /* subsoil */
+      g.fillStyle = '#947c58'; g.fillRect(x,t+L[1],1,L[2]-L[1]);     /* topsoil */
+      g.fillStyle = '#6f8046'; g.fillRect(x,t+L[0],1,L[1]-L[0]);     /* turf */
+      g.fillStyle = '#8ba053'; g.fillRect(x,t,1,L[0]);
     }
     /* scattered rock speckle for a bit of texture, still flat-shaded */
     g.globalAlpha = 0.35;
-    for(var i=0;i<520;i++){
+    var speck = Math.round(W*H/1870);
+    for(var i=0;i<speck;i++){
       var rx = Math.floor(rnd(0,W)), ry = Math.floor(rnd(0,H));
-      if(ry <= this.top[rx]+40) continue;
+      if(ry <= this.top[rx]+L[2]) continue;
       g.fillStyle = (i%2) ? '#3f484f' : '#5d6870';
       g.fillRect(rx,ry,rint(2,5),rint(1,3));
     }
@@ -726,20 +880,24 @@ var Terr = {
   },
   paintBg:function(){
     var g = this.bg.getContext('2d');
-    var sky = g.createLinearGradient(0,0,0,H*0.8);
+    var sky = g.createLinearGradient(0,0,0,(this.groundY || H*0.66)*1.05);
     sky.addColorStop(0,'#5d84a3'); sky.addColorStop(0.45,'#8fb0c4');
     sky.addColorStop(0.8,'#c3cfc7'); sky.addColorStop(1,'#d9d3bc');
     g.fillStyle = sky; g.fillRect(0,0,W,H);
     /* haze sun */
-    var sx = rnd(W*0.15,W*0.85), sy = rnd(90,190);
-    var sg = g.createRadialGradient(sx,sy,6,sx,sy,240);
+    var sr = Math.max(100, W*0.13);
+    var sky0 = (this.groundY || H*0.66);
+    var sx = rnd(W*0.15,W*0.85), sy = rnd(sky0*0.14,sky0*0.34);
+    var sg = g.createRadialGradient(sx,sy,6,sx,sy,sr);
     sg.addColorStop(0,'rgba(255,247,220,.85)'); sg.addColorStop(1,'rgba(255,247,220,0)');
-    g.fillStyle = sg; g.fillRect(sx-240,sy-240,480,480);
-    /* three ridgelines of flat hills, kept above the play surface */
+    g.fillStyle = sg; g.fillRect(sx-sr,sy-sr,sr*2,sr*2);
+    /* three ridgelines of flat hills, parked just behind the play surface so
+       tall maps don't end up with a slab of empty grey under the horizon */
+    var gl = this.groundY || H*0.66, vs = this.vs || H;
     var layers = [
-      {y:H*0.395, a:44, col:'#93a7ad', f:0.0021},
-      {y:H*0.445, a:36, col:'#7d9198', f:0.0030},
-      {y:H*0.495, a:28, col:'#68797f', f:0.0043}
+      {y:gl - vs*0.34, a:vs*0.075, col:'#93a7ad', f:2.7/W},
+      {y:gl - vs*0.21, a:vs*0.060, col:'#7d9198', f:3.8/W},
+      {y:gl - vs*0.09, a:vs*0.045, col:'#68797f', f:5.5/W}
     ];
     for(var L=0;L<layers.length;L++){
       var l = layers[L], ph = rnd(0,TAU);
@@ -753,7 +911,7 @@ var Terr = {
     /* a few flat clouds */
     g.fillStyle = 'rgba(255,255,255,.55)';
     for(var c=0;c<7;c++){
-      var cx = rnd(0,W), cy = rnd(50,240), cw = rnd(90,230), ch = rnd(12,24);
+      var cx = rnd(0,W), cy = rnd(sky0*0.08,sky0*0.55), cw = rnd(W*0.07,W*0.18), ch = rnd(W*0.011,W*0.022);
       g.beginPath();
       g.ellipse(cx,cy,cw*0.5,ch*0.5,0,0,TAU);
       g.ellipse(cx+cw*0.28,cy+3,cw*0.32,ch*0.42,0,0,TAU);
@@ -824,8 +982,9 @@ var G = {
 };
 
 var STEP = 1/60;
-var MOVE_BUDGET = 300;         /* px of travel per turn on a 1.00-speed hull */
-var TURN_TIME   = 30;
+var TURN_TIME = 30;
+/* travel allowance per turn on a 1.00-speed hull, as a share of the map */
+function moveBudget(){ return W * 0.235; }
 
 /* effective cooldown for a hull, never above the hard cap */
 function weaponCd(t, i){ return Math.min(WEPS[i].cd * t.spec.reload, CD_CAP); }
@@ -834,11 +993,11 @@ function weaponCd(t, i){ return Math.min(WEPS[i].cd * t.spec.reload, CD_CAP); }
 function makeTank(idx, hull, isAI, name){
   var t = {
     idx:idx, side:(idx===0?-1:1), spec:hull, isAI:isAI, name:name,
-    x: idx===0 ? rnd(110,330) : rnd(W-330,W-110), y:0, vy:0, air:true,
+    x: idx===0 ? rnd(W*0.086,W*0.258) : rnd(W*0.742,W*0.914), y:0, vy:0, air:true,
     hp:hull.hp, maxHp:hull.hp, shield:0, alive:true,
     aim: idx===0 ? 48 : 132, wep:0, cds:[0,0,0,0,0],
     /* the heavy rounds start half-warm so the opening exchange isn't decisive */
-    move: MOVE_BUDGET*hull.speed, moveMax: MOVE_BUDGET*hull.speed,
+    move: moveBudget()*hull.speed, moveMax: moveBudget()*hull.speed,
     tilt:0, recoil:0, dir:(idx===0?1:-1), flashT:0, hurtT:0,
     over:false, engine:false, ai:null, lastDmg:0
   };
@@ -860,6 +1019,7 @@ function tankCY(t){ return t.y - 13; }
    MATCH SET-UP
    ============================================================ */
 function startMatch(hullA, hullB){
+  fitWorld();
   Terr.gen();
   G.over = false; G.turnNo = 1; G.proj=[]; G.parts=[]; G.crates=[]; G.nums=[]; G.chunks=[];
   G.shake=0; G.flash=0; G.charging=false; G.charge=0; G.hitPause=0;
@@ -871,15 +1031,14 @@ function startMatch(hullA, hullB){
   if(m==='aivai'){ nA = 'AI Alpha'; nB = 'AI Bravo'; }
   G.tanks = [ makeTank(0,hullA,aiA,nA), makeTank(1,hullB,aiB,nB) ];
   /* keep them apart */
-  if(Math.abs(G.tanks[0].x - G.tanks[1].x) < 480){
-    G.tanks[0].x = rnd(110,220); G.tanks[1].x = rnd(W-220,W-110);
+  if(Math.abs(G.tanks[0].x - G.tanks[1].x) < W*0.42){
+    G.tanks[0].x = rnd(W*0.086,W*0.172); G.tanks[1].x = rnd(W*0.828,W*0.914);
     G.tanks[0].y = Terr.colTop(G.tanks[0].x); G.tanks[1].y = Terr.colTop(G.tanks[1].x);
   }
   G.stats = { shots:[0,0], hits:[0,0], dmg:[0,0], crates:[0,0], best:[0,0],
               hitSid:[-1,-1], t0:Date.now() };
   G.shotSeq = 0; G.activeSid = 0;
   G.turn = 0; G.phase='aim'; G.running = true;
-  document.body.classList.toggle('touch', ('ontouchstart' in window));
   buildWeaponRack();
   Snd.resume(); Snd.musicStart();
   showScreen(null);
@@ -1047,9 +1206,18 @@ function suddenDeath(){
   return Math.min(2.4, 1 + (G.turnNo-24)*0.09);
 }
 
+/* blast radii are a fixed share of the battlefield, so a near miss on a phone
+   is as forgiving as the same near miss on a desktop */
+function blastScale(){ return clamp(W/1280, 0.72, 1.25); }
+
+/* Aiming error is specified in degrees and power units, which translate into a
+   miss distance proportional to range. Tanks are the same size on every map, so
+   on a smaller map that error has to grow or the AI becomes literally perfect. */
+function aiErrScale(){ return clamp(1280/W, 0.8, 2.0); }
+
 function detonate(x, y, w, owner, boost, small, directIdx){
   if(directIdx === undefined) directIdx = -1;
-  var r = w.blast * (small ? 0.72 : 1);
+  var r = w.blast * (small ? 0.72 : 1) * blastScale();
   Terr.carve(x, y, r*0.72);
   G.shake = Math.max(G.shake, r*0.30);
   G.flash = Math.max(G.flash, small?0.18:0.34);
@@ -1208,7 +1376,7 @@ function aimTank(t, d){
 function maybeDropCrate(){
   if(G.crates.length >= 2) return;
   if(Math.random() > 0.42) return;
-  var x = rnd(150, W-150);
+  var x = rnd(W*0.12, W*0.88);
   G.crates.push({ x:x, y:-30, vy:0, type:pick(CRATES), landed:false, sway:rnd(0,TAU), bob:0 });
   Snd.drop();
   toast('Supply drop inbound');
@@ -1368,8 +1536,9 @@ function planAI(t){
       self.ai.moveDir = dir;
       self.ai.moveTicks = rint(20, 60);
     }
-    var errA = rnd(-cfg.angErr, cfg.angErr);
-    var errP = rnd(-cfg.powErr, cfg.powErr);
+    var es = aiErrScale();
+    var errA = rnd(-cfg.angErr, cfg.angErr) * es;
+    var errP = rnd(-cfg.powErr, cfg.powErr) * es;
     self.ai.aim = clamp(sol.aim + errA, 4, 176);
     self.ai.pow = clamp(sol.pow + errP, 10, 100);
     self.ai.wi  = wi;
@@ -1388,9 +1557,9 @@ function stepAI(t){
       if(t.engine){ t.engine=false; Snd.engineOff(); }
       /* re-solve from the new spot */
       var sol = solveShot(t, ai.wi);
-      var cfg = DIFF[G.diff];
-      ai.aim = clamp(sol.aim + rnd(-cfg.angErr,cfg.angErr), 4, 176);
-      ai.pow = clamp(sol.pow + rnd(-cfg.powErr,cfg.powErr), 10, 100);
+      var cfg = DIFF[G.diff], es2 = aiErrScale();
+      ai.aim = clamp(sol.aim + rnd(-cfg.angErr,cfg.angErr)*es2, 4, 176);
+      ai.pow = clamp(sol.pow + rnd(-cfg.powErr,cfg.powErr)*es2, 10, 100);
       ai.stage = 'turn';
     }
     return;
@@ -1770,8 +1939,9 @@ function buildWeaponRack(){
       var w = WEPS[i];
       var b = document.createElement('button');
       b.className = 'wep'; b.dataset.i = i;
+      b.title = w.name + ' — ' + w.desc;
       b.innerHTML = '<span class="kb">'+(i+1)+'</span>'+
-        '<span class="wn">'+w.name+'</span>'+
+        '<span class="wn"><span class="lg">'+w.name+'</span><span class="sm">'+w.short+'</span></span>'+
         '<span class="wd">'+w.desc+'</span>'+
         '<span class="cdfill"></span><span class="cdtxt"></span>';
       b.onclick = function(){
@@ -1859,6 +2029,113 @@ function toast(txt){
 }
 
 /* ============================================================
+   LAYOUT — picks an overlaid or stacked HUD and a world size
+   that suits whatever screen and orientation we are on
+   ============================================================ */
+function isCoarse(){
+  return ('ontouchstart' in window) ||
+         (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) ||
+         (navigator.maxTouchPoints > 0);
+}
+function fitLayout(){
+  var w = window.innerWidth, h = window.innerHeight;
+  /* wide viewports get the floating HUD; anything squarer or taller stacks it */
+  document.body.classList.toggle('ov', (w/h) >= 1.45);
+  document.body.classList.toggle('hastouch', isCoarse());
+}
+/* stretch the canvas to fill the board while keeping the world's aspect */
+function sizeCanvas(){
+  var r = $('board').getBoundingClientRect();
+  var aw = Math.max(80, r.width), ah = Math.max(60, r.height);
+  var s = Math.min(aw/W, ah/H);
+  cv.style.width  = Math.max(80, Math.floor(W*s)) + 'px';
+  cv.style.height = Math.max(60, Math.floor(H*s)) + 'px';
+}
+function worldWidthFor(vw){
+  if(vw < 480)  return 760;
+  if(vw < 700)  return 900;
+  if(vw < 1024) return 1080;
+  if(vw < 1500) return 1280;
+  if(vw < 2100) return 1600;
+  return 1920;
+}
+function plannedWorld(){
+  var r = $('board').getBoundingClientRect();
+  var aw = Math.max(240, r.width), ah = Math.max(180, r.height);
+  /* narrower screens get a smaller world so tanks stay a comfortable size */
+  var base = worldWidthFor(window.innerWidth);
+  var ar = clamp(aw/ah, 0.50, 3.2);
+  return { w:base, h:Math.round(clamp(base/ar, base*0.32, base*1.75)) };
+}
+function fitWorld(){
+  fitLayout();
+  var p = plannedWorld();
+  setWorld(p.w, p.h);
+  sizeCanvas();
+}
+/* Rotating the device mid-match: rather than squeeze a portrait battlefield
+   into a landscape strip, redraw the ground at the new shape and carry the
+   tanks, their damage and their cooldowns across. */
+function refitMidMatch(){
+  var oldW = W;
+  fitWorld();
+  Terr.gen();
+  for(var i=0;i<2;i++){
+    var t = G.tanks[i];
+    t.x = clamp(t.x/oldW*W, W*0.05, W*0.95);
+    t.y = Terr.colTop(t.x); t.vy = 0; t.air = false;
+    var frac = t.moveMax ? clamp(t.move/t.moveMax,0,1) : 1;
+    t.moveMax = moveBudget()*t.spec.speed;
+    t.move = t.moveMax*frac;
+  }
+  for(var c=0;c<G.crates.length;c++){
+    var cr = G.crates[c];
+    cr.x = clamp(cr.x/oldW*W, W*0.05, W*0.95);
+    cr.y = Terr.colTop(cr.x); cr.landed = true; cr.vy = 0;
+  }
+  G.proj = []; G.parts = []; G.chunks = []; G.nums = [];
+  if(G.charging){ G.charging = false; G.charge = 0; Snd.chargeOff(); }
+  Snd.engineOff();
+  var cur = G.tanks[G.turn];
+  if(cur.isAI && G.phase === 'aim') planAI(cur);
+  toast('Screen changed — battlefield redrawn to fit');
+}
+var resizeT = null;
+function onResize(){
+  clearTimeout(resizeT);
+  resizeT = setTimeout(function(){
+    if(G.running && !G.over){
+      fitLayout();
+      var want = plannedWorld();
+      var shapeShift = Math.abs((want.h/want.w) - (H/W)) > 0.12 || want.w !== W;
+      if(shapeShift && G.tanks.length === 2) refitMidMatch();
+      else sizeCanvas();
+    } else {
+      fitWorld(); Terr.gen();
+      if(G.tanks.length) for(var i=0;i<2;i++){
+        G.tanks[i].x = clamp(G.tanks[i].x, W*0.08, W*0.92);
+        G.tanks[i].y = Terr.colTop(G.tanks[i].x);
+      }
+    }
+    syncHud();
+  }, 140);
+}
+window.addEventListener('resize', onResize);
+window.addEventListener('orientationchange', onResize);
+if(window.visualViewport) window.visualViewport.addEventListener('resize', onResize);
+
+function toggleFullscreen(){
+  var d = document, el = d.documentElement;
+  try{
+    if(!d.fullscreenElement && !d.webkitFullscreenElement){
+      (el.requestFullscreen || el.webkitRequestFullscreen || function(){}).call(el);
+    } else {
+      (d.exitFullscreen || d.webkitExitFullscreen || function(){}).call(d);
+    }
+  }catch(e){ toast('Fullscreen is not available in this browser'); }
+}
+
+/* ============================================================
    SCREENS + MENU FLOW
    ============================================================ */
 var SCREENS = ['scTitle','scMode','scDiff','scTank','scEnd'];
@@ -1936,7 +2213,7 @@ function openTankPick(){
           statRow('Speed', Math.round(h.speed*100), 155, '#e0a13c')+
           statRow('Reload', Math.round((2-h.reload)*100), 140, '#8a7fc0')+
         '</div>'+
-        '<div style="font-size:11.5px;color:var(--muted);margin-top:8px;line-height:1.4">'+h.note+'</div>';
+        '<div class="note">'+h.note+'</div>';
       card.onclick = function(){
         Snd.click();
         Array.prototype.forEach.call(grid.children,function(c){ c.classList.remove('sel'); });
@@ -2025,15 +2302,18 @@ function quitToMenu(){
   showScreen('scTitle');
 }
 $('btnQuit').onclick = function(){ Snd.click(); quitToMenu(); };
+$('btnFull').onclick = function(){ Snd.click(); toggleFullscreen(); };
 $('btnMusic').onclick = function(){
   Snd.resume(); Snd.musOn = !Snd.musOn;
   if(Snd.ac) Snd.mus.gain.setTargetAtTime(Snd.musOn?0.30:0.0, Snd.t(), 0.15);
   $('btnMusic').classList.toggle('off', !Snd.musOn);
+  toast(Snd.musOn ? 'Music on' : 'Music off');
 };
 $('btnSfx').onclick = function(){
   Snd.resume(); Snd.sfxOn = !Snd.sfxOn;
   if(!Snd.sfxOn){ Snd.chargeOff(); Snd.engineOff(); }
   $('btnSfx').classList.toggle('off', !Snd.sfxOn);
+  toast(Snd.sfxOn ? 'Sound on' : 'Sound off');
 };
 
 /* ============================================================
@@ -2091,17 +2371,22 @@ window.addEventListener('blur', function(){
   if(G.charging) releaseCharge();
 });
 
-/* touch pads */
+/* on-screen pads — pointer events so one code path covers touch, pen and mouse */
 function bindPad(id, on, off){
   var el = $(id);
   if(!el) return;
-  var down = function(e){ e.preventDefault(); on(); };
-  var up   = function(e){ e.preventDefault(); off(); };
-  el.addEventListener('touchstart', down, {passive:false});
-  el.addEventListener('touchend', up, {passive:false});
-  el.addEventListener('touchcancel', up, {passive:false});
-  el.addEventListener('mousedown', down);
-  window.addEventListener('mouseup', up);
+  var live = false;
+  var end = function(){ if(!live) return; live = false; el.classList.remove('on'); off(); };
+  el.addEventListener('pointerdown', function(e){
+    e.preventDefault();
+    if(el.setPointerCapture){ try{ el.setPointerCapture(e.pointerId); }catch(err){} }
+    live = true; el.classList.add('on'); Snd.resume(); on();
+  });
+  el.addEventListener('pointerup', end);
+  el.addEventListener('pointercancel', end);
+  el.addEventListener('lostpointercapture', end);
+  el.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+  window.addEventListener('blur', end);
 }
 bindPad('padL', function(){keys.left=true;},  function(){keys.left=false;});
 bindPad('padR', function(){keys.right=true;}, function(){keys.right=false;});
@@ -2109,12 +2394,18 @@ bindPad('padU', function(){keys.up=true;},    function(){keys.up=false;});
 bindPad('padD', function(){keys.down=true;},  function(){keys.down=false;});
 bindPad('padF', startCharge, releaseCharge);
 
-if('ontouchstart' in window) document.body.classList.add('touch');
+/* stop iOS from rubber-banding the page while playing */
+document.addEventListener('touchmove', function(e){
+  var el = e.target;
+  var inMenu = el && el.closest && el.closest('.screen');
+  if(!inMenu) e.preventDefault();
+}, {passive:false});
 
 /* ============================================================
    BOOT
    ============================================================ */
 Terr.build();
+fitWorld();
 Terr.gen();
 G.tanks = [ makeTank(0, HULLS[0], true, 'Alpha'), makeTank(1, HULLS[3], true, 'Bravo') ];
 buildWeaponRack();
@@ -2122,5 +2413,6 @@ syncHud();
 requestAnimationFrame(frame);
 
 </script>
-</body>
-</html>
+
+
+</body></html>
