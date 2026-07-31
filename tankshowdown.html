@@ -1,0 +1,2126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Tank Showdown</title>
+<style>
+:root{
+  --ink:#10161a;
+  --steel:#1d262c;
+  --steel2:#26333b;
+  --line:#3a4a55;
+  --olive:#6f8046;
+  --olive-dk:#4d5a31;
+  --sand:#cbb98f;
+  --sand-dk:#9b8a63;
+  --rust:#c2553a;
+  --amber:#e0a13c;
+  --teal:#4f9c98;
+  --paper:#e9e7df;
+  --muted:#93a4ae;
+  --p1:#7fa650;
+  --p2:#c07a4a;
+  --danger:#cf4b38;
+  --ok:#5ea87a;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;height:100%;overflow:hidden;background:var(--ink)}
+body{
+  font:14px/1.5 "Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;
+  color:var(--paper);user-select:none;
+}
+button{font:inherit;cursor:pointer;color:inherit}
+h1,h2,h3{margin:0;font-weight:650;letter-spacing:-.01em}
+.mono{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-variant-numeric:tabular-nums}
+
+/* ============ layout ============ */
+#app{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:
+   radial-gradient(120% 90% at 50% 0%,#223038 0%,#141c21 55%,#0c1216 100%)}
+#stage{position:relative;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center}
+#board{position:relative;width:min(100vw,calc(100vh * 1280/760));max-width:1280px}
+#cv{display:block;width:100%;height:auto;background:#7fa6c0;border-radius:4px}
+
+/* ============ screens ============ */
+.screen{
+  position:fixed;inset:0;z-index:50;display:none;
+  align-items:center;justify-content:center;padding:18px;overflow:auto;
+  background:radial-gradient(120% 90% at 50% 10%,rgba(38,52,60,.97),rgba(10,15,18,.99));
+}
+.screen.on{display:flex}
+.panel{width:100%;max-width:920px;margin:auto}
+.kicker{font-size:11.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--sand-dk);margin-bottom:10px}
+.logo{
+  font-size:clamp(34px,7vw,64px);line-height:1;font-weight:800;letter-spacing:-.03em;
+  color:var(--paper);text-shadow:0 3px 0 #0b1013;
+}
+.logo span{color:var(--amber)}
+.sub{color:var(--muted);margin:12px 0 26px;max-width:560px;font-size:14.5px}
+
+.stack{display:flex;flex-direction:column;gap:10px;max-width:420px}
+.opt{
+  display:flex;align-items:center;gap:14px;text-align:left;width:100%;
+  background:var(--steel);border:1px solid var(--line);border-radius:10px;
+  padding:14px 16px;transition:.14s;
+}
+.opt:hover{background:var(--steel2);border-color:#4e6472;transform:translateX(3px)}
+.opt.sel{border-color:var(--amber);background:#2c3129;box-shadow:inset 3px 0 0 var(--amber)}
+.opt .ic{
+  width:38px;height:38px;flex:none;border-radius:8px;background:#0f1519;
+  display:grid;place-items:center;font-size:18px;border:1px solid var(--line)
+}
+.opt b{display:block;font-size:15px;font-weight:620}
+.opt small{color:var(--muted);font-size:12.5px;display:block;line-height:1.4}
+
+.btn{
+  border:1px solid var(--line);background:var(--steel);border-radius:9px;
+  padding:11px 20px;font-weight:600;font-size:14px;transition:.14s;
+}
+.btn:hover{background:var(--steel2);border-color:#57707f}
+.btn.pri{background:var(--amber);border-color:var(--amber);color:#231a08}
+.btn.pri:hover{background:#eeb04c;border-color:#eeb04c}
+.btn.pri:disabled{opacity:.4;cursor:not-allowed}
+.btn.ghost{background:transparent;border-color:transparent;color:var(--muted)}
+.btn.ghost:hover{color:var(--paper);background:rgba(255,255,255,.05)}
+.btn.sm{padding:7px 13px;font-size:13px;border-radius:8px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:26px}
+
+/* ============ tank select ============ */
+.tanks{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:12px}
+.tcard{
+  background:var(--steel);border:1px solid var(--line);border-radius:12px;
+  padding:12px;text-align:left;transition:.14s;position:relative;overflow:hidden;
+  display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;
+}
+.tcard:hover{border-color:#5c7482;transform:translateY(-3px)}
+.tcard.sel{border-color:var(--amber);box-shadow:0 0 0 1px var(--amber),0 10px 26px rgba(0,0,0,.4)}
+.tcard canvas{display:block;width:100%;height:64px;image-rendering:auto}
+.tcard h3{font-size:14.5px;margin:6px 0 1px}
+.tcard .tag{font-size:11px;color:var(--sand-dk);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px}
+.bars{display:flex;flex-direction:column;gap:4px}
+.bar{display:flex;align-items:center;gap:6px;font-size:10.5px;color:var(--muted)}
+.bar .lb{width:52px;flex:none;letter-spacing:.03em}
+.bar .tr{flex:1;height:5px;background:#0f1519;border-radius:3px;overflow:hidden}
+.bar .fl{display:block;height:100%;border-radius:3px;background:var(--teal)}
+.bar .vv{width:26px;text-align:right;flex:none;color:#b9c6ce}
+.whoTurn{display:inline-flex;align-items:center;gap:8px;padding:5px 12px;border-radius:999px;
+  background:var(--steel);border:1px solid var(--line);font-size:12.5px;margin-bottom:14px}
+.dotc{width:9px;height:9px;border-radius:50%}
+
+/* ============ HUD ============ */
+#hud{position:absolute;inset:0;pointer-events:none;font-size:12px}
+#hud .pointer{pointer-events:auto}
+.pbox{
+  position:absolute;top:10px;width:262px;background:rgba(16,22,26,.82);
+  border:1px solid rgba(112,136,150,.35);border-radius:10px;padding:9px 11px;backdrop-filter:blur(6px);
+}
+#pboxL{left:10px} #pboxR{right:10px}
+.pbox .nm{display:flex;align-items:center;gap:7px;font-weight:650;font-size:13px;margin-bottom:2px}
+.pbox .nm .who{font-size:10.5px;color:var(--muted);font-weight:500;letter-spacing:.06em;text-transform:uppercase}
+.pbox .tk{font-size:11px;color:var(--sand-dk);margin-bottom:6px}
+.hp{height:13px;background:#0b1013;border-radius:4px;overflow:hidden;position:relative;border:1px solid rgba(255,255,255,.07)}
+.hp i{position:absolute;inset:0;width:100%;transform-origin:left;transition:transform .28s ease;border-radius:3px}
+.hp .ghost{background:#8d3a2c;opacity:.55;transition:transform .7s .18s ease}
+.hp .real{background:linear-gradient(180deg,#68b07f,#4b8b62)}
+.hp b{position:absolute;inset:0;display:grid;place-items:center;font-size:10.5px;
+  text-shadow:0 1px 2px rgba(0,0,0,.8);letter-spacing:.04em}
+.sh{height:6px;margin-top:3px;background:#0b1013;border-radius:3px;overflow:hidden;display:none}
+.sh i{display:block;height:100%;background:linear-gradient(180deg,#6fc3d6,#3d8a9b);transform-origin:left}
+.buffs{display:flex;gap:4px;margin-top:6px;min-height:17px;flex-wrap:wrap}
+.buff{font-size:10px;padding:1px 6px;border-radius:4px;background:#2b3a2a;border:1px solid #46603f;color:#b9d6a8}
+.buff.b2{background:#3a2f22;border-color:#6b5030;color:#e2c08a}
+.buff.b3{background:#22333a;border-color:#3a6070;color:#9fd0dd}
+
+#center{position:absolute;top:10px;left:50%;transform:translateX(-50%);text-align:center;width:240px}
+#turnPill{display:inline-flex;align-items:center;gap:8px;background:rgba(16,22,26,.85);
+  border:1px solid rgba(112,136,150,.35);border-radius:999px;padding:6px 14px;font-weight:600;font-size:12.5px}
+#clock{margin-top:8px;font-size:11.5px;color:var(--muted);
+  display:inline-block;background:rgba(16,22,26,.7);border-radius:6px;padding:2px 9px}
+#clock b{color:var(--paper)}
+
+/* bottom control deck */
+#deck{
+  position:absolute;left:50%;bottom:8px;transform:translateX(-50%);
+  width:calc(100% - 20px);max-width:1180px;
+  background:rgba(16,22,26,.84);border:1px solid rgba(112,136,150,.35);
+  border-radius:12px;padding:8px 10px;backdrop-filter:blur(6px);
+  display:flex;gap:10px;align-items:stretch;
+}
+#weps{display:flex;gap:6px;flex:1;min-width:0}
+.wep{
+  position:relative;flex:1;min-width:0;background:#161f25;border:1px solid var(--line);
+  border-radius:8px;padding:6px 7px;text-align:left;overflow:hidden;transition:.12s;
+}
+.wep:hover{border-color:#5c7482}
+.wep.sel{border-color:var(--amber);background:#241f14}
+.wep .kb{position:absolute;top:4px;right:5px;font-size:9.5px;color:#68798a}
+.wep .wn{display:block;font-size:11.5px;font-weight:640;white-space:nowrap;overflow:hidden;
+  text-overflow:ellipsis;padding-right:12px}
+.wep .wd{display:block;font-size:10px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wep .cdfill{position:absolute;left:0;bottom:0;height:100%;width:100%;background:rgba(8,12,15,.78);
+  transform-origin:bottom;transform:scaleY(0);pointer-events:none}
+.wep .cdtxt{position:absolute;inset:0;display:none;align-items:flex-end;justify-content:flex-start;
+  padding:0 0 5px 8px;font-size:15px;font-weight:700;color:#e6ecf0;letter-spacing:.02em}
+.wep.cool .cdtxt{display:flex}
+.wep.cool .wd{visibility:hidden}
+.wep.cool .wn{color:#8fa1ad}
+.wep .amo{position:absolute;bottom:3px;right:5px;font-size:9.5px;color:#8aa0ae}
+
+#gauges{width:250px;flex:none;display:flex;flex-direction:column;gap:5px;justify-content:center}
+.gauge{display:flex;align-items:center;gap:7px}
+.gauge .lb{width:42px;font-size:10px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;flex:none}
+.gauge .tr{flex:1;height:11px;background:#0b1013;border-radius:4px;overflow:hidden;position:relative;
+  border:1px solid rgba(255,255,255,.06)}
+.gauge .fl{position:absolute;inset:0;transform-origin:left;transform:scaleX(0);border-radius:3px}
+#pwFill{background:linear-gradient(90deg,#5ea87a,#e0a13c 62%,#cf4b38)}
+#mvFill{background:linear-gradient(90deg,#4f9c98,#6fc3d6)}
+.gauge .vv{width:38px;text-align:right;font-size:11px;flex:none}
+#pwTicks{position:absolute;inset:0;background-image:repeating-linear-gradient(90deg,transparent 0 24px,rgba(255,255,255,.10) 24px 25px)}
+
+#tools{display:flex;flex-direction:column;gap:5px;justify-content:center;flex:none}
+.tbtn{background:#161f25;border:1px solid var(--line);border-radius:7px;padding:5px 9px;font-size:11px}
+.tbtn:hover{background:#1f2b33}
+.tbtn.off{opacity:.45}
+
+/* touch pads */
+#pads{position:absolute;inset:0;display:none;pointer-events:none}
+body.touch #pads{display:block}
+.pad{
+  position:absolute;pointer-events:auto;background:rgba(22,31,37,.8);border:1px solid rgba(112,136,150,.4);
+  border-radius:12px;display:grid;place-items:center;font-size:18px;font-weight:700;color:#cfdae1;
+}
+.pad:active{background:rgba(224,161,60,.35)}
+#padL{left:10px;bottom:96px;width:52px;height:52px}
+#padR{left:70px;bottom:96px;width:52px;height:52px}
+#padU{right:132px;bottom:126px;width:52px;height:52px}
+#padD{right:132px;bottom:66px;width:52px;height:52px}
+#padF{right:14px;bottom:76px;width:108px;height:102px;border-radius:14px;background:rgba(194,85,58,.7);font-size:14px}
+
+/* banners */
+#banner{
+  position:absolute;left:50%;top:38%;transform:translate(-50%,-50%) scale(.9);
+  font-size:clamp(26px,4.6vw,48px);font-weight:800;letter-spacing:-.02em;
+  text-shadow:0 4px 0 rgba(0,0,0,.45);opacity:0;transition:.3s;text-align:center;white-space:nowrap;
+}
+#banner.on{opacity:1;transform:translate(-50%,-50%) scale(1)}
+#toast{
+  position:absolute;left:50%;bottom:96px;transform:translateX(-50%) translateY(10px);
+  background:rgba(12,17,20,.92);border:1px solid var(--line);border-radius:8px;
+  padding:7px 14px;font-size:12.5px;opacity:0;transition:.2s;white-space:nowrap;
+}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* result */
+.resline{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.07);font-size:13.5px}
+.resline span:last-child{color:var(--paper);font-weight:600}
+.resline span:first-child{color:var(--muted)}
+
+/* help */
+.keys{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px 22px;margin-top:6px}
+.keyrow{display:flex;align-items:center;gap:9px;font-size:12.5px;color:var(--muted)}
+kbd{background:#0f1519;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;
+  padding:2px 7px;font:inherit;font-size:11px;color:#cfdae1;min-width:22px;text-align:center;display:inline-block}
+
+@media(max-width:760px){
+  .pbox{width:min(42vw,220px);padding:7px 9px}
+  #center{width:150px;top:6px}
+  #deck{flex-wrap:wrap;padding:6px}
+  #gauges{width:100%;order:2}
+  #weps{order:1;width:100%}
+  #tools{order:3;flex-direction:row;width:100%}
+  .tbtn{flex:1}
+  .wep .wd{display:none}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="stage">
+    <div id="board">
+      <canvas id="cv" width="1280" height="760"></canvas>
+      <div id="hud">
+        <div class="pbox" id="pboxL">
+          <div class="nm"><span class="dotc" style="background:var(--p1)"></span><span id="nmL">Player 1</span><span class="who" id="whoL">Human</span></div>
+          <div class="tk" id="tkL">Vanguard</div>
+          <div class="hp"><i class="ghost" id="ghL"></i><i class="real" id="hpL"></i><b id="hvL">100 / 100</b></div>
+          <div class="sh" id="shL"><i></i></div>
+          <div class="buffs" id="bfL"></div>
+        </div>
+        <div class="pbox" id="pboxR">
+          <div class="nm"><span class="dotc" style="background:var(--p2)"></span><span id="nmR">Player 2</span><span class="who" id="whoR">AI</span></div>
+          <div class="tk" id="tkR">Havoc</div>
+          <div class="hp"><i class="ghost" id="ghR"></i><i class="real" id="hpR"></i><b id="hvR">100 / 100</b></div>
+          <div class="sh" id="shR"><i></i></div>
+          <div class="buffs" id="bfR"></div>
+        </div>
+        <div id="center">
+          <div id="turnPill"><span class="dotc" id="turnDot" style="background:var(--p1)"></span><span id="turnTxt">Player 1</span></div>
+          <div id="clock">Turn <b id="turnNo">1</b> · <b id="turnClock">30</b>s</div>
+        </div>
+        <div id="banner"></div>
+        <div id="toast"></div>
+        <div id="deck" class="pointer">
+          <div id="weps"></div>
+          <div id="gauges">
+            <div class="gauge">
+              <span class="lb">Power</span>
+              <span class="tr"><i class="fl" id="pwFill"></i><span id="pwTicks"></span></span>
+              <span class="vv mono" id="pwVal">0</span>
+            </div>
+            <div class="gauge">
+              <span class="lb">Angle</span>
+              <span class="tr"><i class="fl" id="agFill" style="background:linear-gradient(90deg,#8a7fc0,#c0a4e0)"></i></span>
+              <span class="vv mono" id="agVal">45°</span>
+            </div>
+            <div class="gauge">
+              <span class="lb">Move</span>
+              <span class="tr"><i class="fl" id="mvFill"></i></span>
+              <span class="vv mono" id="mvVal">100%</span>
+            </div>
+          </div>
+          <div id="tools">
+            <button class="tbtn" id="btnMusic">♪ Music</button>
+            <button class="tbtn" id="btnSfx">♫ SFX</button>
+            <button class="tbtn" id="btnQuit">Quit</button>
+          </div>
+        </div>
+        <div id="pads">
+          <button class="pad" id="padL">◀</button>
+          <button class="pad" id="padR">▶</button>
+          <button class="pad" id="padU">▲</button>
+          <button class="pad" id="padD">▼</button>
+          <button class="pad" id="padF">HOLD<br>TO FIRE</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= TITLE ================= -->
+<div class="screen on" id="scTitle">
+  <div class="panel">
+    <div class="kicker">Turn-based artillery duel</div>
+    <div class="logo">TANK <span>SHOWDOWN</span></div>
+    <p class="sub">Two tanks, one ridge of dirt between them. Pick your hull, pick your ordnance, and work out the angle before the other side works out yours.</p>
+    <div class="row">
+      <button class="btn pri" id="goStart">Start deployment</button>
+      <button class="btn ghost" id="goHelp">Controls</button>
+    </div>
+    <div class="keys" id="helpKeys" style="display:none;margin-top:22px">
+      <div class="keyrow"><kbd>A</kbd><kbd>D</kbd> or <kbd>←</kbd><kbd>→</kbd> drive</div>
+      <div class="keyrow"><kbd>W</kbd><kbd>S</kbd> or <kbd>↑</kbd><kbd>↓</kbd> raise / lower barrel</div>
+      <div class="keyrow"><kbd>Space</kbd> hold to charge, release to fire</div>
+      <div class="keyrow"><kbd>1</kbd>–<kbd>5</kbd> switch weapon</div>
+      <div class="keyrow"><kbd>Q</kbd> / <kbd>E</kbd> cycle weapons</div>
+      <div class="keyrow"><kbd>Esc</kbd> quit to menu</div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODE ================= -->
+<div class="screen" id="scMode">
+  <div class="panel" style="max-width:560px">
+    <div class="kicker">Step 1 of 3</div>
+    <h1 style="font-size:26px;margin-bottom:4px">Choose a match type</h1>
+    <p class="sub" style="margin-bottom:20px">Who is behind each set of controls.</p>
+    <div class="stack">
+      <button class="opt" data-mode="pvp"><span class="ic">👥</span><span><b>Player vs Player</b><small>Two humans, same keyboard, alternating turns</small></span></button>
+      <button class="opt" data-mode="pvai"><span class="ic">🎯</span><span><b>Player vs AI</b><small>You take the left tank, the computer takes the right</small></span></button>
+      <button class="opt" data-mode="aivai"><span class="ic">🤖</span><span><b>AI vs AI</b><small>Sit back and watch two gunnery computers argue</small></span></button>
+    </div>
+    <div class="row"><button class="btn ghost" data-back="scTitle">← Back</button></div>
+  </div>
+</div>
+
+<!-- ================= DIFFICULTY ================= -->
+<div class="screen" id="scDiff">
+  <div class="panel" style="max-width:560px">
+    <div class="kicker">Step 2 of 3</div>
+    <h1 style="font-size:26px;margin-bottom:4px">Set the AI skill</h1>
+    <p class="sub" style="margin-bottom:20px">This changes how precisely the computer solves the firing problem, and how well it picks its shots.</p>
+    <div class="stack">
+      <button class="opt" data-diff="easy"><span class="ic">🟢</span><span><b>Recruit</b><small>Sloppy ranging, wastes the big guns, rarely repositions</small></span></button>
+      <button class="opt" data-diff="normal"><span class="ic">🟡</span><span><b>Gunner</b><small>Ranges in over two or three shots and picks sensible ordnance</small></span></button>
+      <button class="opt" data-diff="hard"><span class="ic">🔴</span><span><b>Marksman</b><small>Near-exact firing solutions, saves heavy rounds for the kill</small></span></button>
+    </div>
+    <div class="row"><button class="btn ghost" data-back="scMode">← Back</button></div>
+  </div>
+</div>
+
+<!-- ================= TANK SELECT ================= -->
+<div class="screen" id="scTank">
+  <div class="panel">
+    <div class="kicker">Step 3 of 3</div>
+    <h1 style="font-size:26px;margin-bottom:4px">Pick a hull</h1>
+    <p class="sub" style="margin-bottom:16px">Firepower scales every shell you fire. Armour divides every hit you take. Reload trims weapon cooldowns.</p>
+    <div class="whoTurn"><span class="dotc" id="selDot" style="background:var(--p1)"></span><span id="selWho">Player 1 selecting</span></div>
+    <div class="tanks" id="tankGrid"></div>
+    <div class="row">
+      <button class="btn pri" id="tankGo" disabled>Confirm</button>
+      <button class="btn ghost" data-back="scMode">← Back</button>
+      <span id="selHint" style="color:var(--muted);font-size:12.5px"></span>
+    </div>
+  </div>
+</div>
+
+<!-- ================= RESULT ================= -->
+<div class="screen" id="scEnd">
+  <div class="panel" style="max-width:480px">
+    <div class="kicker" id="endKick">Match over</div>
+    <h1 class="logo" style="font-size:clamp(28px,5vw,44px)" id="endTitle">Player 1 wins</h1>
+    <p class="sub" id="endSub" style="margin:10px 0 18px"></p>
+    <div id="endStats"></div>
+    <div class="row">
+      <button class="btn pri" id="endAgain">Rematch</button>
+      <button class="btn" id="endNew">Change setup</button>
+      <button class="btn ghost" id="endMenu">Main menu</button>
+    </div>
+  </div>
+</div>
+
+<script>
+"use strict";
+/* ============================================================
+   TANK SHOWDOWN — core data, audio, terrain
+   ============================================================ */
+var W = 1280, H = 760;
+var cv  = document.getElementById('cv');
+var ctx = cv.getContext('2d');
+var $   = function(id){ return document.getElementById(id); };
+var clamp = function(v,a,b){ return v<a?a:(v>b?b:v); };
+var lerp  = function(a,b,t){ return a+(b-a)*t; };
+var rnd   = function(a,b){ return a + Math.random()*(b-a); };
+var rint  = function(a,b){ return Math.floor(rnd(a,b+1)); };
+var pick  = function(arr){ return arr[Math.floor(Math.random()*arr.length)]; };
+var TAU = Math.PI*2, D2R = Math.PI/180;
+
+/* ---------------- tank hulls ---------------- */
+var HULLS = [
+  { id:'vanguard', name:'Vanguard', tag:'All-round',
+    hp:100, power:1.00, armor:1.00, speed:1.00, reload:1.00,
+    body:'#6f8046', trim:'#4d5a31', note:'No weakness, no gimmick. Learn the game on this one.' },
+  { id:'bastion', name:'Bastion', tag:'Heavy',
+    hp:130, power:0.88, armor:1.35, speed:0.62, reload:1.12,
+    body:'#5b6670', trim:'#3d454d', note:'Soaks two direct hits that would gut anything else. Slow.' },
+  { id:'viper', name:'Viper', tag:'Scout',
+    hp:86,  power:1.10, armor:0.80, speed:1.55, reload:0.90,
+    body:'#8a9b57', trim:'#5d6a34', note:'Drives most of the map in a turn. Folds under a mortar.' },
+  { id:'havoc', name:'Havoc', tag:'Assault',
+    hp:92,  power:1.34, armor:0.75, speed:1.00, reload:1.00,
+    body:'#a8623c', trim:'#74412a', note:'Hits like nothing else and dies like nothing else.' },
+  { id:'sentinel', name:'Sentinel', tag:'Support',
+    hp:112, power:0.94, armor:1.12, speed:0.86, reload:0.66,
+    body:'#4d7a86', trim:'#32545e', note:'Cooldowns run a third faster. The heavy guns come back early.' }
+];
+
+/* ---------------- weapons ----------------
+   cd is in seconds of real time; nothing exceeds 80s (< 1.5 min) */
+var WEPS = [
+  { id:'shell',   name:'AP Shell',      dmg:24, blast:34, cd:0,  grav:1.00, spd:1.00,
+    col:'#e8dcc0', trail:'#cbb98f', size:4,  desc:'24 dmg · no cooldown' },
+  { id:'twin',    name:'Twin Rocket',   dmg:15, blast:26, cd:14, grav:0.82, spd:1.06, salvo:2,
+    col:'#f0c05a', trail:'#e0a13c', size:3.5,desc:'2 × 15 dmg · 14s' },
+  { id:'mortar',  name:'Heavy Mortar',  dmg:40, blast:54, cd:28, grav:1.55, spd:1.14,
+    col:'#d68a6a', trail:'#b06a4a', size:5.5,desc:'40 dmg · wide · 28s' },
+  { id:'cluster', name:'Cluster Pod',   dmg:12, blast:24, cd:44, grav:1.00, spd:1.00, cluster:5,
+    col:'#8fd0c0', trail:'#4f9c98', size:5,  desc:'5 × 12 dmg · 44s' },
+  { id:'rail',    name:'Thunderstrike', dmg:52, blast:58, cd:72, grav:0.50, spd:1.55,
+    col:'#b7a8f0', trail:'#8a7fc0', size:4.5,desc:'52 dmg · flat · 72s' }
+];
+var CD_CAP = 85;   /* hard ceiling — no weapon may exceed 1:25 after hull modifiers */
+
+/* ---------------- crates ---------------- */
+var CRATES = [
+  { id:'repair',  label:'Field Repair', col:'#5ea87a', icon:'+', txt:'+28 hull' },
+  { id:'reload',  label:'Ammo Drop',    col:'#e0a13c', icon:'⟳', txt:'all weapons ready' },
+  { id:'over',    label:'Overcharge',   col:'#cf4b38', icon:'▲', txt:'next shot ×1.7' },
+  { id:'shield',  label:'Reactive Plate',col:'#4f9c98',icon:'◈', txt:'+35 shield' }
+];
+
+var DIFF = {
+  easy:   { name:'Recruit',  angErr:4.5,  powErr:8.5,  smart:0.25, reposition:0.12, think:900 },
+  normal: { name:'Gunner',   angErr:1.8,  powErr:3.6,  smart:0.65, reposition:0.40, think:750 },
+  hard:   { name:'Marksman', angErr:0.35, powErr:0.6,  smart:1.00, reposition:0.70, think:600 }
+};
+
+/* physics — PSCALE is tuned so a 45° shot at full power out-ranges the map */
+var GRAV = 0.148, PSCALE = 0.142;
+
+/* ============================================================
+   AUDIO — everything synthesised, no external files
+   ============================================================ */
+var Snd = {
+  ac:null, master:null, sfx:null, mus:null, noise:null,
+  sfxOn:true, musOn:true, started:false,
+  chargeNode:null, engineNode:null,
+  init:function(){
+    if(this.ac) return;
+    var AC = window.AudioContext || window.webkitAudioContext;
+    if(!AC) return;
+    try{ this.ac = new AC(); }catch(e){ return; }
+    this.master = this.ac.createGain(); this.master.gain.value = 0.85;
+    this.master.connect(this.ac.destination);
+    this.sfx = this.ac.createGain(); this.sfx.gain.value = 0.9; this.sfx.connect(this.master);
+    this.mus = this.ac.createGain(); this.mus.gain.value = 0.0; this.mus.connect(this.master);
+    var len = this.ac.sampleRate * 2, buf = this.ac.createBuffer(1, len, this.ac.sampleRate);
+    var d = buf.getChannelData(0);
+    for(var i=0;i<len;i++) d[i] = Math.random()*2-1;
+    this.noise = buf;
+  },
+  resume:function(){
+    this.init();
+    if(this.ac && this.ac.state === 'suspended') this.ac.resume();
+  },
+  t:function(){ return this.ac ? this.ac.currentTime : 0; },
+  env:function(node, t0, a, d, peak){
+    var g = this.ac.createGain();
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.exponentialRampToValueAtTime(Math.max(peak,0.0002), t0+a);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0+a+d);
+    node.connect(g); return g;
+  },
+  nz:function(t0, dur, type, freq, q, peak, dest){
+    if(!this.ac) return;
+    var s = this.ac.createBufferSource(); s.buffer = this.noise; s.loop = true;
+    var f = this.ac.createBiquadFilter(); f.type = type; f.frequency.value = freq;
+    if(q) f.Q.value = q;
+    s.connect(f);
+    var g = this.env(f, t0, Math.min(0.012,dur*0.2), dur, peak);
+    g.connect(dest || this.sfx);
+    s.start(t0); s.stop(t0+dur+0.06);
+    return f;
+  },
+  tone:function(t0, dur, type, f1, f2, peak, dest){
+    if(!this.ac) return;
+    var o = this.ac.createOscillator(); o.type = type;
+    o.frequency.setValueAtTime(f1, t0);
+    if(f2 !== f1) o.frequency.exponentialRampToValueAtTime(Math.max(f2,1), t0+dur);
+    var g = this.env(o, t0, Math.min(0.01,dur*0.15), dur, peak);
+    g.connect(dest || this.sfx);
+    o.start(t0); o.stop(t0+dur+0.05);
+    return o;
+  },
+  /* ---- one-shots ---- */
+  click:function(){ if(!this.sfxOn||!this.ac) return; var t=this.t(); this.tone(t,0.05,'square',620,320,0.06); },
+  tick:function(){ if(!this.sfxOn||!this.ac) return; var t=this.t(); this.tone(t,0.03,'square',900,900,0.03); },
+  fire:function(pw){
+    if(!this.sfxOn||!this.ac) return; var t=this.t(), p=0.4+0.5*(pw/100);
+    this.nz(t,0.30,'lowpass',900+pw*8,1,0.55*p);
+    this.tone(t,0.35,'sine',180,42,0.5*p);
+    this.tone(t+0.01,0.12,'sawtooth',420,110,0.16*p);
+  },
+  boom:function(size){
+    if(!this.sfxOn||!this.ac) return; var t=this.t(), s=clamp(size/60,0.4,1.6);
+    this.nz(t,0.55*s,'lowpass',420*(1/s),0.9,0.62*s);
+    this.tone(t,0.62*s,'sine',140,30,0.55*s);
+    this.nz(t+0.03,0.30*s,'bandpass',1600,1.4,0.16);
+  },
+  thud:function(){ if(!this.sfxOn||!this.ac) return; var t=this.t();
+    this.nz(t,0.10,'lowpass',700,1,0.30); this.tone(t,0.12,'triangle',220,90,0.22); },
+  hit:function(){ if(!this.sfxOn||!this.ac) return; var t=this.t();
+    this.tone(t,0.13,'square',300,120,0.16); this.nz(t,0.14,'bandpass',2200,2,0.20); },
+  pickup:function(){ if(!this.sfxOn||!this.ac) return; var t=this.t();
+    this.tone(t,0.09,'triangle',660,660,0.14);
+    this.tone(t+0.08,0.09,'triangle',880,880,0.14);
+    this.tone(t+0.16,0.16,'triangle',1320,1320,0.12); },
+  drop:function(){ if(!this.sfxOn||!this.ac) return; var t=this.t();
+    this.tone(t,0.35,'sine',500,180,0.09); },
+  win:function(){ if(!this.sfxOn||!this.ac) return; var t=this.t(), n=[262,330,392,523,659];
+    for(var i=0;i<n.length;i++) this.tone(t+i*0.11,0.32,'triangle',n[i],n[i],0.15); },
+  lose:function(){ if(!this.sfxOn||!this.ac) return; var t=this.t(), n=[330,294,247,196];
+    for(var i=0;i<n.length;i++) this.tone(t+i*0.15,0.42,'sawtooth',n[i],n[i]*0.98,0.10); },
+  /* ---- loops ---- */
+  chargeOn:function(){
+    if(!this.sfxOn||!this.ac||this.chargeNode) return;
+    var o = this.ac.createOscillator(), g = this.ac.createGain();
+    o.type='sawtooth'; o.frequency.setValueAtTime(110,this.t());
+    var f = this.ac.createBiquadFilter(); f.type='lowpass'; f.frequency.value=900;
+    g.gain.setValueAtTime(0.0001,this.t());
+    g.gain.exponentialRampToValueAtTime(0.10,this.t()+0.08);
+    o.connect(f); f.connect(g); g.connect(this.sfx); o.start();
+    this.chargeNode = {o:o,g:g};
+  },
+  chargeSet:function(p){ if(this.chargeNode && this.ac)
+    this.chargeNode.o.frequency.setTargetAtTime(110+p*4.4, this.t(), 0.03); },
+  chargeOff:function(){
+    if(!this.chargeNode||!this.ac) return; var n=this.chargeNode, t=this.t();
+    n.g.gain.cancelScheduledValues(t);
+    n.g.gain.setValueAtTime(Math.max(n.g.gain.value,0.0002),t);
+    n.g.gain.exponentialRampToValueAtTime(0.0001,t+0.09);
+    n.o.stop(t+0.14); this.chargeNode = null;
+  },
+  engineOn:function(){
+    if(!this.sfxOn||!this.ac||this.engineNode) return;
+    var s = this.ac.createBufferSource(); s.buffer=this.noise; s.loop=true;
+    var f = this.ac.createBiquadFilter(); f.type='lowpass'; f.frequency.value=260; f.Q.value=6;
+    var o = this.ac.createOscillator(); o.type='sawtooth'; o.frequency.value=58;
+    var g = this.ac.createGain(); g.gain.setValueAtTime(0.0001,this.t());
+    g.gain.exponentialRampToValueAtTime(0.075,this.t()+0.06);
+    s.connect(f); f.connect(g); o.connect(g); g.connect(this.sfx);
+    s.start(); o.start(); this.engineNode = {s:s,o:o,g:g};
+  },
+  engineOff:function(){
+    if(!this.engineNode||!this.ac) return; var n=this.engineNode, t=this.t();
+    n.g.gain.cancelScheduledValues(t);
+    n.g.gain.setValueAtTime(Math.max(n.g.gain.value,0.0002),t);
+    n.g.gain.exponentialRampToValueAtTime(0.0001,t+0.10);
+    n.s.stop(t+0.16); n.o.stop(t+0.16); this.engineNode = null;
+  },
+  /* ---- procedural battle track ---- */
+  mstep:0, mnext:0, mtimer:null, mplaying:false,
+  ROOTS:[110.00, 87.31, 130.81, 98.00],           /* A2  F2  C3  G2 */
+  BASSLINE:[0,0,7,0, 0,12,0,7, 0,0,7,0, 5,0,7,3],
+  musicStart:function(){
+    this.init(); if(!this.ac || this.mplaying) return;
+    this.mplaying = true; this.mstep = 0; this.mnext = this.t()+0.12;
+    this.mus.gain.setTargetAtTime(this.musOn?0.30:0.0, this.t(), 0.6);
+    var self = this;
+    this.mtimer = setInterval(function(){ self.msched(); }, 40);
+  },
+  musicStop:function(){
+    this.mplaying = false;
+    if(this.mtimer){ clearInterval(this.mtimer); this.mtimer=null; }
+    if(this.ac) this.mus.gain.setTargetAtTime(0.0, this.t(), 0.25);
+  },
+  msched:function(){
+    if(!this.ac) return;
+    var spb = 60/96, sp16 = spb/4;
+    while(this.mnext < this.t()+0.22){
+      this.mnote(this.mstep, this.mnext);
+      this.mstep = (this.mstep+1) % 64;
+      this.mnext += sp16;
+    }
+  },
+  mnote:function(s, t){
+    var bar = Math.floor(s/16), st = s%16, root = this.ROOTS[bar];
+    /* kick */
+    if(st===0||st===6||st===10) this.tone(t,0.20,'sine',130,44,0.55,this.mus);
+    /* snare — marching feel */
+    if(st===4||st===12) this.nz(t,0.13,'bandpass',1750,1.1,0.24,this.mus);
+    if(st===14 && bar%2===1){ this.nz(t,0.06,'bandpass',1750,1.1,0.14,this.mus);
+                              this.nz(t+0.055,0.06,'bandpass',1750,1.1,0.18,this.mus); }
+    /* hat */
+    if(st%2===0) this.nz(t,0.035,'highpass',7200,0.7,(st%4===0)?0.09:0.05,this.mus);
+    /* bass */
+    var semi = this.BASSLINE[st];
+    if(st%2===0){
+      var f = root*Math.pow(2,semi/12);
+      var o = this.ac.createOscillator(); o.type='sawtooth'; o.frequency.value=f;
+      var fl = this.ac.createBiquadFilter(); fl.type='lowpass';
+      fl.frequency.setValueAtTime(320,t); fl.frequency.exponentialRampToValueAtTime(140,t+0.24);
+      var g = this.env(fl,t,0.008,0.20,0.26); o.connect(fl); g.connect(this.mus);
+      o.start(t); o.stop(t+0.30);
+    }
+    /* pad, once per bar */
+    if(st===0){
+      var self=this, ivs=[0,7,12];
+      for(var i=0;i<ivs.length;i++){
+        var pf = root*2*Math.pow(2,ivs[i]/12);
+        var po = this.ac.createOscillator(); po.type='sawtooth';
+        po.frequency.value = pf*(i===1?1.004:0.997);
+        var pfl = this.ac.createBiquadFilter(); pfl.type='lowpass'; pfl.frequency.value=780;
+        var pg = this.env(pfl,t,0.35,2.0,0.055);
+        po.connect(pfl); pg.connect(this.mus);
+        po.start(t); po.stop(t+2.6);
+      }
+    }
+  }
+};
+
+/* ============================================================
+   TERRAIN — pixel mask, fully destructible
+   ============================================================ */
+var Terr = {
+  mask:null, cvs:null, tc:null, top:null, bg:null, sil:null,
+  build:function(){
+    this.mask = new Uint8Array(W*H);
+    this.top  = new Int16Array(W);
+    this.cvs  = document.createElement('canvas'); this.cvs.width=W; this.cvs.height=H;
+    this.tc   = this.cvs.getContext('2d');
+    this.bg   = document.createElement('canvas'); this.bg.width=W;  this.bg.height=H;
+    /* never carved — shows through craters so holes read as shadowed cavities
+       instead of windows onto the sky */
+    this.sil  = document.createElement('canvas'); this.sil.width=W; this.sil.height=H;
+  },
+  paintSil:function(){
+    var g = this.sil.getContext('2d');
+    g.clearRect(0,0,W,H);
+    g.fillStyle = '#414a52';
+    for(var x=0;x<W;x++) g.fillRect(x, this.top[x], 1, H-this.top[x]);
+    g.globalCompositeOperation = 'source-atop';
+    var gg = g.createLinearGradient(0,H*0.35,0,H);
+    gg.addColorStop(0,'rgba(16,22,26,.10)'); gg.addColorStop(1,'rgba(10,14,17,.80)');
+    g.fillStyle = gg; g.fillRect(0,0,W,H);
+    g.globalCompositeOperation = 'source-over';
+  },
+  gen:function(){
+    if(!this.mask) this.build();
+    this.mask.fill(0);
+    var base = H*0.66, prof = new Float32Array(W);
+    var p1=rnd(0,TAU), p2=rnd(0,TAU), p3=rnd(0,TAU), p4=rnd(0,TAU);
+    var a1=rnd(26,54), a2=rnd(14,32), a3=rnd(6,16);
+    var f1=rnd(0.0016,0.0032), f2=rnd(0.004,0.008), f3=rnd(0.011,0.019);
+    var ridgeX = rnd(W*0.38,W*0.62), ridgeH = rnd(40,140), ridgeS = rnd(90,190);
+    var tiltAmt = rnd(-52,52);
+    for(var x=0;x<W;x++){
+      var y = base
+        + a1*Math.sin(x*f1+p1)
+        + a2*Math.sin(x*f2+p2)
+        + a3*Math.sin(x*f3+p3)
+        + 7*Math.sin(x*0.03+p4);
+      y -= ridgeH*Math.exp(-Math.pow((x-ridgeX)/ridgeS,2));
+      y += tiltAmt*(x/W - 0.5);
+      prof[x] = y;
+    }
+    /* soften the very edges so tanks always have a shelf */
+    for(var e=0;e<90;e++){
+      var k = e/90;
+      prof[e]      = lerp(base+16, prof[e], k);
+      prof[W-1-e]  = lerp(base+16, prof[W-1-e], k);
+    }
+    /* smoothing pass */
+    var sm = new Float32Array(W);
+    for(var i=0;i<W;i++){
+      var s=0,n=0;
+      for(var j=-3;j<=3;j++){ var q=clamp(i+j,0,W-1); s+=prof[q]; n++; }
+      sm[i]=s/n;
+    }
+    for(var x2=0;x2<W;x2++){
+      var ty = clamp(Math.round(sm[x2]), 120, H-40);
+      this.top[x2] = ty;
+      var off = ty*W + x2;
+      for(var y2=ty;y2<H;y2++){ this.mask[off]=1; off+=W; }
+    }
+    this.paint();
+    this.paintSil();
+    this.paintBg();
+  },
+  paint:function(){
+    var g = this.tc;
+    g.clearRect(0,0,W,H);
+    for(var x=0;x<W;x++){
+      var t = this.top[x];
+      /* deep rock */
+      g.fillStyle = '#4e5760'; g.fillRect(x,t+150,1,H-t-150);
+      /* rock */
+      g.fillStyle = '#5c666e'; g.fillRect(x,t+96,1,54);
+      /* clay band */
+      g.fillStyle = '#77644b'; g.fillRect(x,t+82,1,14);
+      /* subsoil */
+      g.fillStyle = '#836e51'; g.fillRect(x,t+34,1,48);
+      /* topsoil */
+      g.fillStyle = '#947c58'; g.fillRect(x,t+11,1,23);
+      /* turf */
+      g.fillStyle = '#6f8046'; g.fillRect(x,t+3,1,8);
+      g.fillStyle = '#8ba053'; g.fillRect(x,t,1,3);
+    }
+    /* scattered rock speckle for a bit of texture, still flat-shaded */
+    g.globalAlpha = 0.35;
+    for(var i=0;i<520;i++){
+      var rx = Math.floor(rnd(0,W)), ry = Math.floor(rnd(0,H));
+      if(ry <= this.top[rx]+40) continue;
+      g.fillStyle = (i%2) ? '#3f484f' : '#5d6870';
+      g.fillRect(rx,ry,rint(2,5),rint(1,3));
+    }
+    g.globalAlpha = 1;
+  },
+  paintBg:function(){
+    var g = this.bg.getContext('2d');
+    var sky = g.createLinearGradient(0,0,0,H*0.8);
+    sky.addColorStop(0,'#5d84a3'); sky.addColorStop(0.45,'#8fb0c4');
+    sky.addColorStop(0.8,'#c3cfc7'); sky.addColorStop(1,'#d9d3bc');
+    g.fillStyle = sky; g.fillRect(0,0,W,H);
+    /* haze sun */
+    var sx = rnd(W*0.15,W*0.85), sy = rnd(90,190);
+    var sg = g.createRadialGradient(sx,sy,6,sx,sy,240);
+    sg.addColorStop(0,'rgba(255,247,220,.85)'); sg.addColorStop(1,'rgba(255,247,220,0)');
+    g.fillStyle = sg; g.fillRect(sx-240,sy-240,480,480);
+    /* three ridgelines of flat hills, kept above the play surface */
+    var layers = [
+      {y:H*0.395, a:44, col:'#93a7ad', f:0.0021},
+      {y:H*0.445, a:36, col:'#7d9198', f:0.0030},
+      {y:H*0.495, a:28, col:'#68797f', f:0.0043}
+    ];
+    for(var L=0;L<layers.length;L++){
+      var l = layers[L], ph = rnd(0,TAU);
+      g.beginPath(); g.moveTo(0,H);
+      for(var x=0;x<=W;x+=4){
+        var yy = l.y + l.a*Math.sin(x*l.f+ph) + (l.a*0.45)*Math.sin(x*l.f*2.3+ph*1.7);
+        g.lineTo(x,yy);
+      }
+      g.lineTo(W,H); g.closePath(); g.fillStyle=l.col; g.fill();
+    }
+    /* a few flat clouds */
+    g.fillStyle = 'rgba(255,255,255,.55)';
+    for(var c=0;c<7;c++){
+      var cx = rnd(0,W), cy = rnd(50,240), cw = rnd(90,230), ch = rnd(12,24);
+      g.beginPath();
+      g.ellipse(cx,cy,cw*0.5,ch*0.5,0,0,TAU);
+      g.ellipse(cx+cw*0.28,cy+3,cw*0.32,ch*0.42,0,0,TAU);
+      g.ellipse(cx-cw*0.3,cy+4,cw*0.28,ch*0.38,0,0,TAU);
+      g.fill();
+    }
+  },
+  solid:function(x,y){
+    x = x|0; y = y|0;
+    if(x<0||x>=W||y<0) return false;
+    if(y>=H) return true;
+    return this.mask[y*W+x] === 1;
+  },
+  /* topmost surface that has real substance under it */
+  colTop:function(x){
+    x = clamp(x|0,0,W-1);
+    var m = this.mask, run = 0;
+    for(var y=0;y<H;y++){
+      if(m[y*W+x]){ run++; if(run>=5) return y-4; }
+      else run = 0;
+    }
+    return H;
+  },
+  refreshTop:function(x0,x1){
+    x0 = clamp(x0|0,0,W-1); x1 = clamp(x1|0,0,W-1);
+    for(var x=x0;x<=x1;x++) this.top[x] = this.colTop(x);
+  },
+  carve:function(cx,cy,r){
+    cx|=0; cy|=0;
+    var x0 = clamp(cx-r,0,W-1), x1 = clamp(cx+r,0,W-1);
+    var y0 = clamp(cy-r,0,H-1), y1 = clamp(cy+r,0,H-1);
+    var r2 = r*r, m = this.mask;
+    for(var y=y0;y<=y1;y++){
+      var dy = y-cy, row = y*W;
+      for(var x=x0;x<=x1;x++){
+        var dx = x-cx;
+        if(dx*dx+dy*dy <= r2) m[row+x]=0;
+      }
+    }
+    var g = this.tc;
+    g.save();
+    g.globalCompositeOperation = 'destination-out';
+    g.beginPath(); g.arc(cx,cy,r,0,TAU); g.fill();
+    g.restore();
+    /* scorch the rim of whatever survived */
+    g.save();
+    g.globalCompositeOperation = 'source-atop';
+    var sg = g.createRadialGradient(cx,cy,r*0.72,cx,cy,r*1.7);
+    sg.addColorStop(0,'rgba(24,18,14,.72)'); sg.addColorStop(1,'rgba(24,18,14,0)');
+    g.fillStyle = sg;
+    g.beginPath(); g.arc(cx,cy,r*1.7,0,TAU); g.fill();
+    g.restore();
+    this.refreshTop(cx-r-2, cx+r+2);
+  }
+};
+
+/* ============================================================
+   GAME STATE
+   ============================================================ */
+var G = {
+  mode:'pvai', diff:'normal', running:false, over:false,
+  tanks:[], turn:0, turnNo:1, phase:'aim',
+  proj:[], parts:[], crates:[], nums:[], chunks:[],
+  shake:0, flash:0, timeLeft:30, settleWait:0,
+  charging:false, charge:0, chargeDir:1, lastFireBy:-1,
+  acc:0, lastT:0, aiSpeed:1,
+  stats:null, hitPause:0
+};
+
+var STEP = 1/60;
+var MOVE_BUDGET = 300;         /* px of travel per turn on a 1.00-speed hull */
+var TURN_TIME   = 30;
+
+/* effective cooldown for a hull, never above the hard cap */
+function weaponCd(t, i){ return Math.min(WEPS[i].cd * t.spec.reload, CD_CAP); }
+
+/* ---------------- tank factory ---------------- */
+function makeTank(idx, hull, isAI, name){
+  var t = {
+    idx:idx, side:(idx===0?-1:1), spec:hull, isAI:isAI, name:name,
+    x: idx===0 ? rnd(110,330) : rnd(W-330,W-110), y:0, vy:0, air:true,
+    hp:hull.hp, maxHp:hull.hp, shield:0, alive:true,
+    aim: idx===0 ? 48 : 132, wep:0, cds:[0,0,0,0,0],
+    /* the heavy rounds start half-warm so the opening exchange isn't decisive */
+    move: MOVE_BUDGET*hull.speed, moveMax: MOVE_BUDGET*hull.speed,
+    tilt:0, recoil:0, dir:(idx===0?1:-1), flashT:0, hurtT:0,
+    over:false, engine:false, ai:null, lastDmg:0
+  };
+  for(var i=0;i<WEPS.length;i++) t.cds[i] = weaponCd(t, i) * 0.55;
+  t.y = Terr.colTop(t.x);
+  return t;
+}
+
+function groundY(x){
+  var a = Terr.top[clamp((x-17)|0,0,W-1)];
+  var b = Terr.top[clamp(x|0,0,W-1)];
+  var c = Terr.top[clamp((x+17)|0,0,W-1)];
+  return Math.min(a,b,c);
+}
+function tankCX(t){ return t.x; }
+function tankCY(t){ return t.y - 13; }
+
+/* ============================================================
+   MATCH SET-UP
+   ============================================================ */
+function startMatch(hullA, hullB){
+  Terr.gen();
+  G.over = false; G.turnNo = 1; G.proj=[]; G.parts=[]; G.crates=[]; G.nums=[]; G.chunks=[];
+  G.shake=0; G.flash=0; G.charging=false; G.charge=0; G.hitPause=0;
+  var m = G.mode;
+  var aiA = (m==='aivai'), aiB = (m==='aivai'||m==='pvai');
+  var nA = aiA ? 'Red Command' : 'Player 1';
+  var nB = (m==='pvp') ? 'Player 2' : 'Blue Command';
+  if(m==='pvai') nB = 'AI ('+DIFF[G.diff].name+')';
+  if(m==='aivai'){ nA = 'AI Alpha'; nB = 'AI Bravo'; }
+  G.tanks = [ makeTank(0,hullA,aiA,nA), makeTank(1,hullB,aiB,nB) ];
+  /* keep them apart */
+  if(Math.abs(G.tanks[0].x - G.tanks[1].x) < 480){
+    G.tanks[0].x = rnd(110,220); G.tanks[1].x = rnd(W-220,W-110);
+    G.tanks[0].y = Terr.colTop(G.tanks[0].x); G.tanks[1].y = Terr.colTop(G.tanks[1].x);
+  }
+  G.stats = { shots:[0,0], hits:[0,0], dmg:[0,0], crates:[0,0], best:[0,0],
+              hitSid:[-1,-1], t0:Date.now() };
+  G.shotSeq = 0; G.activeSid = 0;
+  G.turn = 0; G.phase='aim'; G.running = true;
+  document.body.classList.toggle('touch', ('ontouchstart' in window));
+  buildWeaponRack();
+  Snd.resume(); Snd.musicStart();
+  showScreen(null);
+  beginTurn(true);
+}
+
+function beginTurn(first){
+  var t = G.tanks[G.turn];
+  t.move = t.moveMax;
+  G.timeLeft = TURN_TIME;
+  G.charge = 0; G.charging = false;
+  G.phase = 'aim';
+  syncHud();
+  banner(t.name + (t.isAI ? ' is ranging in' : ' — your shot'), 1000);
+  if(t.isAI) planAI(t);
+}
+
+function endTurn(){
+  if(G.over) return;
+  Snd.engineOff();
+  var loser = null;
+  for(var i=0;i<2;i++) if(!G.tanks[i].alive) loser = i;
+  if(loser !== null){ finish(1-loser); return; }
+  maybeDropCrate();
+  G.turn = 1-G.turn;
+  if(G.turn === 0){
+    G.turnNo++;
+    if(G.turnNo === 25) banner('Ammunition running hot — damage climbing', 2200);
+  }
+  beginTurn(false);
+}
+
+function finish(winner){
+  G.over = true; G.phase='over'; G.running=false;
+  Snd.engineOff(); Snd.chargeOff();
+  setTimeout(function(){ Snd.musicStop(); }, 400);
+  var w = G.tanks[winner];
+  banner(w.name + ' takes it', 2000);
+  setTimeout(function(){ showResult(winner); }, 1700);
+  if(G.mode === 'pvai' && winner === 1) Snd.lose(); else Snd.win();
+}
+
+/* ============================================================
+   FIRING
+   ============================================================ */
+/* turret pivot sits 26px above the tracks; barrel is 36 long */
+function muzzle(t){
+  var a = t.aim*D2R, L = 38;
+  return { x: t.x + Math.cos(a)*L, y: (t.y - 26) - Math.sin(a)*L, a:a };
+}
+
+function fireShot(t, power){
+  var w = WEPS[t.wep];
+  if(t.cds[t.wep] > 0) return false;
+  power = clamp(power, 4, 100);
+  var m = muzzle(t);
+  var v = power*PSCALE*w.spd;
+  var n = w.salvo || 1;
+  G.shotSeq = (G.shotSeq||0) + 1;
+  var sid = G.shotSeq;
+  for(var i=0;i<n;i++){
+    var spread = (n>1) ? (i-(n-1)/2)*2.4*D2R : 0;
+    var a = m.a + spread;
+    G.proj.push({
+      x:m.x, y:m.y, vx:Math.cos(a)*v, vy:-Math.sin(a)*v,
+      w:w, wi:t.wep, owner:t.idx, split:false, trail:[], life:0, sid:sid,
+      boost: t.over ? 1.7 : 1
+    });
+  }
+  t.cds[t.wep] = weaponCd(t, t.wep);
+  t.over = false;
+  t.recoil = 9;
+  G.stats.shots[t.idx]++;
+  G.lastFireBy = t.idx;
+  G.shake = Math.max(G.shake, 4 + power*0.06);
+  Snd.fire(power);
+  /* muzzle flash particles */
+  for(var k=0;k<16;k++){
+    var sa = m.a + rnd(-0.32,0.32);
+    G.parts.push({x:m.x,y:m.y,vx:Math.cos(sa)*rnd(2,7),vy:-Math.sin(sa)*rnd(2,7),
+      life:rnd(10,24),max:24,col:k<8?'#ffe9b0':'#c9c2b4',size:rnd(2,5),type:'spark',g:0.06});
+  }
+  G.phase = 'fly';
+  syncHud();
+  return true;
+}
+
+/* ============================================================
+   PROJECTILE STEP
+   ============================================================ */
+function projSub(p, h){
+  p.vy += GRAV * p.w.grav * h;
+  var nx = p.x + p.vx*h, ny = p.y + p.vy*h;
+  var dx = nx-p.x, dy = ny-p.y;
+  var dist = Math.sqrt(dx*dx+dy*dy);
+  var n = Math.max(1, Math.ceil(dist/2));
+  for(var i=1;i<=n;i++){
+    var sx = p.x + dx*i/n, sy = p.y + dy*i/n;
+    if(sx < -60 || sx > W+60){ p.x=sx; p.y=sy; return 'out'; }
+    if(sy > H+40){ p.x=sx; p.y=sy; return 'out'; }
+    if(sy > -400 && Terr.solid(sx,sy)){ p.x=sx; p.y=sy; return 'terrain'; }
+    for(var k=0;k<2;k++){
+      var t = G.tanks[k];
+      if(!t.alive) continue;
+      if(p.life < 6 && k === p.owner) continue;
+      if(Math.abs(sx-t.x) < 26 && sy > t.y-30 && sy < t.y+4){ p.x=sx; p.y=sy; p.hitTank=k; return 'tank'; }
+    }
+    for(var c=0;c<G.crates.length;c++){
+      var cr = G.crates[c];
+      if(Math.abs(sx-cr.x)<15 && Math.abs(sy-(cr.y-10))<15){ p.x=sx; p.y=sy; return 'crate'; }
+    }
+  }
+  p.x = nx; p.y = ny;
+  return null;
+}
+
+function stepProjectiles(){
+  for(var i=G.proj.length-1;i>=0;i--){
+    var p = G.proj[i];
+    p.life++;
+    /* cluster split at apex */
+    if(p.w.cluster && !p.split && p.vy > 0 && p.life > 12){
+      p.split = true;
+      G.proj.splice(i,1);
+      Snd.tick();
+      for(var c=0;c<p.w.cluster;c++){
+        var ang = -Math.PI/2 + (c-(p.w.cluster-1)/2)*0.30;
+        var sp = rnd(1.6,3.2);
+        G.proj.push({ x:p.x, y:p.y, vx:p.vx*0.72 + Math.cos(ang)*sp,
+          vy:p.vy*0.5 + Math.sin(ang)*sp*0.4,
+          w:p.w, wi:p.wi, owner:p.owner, split:true, trail:[], life:14, boost:p.boost,
+          bomblet:true, sid:p.sid });
+      }
+      continue;
+    }
+    var hit = null;
+    for(var s=0;s<3 && !hit;s++) hit = projSub(p, 1/3);
+    p.trail.push(p.x, p.y);
+    if(p.trail.length > 44) p.trail.splice(0,2);
+    if(p.life % 2 === 0 && p.y > -100){
+      G.parts.push({x:p.x,y:p.y,vx:rnd(-.4,.4),vy:rnd(-.5,.1),life:rnd(14,30),max:30,
+        col:p.w.trail,size:rnd(2,4.5),type:'smoke',g:-0.01});
+    }
+    if(hit){
+      G.proj.splice(i,1);
+      if(hit === 'out'){ continue; }
+      G.activeSid = p.sid;
+      detonate(p.x, p.y, p.w, p.owner, p.boost, p.bomblet, (hit==='tank' ? p.hitTank : -1));
+    }
+  }
+}
+
+/* ============================================================
+   EXPLOSIONS + DAMAGE
+   ============================================================ */
+/* distance from a point to the tank's hull box — a shell touching the hull
+   counts as a direct hit rather than being scaled down from the centre */
+function distToTank(t, x, y){
+  var cx = clamp(x, t.x-24, t.x+24), cy = clamp(y, t.y-30, t.y);
+  var dx = x-cx, dy = y-cy;
+  return Math.sqrt(dx*dx+dy*dy);
+}
+function suddenDeath(){
+  if(G.turnNo <= 24) return 1;
+  return Math.min(2.4, 1 + (G.turnNo-24)*0.09);
+}
+
+function detonate(x, y, w, owner, boost, small, directIdx){
+  if(directIdx === undefined) directIdx = -1;
+  var r = w.blast * (small ? 0.72 : 1);
+  Terr.carve(x, y, r*0.72);
+  G.shake = Math.max(G.shake, r*0.30);
+  G.flash = Math.max(G.flash, small?0.18:0.34);
+  Snd.boom(r);
+  /* fireball + debris */
+  var n = small ? 16 : 34;
+  for(var i=0;i<n;i++){
+    var a = rnd(0,TAU), sp = rnd(1,7)*(r/48);
+    G.parts.push({x:x,y:y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-1.4,
+      life:rnd(16,40),max:40,col:i%3===0?'#ffd27a':(i%3===1?'#e07a3c':'#6b6055'),
+      size:rnd(3,9),type:'fire',g:0.10});
+  }
+  for(var d=0;d<(small?7:16);d++){
+    var da = rnd(-Math.PI,0);
+    G.chunks.push({x:x,y:y,vx:Math.cos(da)*rnd(1.5,7),vy:Math.sin(da)*rnd(2,7),
+      life:rnd(40,90),max:90,size:rnd(3,7),rot:rnd(0,TAU),vr:rnd(-.3,.3),
+      col:pick(['#6b5b45','#4a545c','#7d6a4f'])});
+  }
+  G.parts.push({x:x,y:y,vx:0,vy:0,life:16,max:16,col:'#fff3d0',size:r*0.9,type:'ring',g:0});
+
+  /* tanks */
+  for(var k=0;k<2;k++){
+    var t = G.tanks[k];
+    if(!t.alive) continue;
+    var dx = t.x - x, dy = tankCY(t) - y;
+    var dist = (k === directIdx) ? 0 : distToTank(t, x, y);
+    if(dist < r){
+      var f = 1 - dist/r;
+      var raw = w.dmg * G.tanks[owner].spec.power * boost * suddenDeath() * (0.35 + 0.65*f);
+      var dealt = dealDamage(t, raw, owner);
+      if(dealt > 0){
+        G.stats.dmg[owner] += dealt;
+        /* one salvo counts once, however many bomblets connect */
+        if(k !== owner && G.stats.hitSid[owner] !== G.activeSid){
+          G.stats.hits[owner]++;
+          G.stats.hitSid[owner] = G.activeSid;
+        }
+        if(dealt > G.stats.best[owner]) G.stats.best[owner] = dealt;
+      }
+      /* knockback */
+      t.vy = Math.min(t.vy, -Math.abs(f)*3.4);
+      t.x += (dx>0?1:-1) * f * 9;
+      t.x = clamp(t.x, 24, W-24);
+      t.air = true;
+    }
+  }
+  /* crates cook off / get collected */
+  for(var c=G.crates.length-1;c>=0;c--){
+    var cr = G.crates[c];
+    var cdx = cr.x-x, cdy = (cr.y-10)-y;
+    if(Math.sqrt(cdx*cdx+cdy*cdy) < r){
+      G.crates.splice(c,1);
+      applyCrate(G.tanks[owner], cr.type, true);
+    }
+  }
+}
+
+function dealDamage(t, raw, byIdx){
+  if(!t.alive) return 0;
+  var amt = raw / t.spec.armor;
+  var absorbed = 0;
+  if(t.shield > 0){
+    absorbed = Math.min(t.shield, amt);
+    t.shield -= absorbed; amt -= absorbed;
+  }
+  amt = Math.round(amt);
+  if(amt <= 0 && absorbed <= 0) return 0;
+  t.hp = Math.max(0, t.hp - amt);
+  t.hurtT = 18; t.lastDmg = amt;
+  Snd.hit();
+  if(absorbed > 0.5)
+    G.nums.push({x:t.x, y:t.y-42, txt:'−'+Math.round(absorbed)+' shield', col:'#7fd3e0', life:70, vy:-0.55});
+  if(amt > 0)
+    G.nums.push({x:t.x, y:t.y-56, txt:'−'+amt, col:(byIdx===t.idx?'#e0a13c':'#ff8a6a'), life:80, vy:-0.7, big:true});
+  if(t.hp <= 0){
+    t.alive = false;
+    for(var i=0;i<40;i++){
+      var a = rnd(0,TAU), sp = rnd(1,9);
+      G.parts.push({x:t.x,y:tankCY(t),vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-2,
+        life:rnd(24,60),max:60,col:pick(['#ffd27a','#e07a3c','#4a545c','#2a2a28']),
+        size:rnd(3,10),type:'fire',g:0.09});
+    }
+    G.shake = Math.max(G.shake, 22);
+    Snd.boom(80);
+  }
+  syncHud();
+  return amt;
+}
+
+/* ============================================================
+   TANK PHYSICS
+   ============================================================ */
+function stepTank(t){
+  if(!t.alive){
+    t.vy += GRAV*1.4; t.y += t.vy;
+    var gy0 = groundY(t.x);
+    if(t.y >= gy0){ t.y = gy0; t.vy = 0; t.air = false; }
+    return;
+  }
+  var gy = groundY(t.x);
+  if(t.air || t.y < gy - 1){
+    t.vy += GRAV*1.35;
+    t.y += t.vy;
+    if(t.y >= gy){
+      if(t.vy > 7.5){
+        var fd = Math.round((t.vy-7.5)*3.4);
+        dealDamage(t, fd*t.spec.armor, t.idx);
+        Snd.thud();
+        G.shake = Math.max(G.shake,5);
+      } else if(t.vy > 1.5) Snd.thud();
+      t.y = gy; t.vy = 0; t.air = false;
+    }
+  } else {
+    t.y = gy; t.air = false;
+  }
+  var lx = clamp((t.x-17)|0,0,W-1), rx = clamp((t.x+17)|0,0,W-1);
+  var target = Math.atan2(Terr.top[rx]-Terr.top[lx], 34);
+  t.tilt += (clamp(target,-0.75,0.75) - t.tilt) * 0.22;
+  if(t.recoil > 0) t.recoil *= 0.84;
+  if(t.hurtT > 0) t.hurtT--;
+}
+
+function driveTank(t, dir){
+  if(!t.alive || t.move <= 0 || t.air) return false;
+  var sp = 1.7 * t.spec.speed;
+  var moved = 0;
+  var other = G.tanks[1-t.idx];
+  for(var i=0;i<Math.ceil(sp);i++){
+    var nx = t.x + dir;
+    if(nx < 22 || nx > W-22) break;
+    if(other.alive && Math.abs(nx - other.x) < 46) break;
+    var ngy = groundY(nx);
+    if(ngy < t.y - 11) break;                 /* wall too steep */
+    if(ngy > t.y + 26){ t.air = true; }        /* drove off an edge */
+    t.x = nx; t.y = Math.min(ngy, t.y + 26);
+    moved++;
+    if(moved >= sp) break;
+  }
+  if(moved > 0){
+    t.dir = dir;
+    t.move = Math.max(0, t.move - moved);
+    if(!t.engine){ t.engine = true; Snd.engineOn(); }
+    checkCratePickup(t);
+    return true;
+  }
+  return false;
+}
+
+function aimTank(t, d){
+  t.aim = clamp(t.aim + d, 4, 176);
+}
+
+/* ============================================================
+   SUPPLY CRATES
+   ============================================================ */
+function maybeDropCrate(){
+  if(G.crates.length >= 2) return;
+  if(Math.random() > 0.42) return;
+  var x = rnd(150, W-150);
+  G.crates.push({ x:x, y:-30, vy:0, type:pick(CRATES), landed:false, sway:rnd(0,TAU), bob:0 });
+  Snd.drop();
+  toast('Supply drop inbound');
+}
+
+function stepCrates(){
+  for(var i=G.crates.length-1;i>=0;i--){
+    var c = G.crates[i];
+    if(!c.landed){
+      c.vy = Math.min(c.vy + 0.06, 1.5);
+      c.y += c.vy;
+      c.sway += 0.05;
+      c.x += Math.sin(c.sway)*0.35;
+      var gy = Terr.colTop(c.x);
+      if(c.y >= gy){ c.y = gy; c.landed = true; c.vy = 0; }
+    } else {
+      var gy2 = Terr.colTop(c.x);
+      if(c.y < gy2 - 1) c.y += Math.min(4, gy2 - c.y);
+      else c.y = gy2;
+      c.bob += 0.08;
+    }
+  }
+}
+
+function checkCratePickup(t){
+  for(var i=G.crates.length-1;i>=0;i--){
+    var c = G.crates[i];
+    if(Math.abs(c.x - t.x) < 32 && Math.abs(c.y - t.y) < 46){
+      G.crates.splice(i,1);
+      applyCrate(t, c.type, false);
+    }
+  }
+}
+
+function applyCrate(t, type, shot){
+  if(!t || !t.alive) return;
+  G.stats.crates[t.idx]++;
+  Snd.pickup();
+  var msg = '';
+  if(type.id==='repair'){
+    var heal = Math.min(24, t.maxHp - t.hp);
+    t.hp += heal; msg = '+'+heal+' hull';
+    G.nums.push({x:t.x,y:t.y-56,txt:'+'+heal,col:'#8ce0a8',life:80,vy:-0.7,big:true});
+  } else if(type.id==='reload'){
+    t.cds = [0,0,0,0,0]; msg = 'all weapons ready';
+  } else if(type.id==='over'){
+    t.over = true; msg = 'next shot ×1.7';
+  } else if(type.id==='shield'){
+    t.shield = Math.min(70, t.shield + 35); msg = '+35 shield';
+  }
+  toast(t.name + ' picked up ' + type.label + ' — ' + msg);
+  for(var i=0;i<20;i++){
+    var a = rnd(0,TAU);
+    G.parts.push({x:t.x,y:tankCY(t),vx:Math.cos(a)*rnd(1,4),vy:Math.sin(a)*rnd(1,4)-1,
+      life:rnd(18,36),max:36,col:type.col,size:rnd(2,5),type:'spark',g:0.04});
+  }
+  syncHud();
+}
+
+/* ============================================================
+   AI
+   ============================================================ */
+function simShot(sx, sy, aimDeg, power, w, shooterIdx){
+  var a = aimDeg*D2R, v = power*PSCALE*w.spd;
+  var x = sx, y = sy, vx = Math.cos(a)*v, vy = -Math.sin(a)*v;
+  var g = GRAV*w.grav, h = 1/3, life = 0;
+  var foe = G.tanks[1-shooterIdx];
+  for(var it=0; it<2600; it++){
+    life++;
+    vy += g*h;
+    var nx = x + vx*h, ny = y + vy*h;
+    var dx = nx-x, dy = ny-y, dist = Math.sqrt(dx*dx+dy*dy);
+    var n = Math.max(1, Math.ceil(dist/3));
+    for(var i=1;i<=n;i++){
+      var px = x + dx*i/n, py = y + dy*i/n;
+      if(px < -40 || px > W+40 || py > H+30) return {kind:'out', x:px, y:py};
+      if(py > -600 && Terr.solid(px,py)) return {kind:'terrain', x:px, y:py};
+      if(life > 6 && Math.abs(px-foe.x) < 26 && py > foe.y-30 && py < foe.y+4)
+        return {kind:'tank', x:px, y:py};
+      var me = G.tanks[shooterIdx];
+      if(life > 8 && Math.abs(px-me.x) < 24 && py > me.y-28 && py < me.y+4)
+        return {kind:'self', x:px, y:py};
+    }
+    x = nx; y = ny;
+  }
+  return {kind:'out', x:x, y:y};
+}
+
+function scoreImpact(res, foe){
+  if(res.kind === 'self') return 4000;
+  if(res.kind === 'out')  return 3000;
+  var dx = res.x - foe.x, dy = res.y - tankCY(foe);
+  var d = Math.sqrt(dx*dx + dy*dy);
+  if(res.kind === 'tank') d = 0;
+  return d;
+}
+
+/* what a round would actually do to the other hull if it lands clean */
+function effectiveDamage(t, wi){
+  var w = WEPS[wi], foe = G.tanks[1-t.idx];
+  return w.dmg * (w.salvo||1) * t.spec.power * (t.over?1.7:1) / foe.spec.armor;
+}
+
+function solveShot(t, wi){
+  var w = WEPS[wi], foe = G.tanks[1-t.idx];
+  var toRight = foe.x > t.x;
+  var lo = toRight ? 6  : 92, hi = toRight ? 88 : 174;
+  var best = {score:1e9, aim:(toRight?45:135), pow:70};
+  function trial(aimD, pw){
+    var mm = { x: t.x + Math.cos(aimD*D2R)*38, y: (t.y-26) - Math.sin(aimD*D2R)*38 };
+    var r = simShot(mm.x, mm.y, aimD, pw, w, t.idx);
+    var s = scoreImpact(r, foe);
+    if(s < best.score){ best = {score:s, aim:aimD, pow:pw}; }
+  }
+  var aStep = 5, pStep = 7;
+  for(var a=lo; a<=hi; a+=aStep)
+    for(var p=28; p<=100; p+=pStep) trial(a,p);
+  /* refine twice around the winner */
+  for(var pass=0; pass<2; pass++){
+    var ca = best.aim, cp = best.pow, ra = (pass===0?4:1.4), rp = (pass===0?6:2);
+    for(var a2=ca-ra; a2<=ca+ra; a2+=ra/3)
+      for(var p2=Math.max(12,cp-rp); p2<=Math.min(100,cp+rp); p2+=rp/3)
+        trial(clamp(a2,4,176), clamp(p2,12,100));
+  }
+  return best;
+}
+
+function planAI(t){
+  var cfg = DIFF[G.diff];
+  t.ai = { stage:'think', timer: cfg.think/1000, aim:t.aim, pow:60, wi:t.wep, moveDir:0, moveTicks:0 };
+  var self = t;
+  setTimeout(function(){
+    if(!G.running || G.over || G.tanks[G.turn] !== self || !self.alive) return;
+    var foe = G.tanks[1-self.idx];
+    /* which rounds are actually available */
+    var ready = [];
+    for(var i=0;i<WEPS.length;i++) if(self.cds[i] <= 0) ready.push(i);
+    if(!ready.length) ready = [0];
+    /* a careless gunner only bothers to work out one option */
+    var consider = (Math.random() < cfg.smart) ? ready : [pick(ready)];
+    var best = null;
+    for(var k=0;k<consider.length;k++){
+      var cand = consider[k];
+      var s = solveShot(self, cand);
+      var eff = effectiveDamage(self, cand);
+      var val = s.score - eff*1.15;
+      if(eff >= foe.hp + foe.shield) val -= 50;      /* this one ends it */
+      if(s.score > 110) val += 300;                  /* can't get a round there */
+      if(!best || val < best.val) best = { val:val, wi:cand, sol:s };
+    }
+    var wi = best.wi, sol = best.sol;
+    self.wep = wi;
+    /* reposition if the firing solution is poor */
+    if(sol.score > 55 && Math.random() < cfg.reposition && self.move > 40){
+      var dir = (Math.random() < 0.5) ? -1 : 1;
+      if(sol.score > 200) dir = (foe.x > self.x) ? 1 : -1;
+      self.ai.moveDir = dir;
+      self.ai.moveTicks = rint(20, 60);
+    }
+    var errA = rnd(-cfg.angErr, cfg.angErr);
+    var errP = rnd(-cfg.powErr, cfg.powErr);
+    self.ai.aim = clamp(sol.aim + errA, 4, 176);
+    self.ai.pow = clamp(sol.pow + errP, 10, 100);
+    self.ai.wi  = wi;
+    self.ai.stage = self.ai.moveTicks > 0 ? 'move' : 'turn';
+    syncHud();
+  }, cfg.think);
+}
+
+function stepAI(t){
+  var ai = t.ai;
+  if(!ai) return;
+  if(ai.stage === 'think') return;
+  if(ai.stage === 'move'){
+    if(ai.moveTicks-- > 0 && t.move > 0){ driveTank(t, ai.moveDir); }
+    else {
+      if(t.engine){ t.engine=false; Snd.engineOff(); }
+      /* re-solve from the new spot */
+      var sol = solveShot(t, ai.wi);
+      var cfg = DIFF[G.diff];
+      ai.aim = clamp(sol.aim + rnd(-cfg.angErr,cfg.angErr), 4, 176);
+      ai.pow = clamp(sol.pow + rnd(-cfg.powErr,cfg.powErr), 10, 100);
+      ai.stage = 'turn';
+    }
+    return;
+  }
+  if(ai.stage === 'turn'){
+    var d = ai.aim - t.aim;
+    var sp = 2.3;
+    if(Math.abs(d) <= sp){ t.aim = ai.aim; ai.stage='charge'; G.charging = true; G.charge = 0; Snd.chargeOn(); }
+    else t.aim += (d>0?sp:-sp);
+    return;
+  }
+  if(ai.stage === 'charge'){
+    G.charge = Math.min(100, G.charge + 2.2);
+    Snd.chargeSet(G.charge);
+    if(G.charge >= ai.pow){
+      G.charging = false; Snd.chargeOff();
+      ai.stage = 'done';
+      fireShot(t, ai.pow);
+    }
+    return;
+  }
+}
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+function rr(g,x,y,w,h,r){
+  r = Math.min(r, Math.abs(w)/2, Math.abs(h)/2);
+  g.beginPath();
+  g.moveTo(x+r,y); g.lineTo(x+w-r,y); g.quadraticCurveTo(x+w,y,x+w,y+r);
+  g.lineTo(x+w,y+h-r); g.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  g.lineTo(x+r,y+h); g.quadraticCurveTo(x,y+h,x,y+h-r);
+  g.lineTo(x,y+r); g.quadraticCurveTo(x,y,x+r,y); g.closePath();
+}
+
+function paintHull(g, hull, tilt, dir, dead, hurt){
+  g.save();
+  g.rotate(tilt*0.85);
+  g.scale(dir<0?-1:1, 1);
+  var body = dead ? '#3a3a36' : hull.body;
+  var trim = dead ? '#262623' : hull.trim;
+  if(hurt){ body = '#e8e0d0'; trim = '#cbb0a0'; }
+  /* shadow under hull */
+  g.fillStyle = 'rgba(0,0,0,.22)';
+  g.beginPath(); g.ellipse(0,0,27,5,0,0,TAU); g.fill();
+  /* tracks */
+  g.fillStyle = '#252c31';
+  rr(g,-25,-13,50,13,4); g.fill();
+  g.fillStyle = '#3d464d';
+  for(var i=-3;i<=3;i++){ g.beginPath(); g.arc(i*7.2,-6.5,3.3,0,TAU); g.fill(); }
+  g.fillStyle = '#1a2024';
+  for(var k=-24;k<24;k+=4) g.fillRect(k,-13.5,2,2.4);
+  /* hull */
+  g.fillStyle = body;
+  g.beginPath();
+  g.moveTo(-24,-13); g.lineTo(24,-13); g.lineTo(19,-25); g.lineTo(-15,-25);
+  g.lineTo(-22,-19); g.closePath(); g.fill();
+  g.fillStyle = trim;
+  g.fillRect(-24,-16.5,48,3);
+  /* front glacis highlight */
+  g.fillStyle = 'rgba(255,255,255,.10)';
+  g.beginPath(); g.moveTo(19,-25); g.lineTo(24,-13); g.lineTo(15,-13); g.lineTo(15,-25); g.closePath(); g.fill();
+  /* stowage boxes */
+  g.fillStyle = dead?'#2a2a27':'#4a4f3c';
+  g.fillRect(-19,-24,7,4); g.fillRect(-9,-24,5,4);
+  g.restore();
+}
+
+function paintTurret(g, hull, aim, recoil, dead, hurt, dir){
+  var body = dead ? '#3a3a36' : hull.body;
+  var trim = dead ? '#262623' : hull.trim;
+  if(hurt){ body = '#e8e0d0'; trim = '#cbb0a0'; }
+  g.save();
+  g.translate(0,-26);
+  /* barrel */
+  g.save();
+  g.rotate(-aim*D2R);
+  g.fillStyle = dead?'#2b2b28':'#39424a';
+  g.fillRect(0,-3.2, 36-recoil, 6.4);
+  g.fillStyle = dead?'#3a3a36':'#59646d';
+  g.fillRect(29-recoil,-4.4, 7, 8.8);
+  g.restore();
+  /* turret shell */
+  g.fillStyle = body;
+  rr(g,-12,-11,25,15,5); g.fill();
+  g.fillStyle = trim;
+  rr(g,-12,-11,25,4,2); g.fill();
+  /* cupola */
+  g.fillStyle = dead?'#2f2f2c':'#2f373d';
+  rr(g,-9,-16,9,6,2.5); g.fill();
+  /* aerial */
+  g.strokeStyle = dead?'#2f2f2c':'#2b3238'; g.lineWidth = 1.2;
+  g.beginPath(); g.moveTo(-11,-11); g.lineTo(-15,-27); g.stroke();
+  g.restore();
+}
+
+function drawTank(g, t){
+  var hurt = t.hurtT > 12;
+  g.save();
+  g.translate(t.x, t.y);
+  paintHull(g, t.spec, t.tilt, t.dir, !t.alive, hurt);
+  paintTurret(g, t.spec, t.aim, t.recoil, !t.alive, hurt, t.dir);
+  g.restore();
+  if(!t.alive){
+    if(Math.random()<0.35)
+      G.parts.push({x:t.x+rnd(-12,12),y:t.y-24,vx:rnd(-.3,.3),vy:rnd(-1.1,-.4),
+        life:rnd(30,70),max:70,col:'#4a4a46',size:rnd(3,8),type:'smoke',g:-0.012});
+    return;
+  }
+  /* shield bubble */
+  if(t.shield > 0){
+    g.save();
+    g.strokeStyle = 'rgba(111,195,214,'+(0.35+0.25*Math.sin(Date.now()/220))+')';
+    g.lineWidth = 2;
+    g.beginPath(); g.ellipse(t.x, t.y-16, 33, 27, 0, 0, TAU); g.stroke();
+    g.restore();
+  }
+  /* floating health bar */
+  var bw = 48, bx = t.x-bw/2, by = t.y-54;
+  g.fillStyle = 'rgba(8,12,15,.72)'; rr(g,bx-1.5,by-1.5,bw+3,8,3); g.fill();
+  g.fillStyle = t.idx===0 ? '#7fa650' : '#c07a4a';
+  g.fillRect(bx, by, bw*(t.hp/t.maxHp), 5);
+  if(t.shield>0){
+    g.fillStyle = '#6fc3d6';
+    g.fillRect(bx, by+5.4, bw*Math.min(1,t.shield/70), 1.8);
+  }
+  /* overcharge marker */
+  if(t.over){
+    g.fillStyle = '#cf4b38'; g.font = 'bold 11px system-ui';
+    g.textAlign = 'center'; g.fillText('▲', t.x, by-5);
+  }
+}
+
+function drawCrate(g,c){
+  var y = c.y + (c.landed ? Math.sin(c.bob)*1.2 : 0);
+  if(!c.landed){
+    /* parachute */
+    g.fillStyle = 'rgba(232,230,223,.92)';
+    g.beginPath(); g.arc(c.x, y-42, 20, Math.PI, 0); g.fill();
+    g.strokeStyle = 'rgba(60,70,76,.8)'; g.lineWidth = 1;
+    g.beginPath();
+    g.moveTo(c.x-20,y-42); g.lineTo(c.x-8,y-20);
+    g.moveTo(c.x+20,y-42); g.lineTo(c.x+8,y-20);
+    g.moveTo(c.x,y-62); g.lineTo(c.x,y-42);
+    g.stroke();
+  }
+  g.save(); g.translate(c.x, y-10);
+  g.fillStyle = 'rgba(0,0,0,.25)';
+  g.beginPath(); g.ellipse(0,11,13,3.5,0,0,TAU); g.fill();
+  g.fillStyle = '#8a7c5e'; rr(g,-11,-11,22,22,3); g.fill();
+  g.fillStyle = '#6d6148'; g.fillRect(-11,-3,22,3);
+  g.fillStyle = c.type.col; rr(g,-7,-8,14,10,2); g.fill();
+  g.fillStyle = '#141a1d'; g.font='bold 10px system-ui'; g.textAlign='center'; g.textBaseline='middle';
+  g.fillText(c.type.icon, 0, -3);
+  g.restore();
+}
+
+function drawAimGuide(g, t){
+  var a = t.aim*D2R;
+  var mx = t.x + Math.cos(a)*38, my = (t.y-26) - Math.sin(a)*38;
+  var len = 26 + G.charge*0.62;
+  g.save();
+  g.strokeStyle = 'rgba(255,255,255,.55)';
+  g.setLineDash([5,5]); g.lineWidth = 1.6;
+  g.beginPath(); g.moveTo(mx,my);
+  g.lineTo(mx+Math.cos(a)*len, my-Math.sin(a)*len);
+  g.stroke();
+  g.setLineDash([]);
+  /* short trajectory hint */
+  var w = WEPS[t.wep], v = Math.max(G.charge,18)*PSCALE*w.spd;
+  var px = mx, py = my, pvx = Math.cos(a)*v, pvy = -Math.sin(a)*v;
+  g.fillStyle = 'rgba(255,255,255,.38)';
+  for(var i=0;i<11;i++){
+    for(var s=0;s<4;s++){ pvy += GRAV*w.grav/3; px += pvx/3; py += pvy/3; }
+    if(py > H) break;
+    g.beginPath(); g.arc(px,py, 2.4 - i*0.14, 0, TAU); g.fill();
+  }
+  g.restore();
+}
+
+function render(){
+  ctx.save();
+  if(G.shake > 0.4){
+    ctx.translate(rnd(-G.shake,G.shake)*0.6, rnd(-G.shake,G.shake)*0.6);
+  }
+  ctx.drawImage(Terr.bg, 0, 0);
+  ctx.drawImage(Terr.sil, 0, 0);
+  ctx.drawImage(Terr.cvs, 0, 0);
+
+  for(var c=0;c<G.crates.length;c++) drawCrate(ctx, G.crates[c]);
+
+  /* debris chunks */
+  for(var d=0;d<G.chunks.length;d++){
+    var ch = G.chunks[d];
+    ctx.save(); ctx.translate(ch.x,ch.y); ctx.rotate(ch.rot);
+    ctx.globalAlpha = Math.min(1, ch.life/22);
+    ctx.fillStyle = ch.col; ctx.fillRect(-ch.size/2,-ch.size/2,ch.size,ch.size);
+    ctx.restore();
+  }
+  ctx.globalAlpha = 1;
+
+  for(var i=0;i<2;i++) drawTank(ctx, G.tanks[i]);
+
+  /* projectiles */
+  for(var p=0;p<G.proj.length;p++){
+    var pr = G.proj[p];
+    ctx.strokeStyle = pr.w.trail; ctx.lineWidth = 2; ctx.globalAlpha = .45;
+    ctx.beginPath();
+    for(var q=0;q<pr.trail.length;q+=2){
+      if(q===0) ctx.moveTo(pr.trail[0],pr.trail[1]); else ctx.lineTo(pr.trail[q],pr.trail[q+1]);
+    }
+    ctx.stroke(); ctx.globalAlpha = 1;
+    ctx.fillStyle = pr.w.col;
+    ctx.save(); ctx.translate(pr.x,pr.y); ctx.rotate(Math.atan2(pr.vy,pr.vx));
+    rr(ctx,-pr.w.size*1.4,-pr.w.size/2, pr.w.size*2.8, pr.w.size, pr.w.size/2); ctx.fill();
+    ctx.restore();
+    /* off-screen marker */
+    if(pr.y < 0){
+      ctx.fillStyle = pr.w.col; ctx.globalAlpha=.85;
+      ctx.beginPath();
+      ctx.moveTo(clamp(pr.x,14,W-14), 10);
+      ctx.lineTo(clamp(pr.x,14,W-14)-7, 0); ctx.lineTo(clamp(pr.x,14,W-14)+7, 0);
+      ctx.closePath(); ctx.fill(); ctx.globalAlpha=1;
+    }
+  }
+
+  /* particles */
+  for(var n=0;n<G.parts.length;n++){
+    var pt = G.parts[n], k = pt.life/pt.max;
+    ctx.globalAlpha = clamp(k,0,1) * (pt.type==='smoke'?0.55:1);
+    if(pt.type==='ring'){
+      ctx.globalAlpha = k*0.7;
+      ctx.strokeStyle = pt.col; ctx.lineWidth = 3*k+1;
+      ctx.beginPath(); ctx.arc(pt.x,pt.y, pt.size*(1.35-k), 0, TAU); ctx.stroke();
+    } else {
+      ctx.fillStyle = pt.col;
+      ctx.beginPath(); ctx.arc(pt.x, pt.y, pt.size*(pt.type==='smoke'?(1.6-k*0.6):k), 0, TAU); ctx.fill();
+    }
+  }
+  ctx.globalAlpha = 1;
+
+  /* aim guide for the tank whose turn it is */
+  var cur = G.tanks[G.turn];
+  if(G.running && !G.over && cur.alive && (G.phase==='aim'))
+    drawAimGuide(ctx, cur);
+
+  /* damage numbers */
+  ctx.textAlign = 'center';
+  for(var m=0;m<G.nums.length;m++){
+    var nu = G.nums[m];
+    ctx.globalAlpha = clamp(nu.life/40,0,1);
+    ctx.font = (nu.big?'bold 20px ':'600 13px ')+'system-ui,sans-serif';
+    ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(8,12,15,.75)';
+    ctx.strokeText(nu.txt, nu.x, nu.y);
+    ctx.fillStyle = nu.col; ctx.fillText(nu.txt, nu.x, nu.y);
+  }
+  ctx.globalAlpha = 1;
+  ctx.restore();
+
+  if(G.flash > 0.01){
+    ctx.fillStyle = 'rgba(255,244,214,'+(G.flash*0.55)+')';
+    ctx.fillRect(0,0,W,H);
+  }
+  /* vignette */
+  var vg = ctx.createRadialGradient(W/2,H/2,H*0.42,W/2,H/2,H*0.95);
+  vg.addColorStop(0,'rgba(0,0,0,0)'); vg.addColorStop(1,'rgba(0,0,0,.20)');
+  ctx.fillStyle = vg; ctx.fillRect(0,0,W,H);
+}
+
+/* ============================================================
+   STEP
+   ============================================================ */
+var keys = {};
+function humanControls(){
+  var t = G.tanks[G.turn];
+  if(t.isAI || !t.alive || G.phase!=='aim') return;
+  var moved = false;
+  if(keys.left)  moved = driveTank(t,-1) || moved;
+  if(keys.right) moved = driveTank(t, 1) || moved;
+  if(!moved && t.engine){ t.engine=false; Snd.engineOff(); }
+  if(keys.up)   aimTank(t, 0.85);
+  if(keys.down) aimTank(t,-0.85);
+  if(G.charging){
+    G.charge = Math.min(100, G.charge + 1.35);
+    Snd.chargeSet(G.charge);
+  }
+}
+
+function step(){
+  if(!G.running) return;
+  var i;
+  /* cooldowns tick in real time for both sides */
+  for(i=0;i<2;i++){
+    var tk = G.tanks[i];
+    for(var c=0;c<tk.cds.length;c++)
+      if(tk.cds[c] > 0) tk.cds[c] = Math.max(0, tk.cds[c] - STEP);
+  }
+  var cur = G.tanks[G.turn];
+  if(!G.over && G.phase === 'aim'){
+    G.timeLeft -= STEP;
+    if(cur.isAI) stepAI(cur); else humanControls();
+    if(G.timeLeft <= 0){
+      G.timeLeft = 0;
+      if(cur.alive){
+        if(G.charging){ G.charging=false; Snd.chargeOff(); }
+        if(cur.cds[cur.wep] > 0){ for(var z=0;z<5;z++) if(cur.cds[z]<=0){ cur.wep=z; break; } }
+        fireShot(cur, Math.max(G.charge, 45));
+        toast('Out of time — round away');
+      } else endTurn();
+    }
+  }
+  stepProjectiles();
+  stepCrates();
+  for(i=0;i<2;i++) stepTank(G.tanks[i]);
+  if(G.tanks[G.turn].alive && G.phase==='aim') checkCratePickup(G.tanks[G.turn]);
+
+  /* particles */
+  for(i=G.parts.length-1;i>=0;i--){
+    var p = G.parts[i];
+    p.life--;
+    if(p.life<=0){ G.parts.splice(i,1); continue; }
+    p.x += p.vx; p.y += p.vy; p.vy += (p.g||0); p.vx *= 0.985; p.vy *= 0.99;
+  }
+  for(i=G.chunks.length-1;i>=0;i--){
+    var ch = G.chunks[i];
+    ch.life--;
+    if(ch.life<=0){ G.chunks.splice(i,1); continue; }
+    ch.vy += 0.22; ch.x += ch.vx; ch.y += ch.vy; ch.rot += ch.vr;
+    if(Terr.solid(ch.x, ch.y)){ ch.vy *= -0.24; ch.vx *= 0.55; ch.y -= 2; ch.vr *= 0.5; }
+  }
+  for(i=G.nums.length-1;i>=0;i--){
+    var nu = G.nums[i]; nu.life--; nu.y += nu.vy; nu.vy *= 0.97;
+    if(nu.life<=0) G.nums.splice(i,1);
+  }
+  G.shake *= 0.90; G.flash *= 0.88;
+
+  /* resolve end of shot */
+  if(G.phase === 'fly'){
+    if(G.proj.length === 0){
+      G.settleWait -= STEP;
+      var settled = (!G.tanks[0].alive || !G.tanks[0].air) &&
+                    (!G.tanks[1].alive || !G.tanks[1].air);
+      /* never let a stray airborne flag wedge the match */
+      if(G.settleWait < -2.5) settled = true;
+      if(G.settleWait <= 0 && settled){ G.phase = 'wait'; endTurn(); }
+    } else G.settleWait = 0.6;
+  }
+}
+
+/* ============================================================
+   LOOP
+   ============================================================ */
+function frame(ts){
+  requestAnimationFrame(frame);
+  if(!G.lastT) G.lastT = ts;
+  var dt = Math.min(0.1, (ts - G.lastT)/1000);
+  G.lastT = ts;
+  if(G.running){
+    G.acc += dt;
+    var guard = 0;
+    while(G.acc >= STEP && guard < 6){ step(); G.acc -= STEP; guard++; }
+    if(G.acc > 0.4) G.acc = 0;
+  }
+  if(G.tanks.length) render();
+  hudTick();
+}
+
+/* ============================================================
+   HUD
+   ============================================================ */
+var rackBuilt = false;
+function buildWeaponRack(){
+  var host = $('weps');
+  host.innerHTML = '';
+  for(var i=0;i<WEPS.length;i++){
+    (function(i){
+      var w = WEPS[i];
+      var b = document.createElement('button');
+      b.className = 'wep'; b.dataset.i = i;
+      b.innerHTML = '<span class="kb">'+(i+1)+'</span>'+
+        '<span class="wn">'+w.name+'</span>'+
+        '<span class="wd">'+w.desc+'</span>'+
+        '<span class="cdfill"></span><span class="cdtxt"></span>';
+      b.onclick = function(){
+        var t = G.tanks[G.turn];
+        if(!t || t.isAI || G.phase!=='aim') return;
+        if(t.cds[i] > 0){ toast(WEPS[i].name+' still reloading'); return; }
+        t.wep = i; Snd.click(); syncHud();
+      };
+      host.appendChild(b);
+    })(i);
+  }
+  rackBuilt = true;
+}
+
+function setBar(el, frac){ el.style.transform = 'scaleX('+clamp(frac,0,1)+')'; }
+
+function syncHud(){
+  if(!G.tanks.length) return;
+  var A = G.tanks[0], B = G.tanks[1];
+  $('nmL').textContent = A.name; $('nmR').textContent = B.name;
+  $('whoL').textContent = A.isAI ? 'CPU' : 'Human';
+  $('whoR').textContent = B.isAI ? 'CPU' : 'Human';
+  $('tkL').textContent = A.spec.name + ' · ' + A.spec.tag;
+  $('tkR').textContent = B.spec.name + ' · ' + B.spec.tag;
+  setBar($('hpL'), A.hp/A.maxHp); setBar($('hpR'), B.hp/B.maxHp);
+  setBar($('ghL'), A.hp/A.maxHp); setBar($('ghR'), B.hp/B.maxHp);
+  $('hvL').textContent = A.hp+' / '+A.maxHp;
+  $('hvR').textContent = B.hp+' / '+B.maxHp;
+  var sides = [['shL',A],['shR',B]];
+  for(var s=0;s<2;s++){
+    var el = $(sides[s][0]), tk = sides[s][1];
+    el.style.display = tk.shield>0 ? 'block' : 'none';
+    el.firstElementChild.style.transform = 'scaleX('+clamp(tk.shield/70,0,1)+')';
+  }
+  var bf = [['bfL',A],['bfR',B]];
+  for(var b2=0;b2<2;b2++){
+    var host = $(bf[b2][0]), tk2 = bf[b2][1], html = '';
+    if(tk2.over) html += '<span class="buff b2">Overcharge ×1.7</span>';
+    if(tk2.shield>0) html += '<span class="buff b3">Shield '+Math.round(tk2.shield)+'</span>';
+    if(!tk2.alive) html += '<span class="buff" style="background:#3a2626;border-color:#6b3a3a;color:#e0a0a0">Destroyed</span>';
+    host.innerHTML = html;
+  }
+  var cur = G.tanks[G.turn];
+  $('turnTxt').textContent = cur.name;
+  $('turnDot').style.background = G.turn===0 ? 'var(--p1)' : 'var(--p2)';
+  $('turnNo').textContent = G.turnNo;
+  $('pboxL').style.borderColor = G.turn===0 ? 'rgba(224,161,60,.85)' : 'rgba(112,136,150,.35)';
+  $('pboxR').style.borderColor = G.turn===1 ? 'rgba(224,161,60,.85)' : 'rgba(112,136,150,.35)';
+}
+
+function hudTick(){
+  if(!G.tanks.length || !rackBuilt) return;
+  var t = G.tanks[G.turn];
+  var nodes = $('weps').children;
+  for(var i=0;i<nodes.length;i++){
+    var b = nodes[i], cd = t.cds[i], full = weaponCd(t, i);
+    b.classList.toggle('sel', t.wep === i);
+    b.classList.toggle('cool', cd > 0);
+    b.querySelector('.cdfill').style.transform = 'scaleY('+(full>0?clamp(cd/full,0,1):0)+')';
+    b.querySelector('.cdtxt').textContent = cd>0 ? Math.ceil(cd)+'s' : '';
+  }
+  setBar($('pwFill'), G.charge/100);
+  $('pwVal').textContent = Math.round(G.charge);
+  setBar($('agFill'), t.aim/180);
+  $('agVal').textContent = Math.round(t.aim)+'°';
+  setBar($('mvFill'), t.move/t.moveMax);
+  $('mvVal').textContent = Math.round(t.move/t.moveMax*100)+'%';
+  $('turnClock').textContent = Math.max(0,Math.ceil(G.timeLeft));
+  $('turnClock').style.color = G.timeLeft < 6 ? '#ff9a7a' : '';
+}
+
+var bannerT = null;
+function banner(txt, ms){
+  var el = $('banner');
+  el.textContent = txt; el.classList.add('on');
+  clearTimeout(bannerT);
+  bannerT = setTimeout(function(){ el.classList.remove('on'); }, ms||1200);
+}
+var toastT = null;
+function toast(txt){
+  var el = $('toast');
+  el.textContent = txt; el.classList.add('on');
+  clearTimeout(toastT);
+  toastT = setTimeout(function(){ el.classList.remove('on'); }, 2400);
+}
+
+/* ============================================================
+   SCREENS + MENU FLOW
+   ============================================================ */
+var SCREENS = ['scTitle','scMode','scDiff','scTank','scEnd'];
+function showScreen(id){
+  for(var i=0;i<SCREENS.length;i++) $(SCREENS[i]).classList.toggle('on', SCREENS[i]===id);
+}
+
+var sel = { mode:'pvai', diff:'normal', hulls:[null,null], picking:0 };
+
+$('goStart').onclick = function(){ Snd.resume(); Snd.click(); showScreen('scMode'); };
+$('goHelp').onclick  = function(){
+  var k = $('helpKeys');
+  k.style.display = k.style.display==='none' ? 'grid' : 'none';
+  Snd.click();
+};
+document.addEventListener('click', function(e){
+  var b = e.target.closest('[data-back]');
+  if(b){ Snd.click(); showScreen(b.dataset.back); }
+});
+
+Array.prototype.forEach.call(document.querySelectorAll('[data-mode]'), function(btn){
+  btn.onclick = function(){
+    Snd.resume(); Snd.click();
+    sel.mode = btn.dataset.mode; G.mode = sel.mode;
+    sel.hulls = [null,null]; sel.picking = 0;
+    if(sel.mode === 'pvp') { openTankPick(); }
+    else showScreen('scDiff');
+  };
+});
+Array.prototype.forEach.call(document.querySelectorAll('[data-diff]'), function(btn){
+  btn.onclick = function(){
+    Snd.click();
+    sel.diff = btn.dataset.diff; G.diff = sel.diff;
+    sel.hulls = [null,null]; sel.picking = 0;
+    openTankPick();
+  };
+});
+
+function hullPreview(cvs, hull){
+  var g = cvs.getContext('2d');
+  cvs.width = 260; cvs.height = 128;
+  g.clearRect(0,0,260,128);
+  var sky = g.createLinearGradient(0,0,0,128);
+  sky.addColorStop(0,'#1c262c'); sky.addColorStop(1,'#131b1f');
+  g.fillStyle = sky; g.fillRect(0,0,260,128);
+  g.fillStyle = '#232d33'; g.fillRect(0,104,260,24);
+  g.save(); g.translate(130,104); g.scale(1.55,1.55);
+  paintHull(g, hull, 0, 1, false, false);
+  paintTurret(g, hull, 34, 0, false, false, 1);
+  g.restore();
+}
+
+function statRow(label, val, max, col){
+  var pc = clamp(val/max,0,1)*100;
+  return '<div class="bar"><span class="lb">'+label+'</span>'+
+    '<span class="tr"><i class="fl" style="width:'+pc.toFixed(0)+'%;background:'+col+'"></i></span>'+
+    '<span class="vv">'+val+'</span></div>';
+}
+
+function openTankPick(){
+  var grid = $('tankGrid');
+  grid.innerHTML = '';
+  for(var i=0;i<HULLS.length;i++){
+    (function(i){
+      var h = HULLS[i];
+      var card = document.createElement('button');
+      card.className = 'tcard'; card.dataset.i = i;
+      card.innerHTML =
+        '<canvas></canvas>'+
+        '<h3>'+h.name+'</h3><div class="tag">'+h.tag+'</div>'+
+        '<div class="bars">'+
+          statRow('Hull', h.hp, 130, '#5ea87a')+
+          statRow('Firepwr', Math.round(h.power*100), 150, '#cf4b38')+
+          statRow('Armour', Math.round(h.armor*100), 140, '#4f9c98')+
+          statRow('Speed', Math.round(h.speed*100), 155, '#e0a13c')+
+          statRow('Reload', Math.round((2-h.reload)*100), 140, '#8a7fc0')+
+        '</div>'+
+        '<div style="font-size:11.5px;color:var(--muted);margin-top:8px;line-height:1.4">'+h.note+'</div>';
+      card.onclick = function(){
+        Snd.click();
+        Array.prototype.forEach.call(grid.children,function(c){ c.classList.remove('sel'); });
+        card.classList.add('sel');
+        sel.hulls[sel.picking] = h;
+        $('tankGo').disabled = false;
+      };
+      grid.appendChild(card);
+      hullPreview(card.querySelector('canvas'), h);
+    })(i);
+  }
+  refreshPickLabel();
+  $('tankGo').disabled = true;
+  showScreen('scTank');
+}
+
+function refreshPickLabel(){
+  var who, hint;
+  if(sel.mode==='pvp'){
+    who = 'Player '+(sel.picking+1)+' selecting';
+    hint = sel.picking===0 ? 'Player 2 picks next' : '';
+  } else if(sel.mode==='pvai'){
+    who = 'Your hull';
+    hint = 'The AI draws its hull at random';
+  } else {
+    who = (sel.picking===0 ? 'AI Alpha' : 'AI Bravo') + ' — pick its hull';
+    hint = sel.picking===0 ? 'Then pick the hull for AI Bravo' : '';
+  }
+  $('selWho').textContent = who;
+  $('selDot').style.background = sel.picking===0 ? 'var(--p1)' : 'var(--p2)';
+  $('selHint').textContent = hint;
+}
+
+$('tankGo').onclick = function(){
+  Snd.click();
+  if(sel.mode==='pvai'){
+    var other = pick(HULLS);
+    launch(sel.hulls[0], other);
+    return;
+  }
+  if(sel.picking === 0){
+    sel.picking = 1;
+    Array.prototype.forEach.call($('tankGrid').children,function(c){ c.classList.remove('sel'); });
+    $('tankGo').disabled = true;
+    refreshPickLabel();
+    return;
+  }
+  launch(sel.hulls[0], sel.hulls[1]);
+};
+
+function launch(a,b){
+  G.mode = sel.mode; G.diff = sel.diff;
+  startMatch(a,b);
+}
+
+/* ---- result screen ---- */
+function showResult(winner){
+  var w = G.tanks[winner], l = G.tanks[1-winner];
+  var mins = Math.floor((Date.now()-G.stats.t0)/60000), secs = Math.floor((Date.now()-G.stats.t0)/1000)%60;
+  $('endKick').textContent = 'Match over · ' + G.turnNo + ' turns · ' + mins+'m '+secs+'s';
+  $('endTitle').innerHTML = w.name + ' <span>wins</span>';
+  $('endSub').textContent = w.name + '’s ' + w.spec.name + ' finished with ' + w.hp +
+    ' of ' + w.maxHp + ' hull left. ' + l.name + '’s ' + l.spec.name + ' was destroyed.';
+  var acc = function(i){ return G.stats.shots[i] ? Math.round(G.stats.hits[i]/G.stats.shots[i]*100) : 0; };
+  var rows = [
+    ['Shots fired', G.stats.shots[0]+' vs '+G.stats.shots[1]],
+    ['Shots on target', acc(0)+'% vs '+acc(1)+'%'],
+    ['Damage dealt', Math.round(G.stats.dmg[0])+' vs '+Math.round(G.stats.dmg[1])],
+    ['Biggest single hit', G.stats.best[0]+' vs '+G.stats.best[1]],
+    ['Supply crates taken', G.stats.crates[0]+' vs '+G.stats.crates[1]]
+  ];
+  var html = '';
+  for(var i=0;i<rows.length;i++)
+    html += '<div class="resline"><span>'+rows[i][0]+'</span><span>'+rows[i][1]+'</span></div>';
+  $('endStats').innerHTML = html;
+  showScreen('scEnd');
+}
+
+$('endAgain').onclick = function(){ Snd.click(); startMatch(G.tanks[0].spec, G.tanks[1].spec); };
+$('endNew').onclick   = function(){ Snd.click(); showScreen('scMode'); };
+$('endMenu').onclick  = function(){ Snd.click(); Snd.musicStop(); showScreen('scTitle'); };
+
+function quitToMenu(){
+  G.running = false; G.over = true;
+  Snd.engineOff(); Snd.chargeOff(); Snd.musicStop();
+  showScreen('scTitle');
+}
+$('btnQuit').onclick = function(){ Snd.click(); quitToMenu(); };
+$('btnMusic').onclick = function(){
+  Snd.resume(); Snd.musOn = !Snd.musOn;
+  if(Snd.ac) Snd.mus.gain.setTargetAtTime(Snd.musOn?0.30:0.0, Snd.t(), 0.15);
+  $('btnMusic').classList.toggle('off', !Snd.musOn);
+};
+$('btnSfx').onclick = function(){
+  Snd.resume(); Snd.sfxOn = !Snd.sfxOn;
+  if(!Snd.sfxOn){ Snd.chargeOff(); Snd.engineOff(); }
+  $('btnSfx').classList.toggle('off', !Snd.sfxOn);
+};
+
+/* ============================================================
+   INPUT
+   ============================================================ */
+function humanTurn(){
+  return G.running && !G.over && G.phase==='aim' && G.tanks.length && !G.tanks[G.turn].isAI && G.tanks[G.turn].alive;
+}
+function startCharge(){
+  if(!humanTurn() || G.charging) return;
+  var t = G.tanks[G.turn];
+  if(t.cds[t.wep] > 0){ toast(WEPS[t.wep].name+' still reloading'); return; }
+  G.charging = true; G.charge = 0; Snd.resume(); Snd.chargeOn();
+}
+function releaseCharge(){
+  if(!G.charging) return;
+  G.charging = false; Snd.chargeOff();
+  var t = G.tanks[G.turn];
+  if(humanTurn()) fireShot(t, G.charge);
+  G.charge = 0;
+}
+
+window.addEventListener('keydown', function(e){
+  var k = e.key;
+  if(k===' '||k==='Spacebar'){ e.preventDefault(); startCharge(); return; }
+  if(k==='ArrowLeft'||k==='a'||k==='A'){ keys.left=true; e.preventDefault(); }
+  if(k==='ArrowRight'||k==='d'||k==='D'){ keys.right=true; e.preventDefault(); }
+  if(k==='ArrowUp'||k==='w'||k==='W'){ keys.up=true; e.preventDefault(); }
+  if(k==='ArrowDown'||k==='s'||k==='S'){ keys.down=true; e.preventDefault(); }
+  if(k>='1'&&k<='5' && humanTurn()){
+    var i = parseInt(k,10)-1, t = G.tanks[G.turn];
+    if(t.cds[i]>0) toast(WEPS[i].name+' still reloading');
+    else { t.wep=i; Snd.click(); syncHud(); }
+  }
+  if((k==='q'||k==='Q'||k==='e'||k==='E') && humanTurn()){
+    var t2 = G.tanks[G.turn], dir = (k==='q'||k==='Q')?-1:1;
+    for(var n=1;n<=5;n++){
+      var idx = (t2.wep + dir*n + 5*5) % 5;
+      if(t2.cds[idx]<=0){ t2.wep=idx; Snd.click(); syncHud(); break; }
+    }
+  }
+  if(k==='Escape' && G.running) quitToMenu();
+}, {passive:false});
+
+window.addEventListener('keyup', function(e){
+  var k = e.key;
+  if(k===' '||k==='Spacebar'){ releaseCharge(); return; }
+  if(k==='ArrowLeft'||k==='a'||k==='A') keys.left=false;
+  if(k==='ArrowRight'||k==='d'||k==='D') keys.right=false;
+  if(k==='ArrowUp'||k==='w'||k==='W') keys.up=false;
+  if(k==='ArrowDown'||k==='s'||k==='S') keys.down=false;
+});
+window.addEventListener('blur', function(){
+  keys.left=keys.right=keys.up=keys.down=false;
+  if(G.charging) releaseCharge();
+});
+
+/* touch pads */
+function bindPad(id, on, off){
+  var el = $(id);
+  if(!el) return;
+  var down = function(e){ e.preventDefault(); on(); };
+  var up   = function(e){ e.preventDefault(); off(); };
+  el.addEventListener('touchstart', down, {passive:false});
+  el.addEventListener('touchend', up, {passive:false});
+  el.addEventListener('touchcancel', up, {passive:false});
+  el.addEventListener('mousedown', down);
+  window.addEventListener('mouseup', up);
+}
+bindPad('padL', function(){keys.left=true;},  function(){keys.left=false;});
+bindPad('padR', function(){keys.right=true;}, function(){keys.right=false;});
+bindPad('padU', function(){keys.up=true;},    function(){keys.up=false;});
+bindPad('padD', function(){keys.down=true;},  function(){keys.down=false;});
+bindPad('padF', startCharge, releaseCharge);
+
+if('ontouchstart' in window) document.body.classList.add('touch');
+
+/* ============================================================
+   BOOT
+   ============================================================ */
+Terr.build();
+Terr.gen();
+G.tanks = [ makeTank(0, HULLS[0], true, 'Alpha'), makeTank(1, HULLS[3], true, 'Bravo') ];
+buildWeaponRack();
+syncHud();
+requestAnimationFrame(frame);
+
+</script>
+</body>
+</html>
