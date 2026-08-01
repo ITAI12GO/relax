@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="en"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Game Hub</title>
@@ -236,6 +234,16 @@
   .field input:focus,.field textarea:focus,.field select:focus{
     border-color:var(--accent);box-shadow:0 0 0 3px rgba(59,91,219,.12)
   }
+  .thumb .art{width:100%;height:100%;display:block}
+  .artpick{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:9px}
+  .artpick button{
+    padding:0;border:1.5px solid var(--line);border-radius:9px;overflow:hidden;
+    background:#fff;aspect-ratio:16/10;position:relative;transition:.14s;
+  }
+  .artpick button:hover{border-color:#c3cad6}
+  .artpick button[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 3px rgba(59,91,219,.16)}
+  .artpick button svg{width:100%;height:100%;display:block}
+  .artpick .none{display:grid;place-items:center;font-size:11.5px;color:var(--muted);background:var(--line-soft)}
   .segmented{display:flex;gap:6px}
   .segmented button{
     flex:1;height:36px;border:1px solid var(--line);background:#fff;border-radius:9px;
@@ -285,12 +293,12 @@
     <div class="brand"><span class="dot">G</span> Game Hub</div>
     <div class="spacer"></div>
     <div class="search">
-      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
       <input id="q" type="search" placeholder="Search games" autocomplete="off">
       <kbd>/</kbd>
     </div>
     <button class="btn ghost" id="lockBtn" title="Admin">
-      <svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+      <svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="10" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg>
       <span id="lockLabel">Admin</span>
     </button>
   </div>
@@ -299,13 +307,13 @@
 <div class="adminbar">
   <div class="wrap">
     <span class="label">
-      <svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 7.9-.8"/></svg>
+      <svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="10" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 7.9-.8"></path></svg>
       Admin mode
     </span>
-    <button class="btn sm primary" id="addBtn"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Add game</button>
-    <button class="btn sm" id="exportBtn"><svg viewBox="0 0 24 24"><path d="M12 3v12M8 11l4 4 4-4M4 19h16"/></svg> Export JSON</button>
-    <button class="btn sm" id="importBtn"><svg viewBox="0 0 24 24"><path d="M12 15V3M8 7l4-4 4 4M4 19h16"/></svg> Import JSON</button>
-    <input type="file" id="importFile" accept=".json,application/json" hidden>
+    <button class="btn sm primary" id="addBtn"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg> Add game</button>
+    <button class="btn sm" id="exportBtn"><svg viewBox="0 0 24 24"><path d="M12 3v12M8 11l4 4 4-4M4 19h16"></path></svg> Export JSON</button>
+    <button class="btn sm" id="importBtn"><svg viewBox="0 0 24 24"><path d="M12 15V3M8 7l4-4 4 4M4 19h16"></path></svg> Import JSON</button>
+    <input type="file" id="importFile" accept=".json,application/json" hidden="">
     <span class="spacer"></span>
     <button class="btn sm ghost" id="resetBtn">Reset to defaults</button>
     <button class="btn sm" id="logoutBtn">Lock</button>
@@ -316,20 +324,21 @@
   <div class="hero">
     <h1 id="pageTitle">My Games</h1>
     <p id="pageSub">Everything I've built, in one place. Pick one and play.</p>
+    <!-- Games open in a new tab. Files sit next to this page in the same folder. -->
   </div>
 
   <div class="filters" id="filters">
-    <button class="chip" data-f="all" aria-pressed="true">All <span class="n" data-c="all">0</span></button>
-    <button class="chip" data-f="ready" aria-pressed="false">Ready <span class="n" data-c="ready">0</span></button>
+    <button class="chip" data-f="all" aria-pressed="true">All <span class="n" data-c="all">6</span></button>
+    <button class="chip" data-f="ready" aria-pressed="false">Ready <span class="n" data-c="ready">6</span></button>
     <button class="chip" data-f="wip" aria-pressed="false">In progress <span class="n" data-c="wip">0</span></button>
     <button class="chip hide-only" data-f="hidden" aria-pressed="false">Hidden <span class="n" data-c="hidden">0</span></button>
   </div>
 
-  <div class="grid" id="grid"></div>
+  <div class="grid" id="grid"><div class="card"><span class="badge ready">Ready</span><div class="tools"><button data-act="up" title="Move left"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"></path></svg></button><button data-act="down" title="Move right"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"></path></svg></button><button data-act="edit" title="Edit"><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9a2.1 2.1 0 0 0-3-3L5 17v3z"></path></svg></button><button data-act="del" class="del" title="Delete"><svg viewBox="0 0 24 24"><path d="M5 7h14M9 7V5h6v2M7 7l1 13h8l1-13"></path></svg></button></div><a class="thumb" href="tankshowdown.html" target="_blank" rel="noopener"><svg class="art" viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="tk-s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#26364f"></stop><stop offset=".55" stop-color="#7d5a51"></stop><stop offset="1" stop-color="#cf8f54"></stop></linearGradient><radialGradient id="tk-f"><stop offset="0" stop-color="#fff5cd"></stop><stop offset=".5" stop-color="#ffab3d" stop-opacity=".8"></stop><stop offset="1" stop-color="#ff7a1a" stop-opacity="0"></stop></radialGradient></defs><rect width="320" height="200" fill="url(#tk-s)"></rect><circle cx="256" cy="48" r="17" fill="#ffd694" opacity=".75"></circle><path d="M0 128c42-20 72 4 110-6s60-26 100-16 74 24 110 14v80H0z" fill="#4a4030" opacity=".6"></path><path d="M0 156c48-14 80 12 128 6s72-24 118-16 54 18 74 14v40H0z" fill="#5d5238"></path><path d="M76 138C124 68 202 68 248 142" fill="none" stroke="#ffe6b5" stroke-opacity=".85" stroke-width="2.5" stroke-dasharray="6 8" stroke-linecap="round"></path><g transform="translate(46,134)"><rect x="0" y="9" width="54" height="13" rx="6.5" fill="#2b3023"></rect><g fill="#4a5138"><circle cx="9" cy="15.5" r="4.5"></circle><circle cx="27" cy="15.5" r="4.5"></circle><circle cx="45" cy="15.5" r="4.5"></circle></g><path d="M4 9h46l-6-12H10z" fill="#71804b"></path><rect x="17" y="-14" width="22" height="11" rx="4.5" fill="#829357"></rect><rect x="35" y="-13" width="32" height="5.5" rx="2.75" fill="#5d6a3b" transform="rotate(-26 35 -10)"></rect></g><circle cx="112" cy="102" r="15" fill="url(#tk-f)"></circle><circle cx="250" cy="148" r="24" fill="url(#tk-f)" opacity=".95"></circle></svg></a><div class="body"><h3><a href="tankshowdown.html" target="_blank" rel="noopener">Tank Showdown</a></h3><p>Turn-based artillery duel. Five hulls, a ridge of dirt between you, one shot a turn to find the angle.</p><div class="foot"><a class="play" href="tankshowdown.html" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M7 4l12 8-12 8z"></path></svg> Play</a><span class="src" title="tankshowdown.html">tankshowdown.html</span></div></div></div><div class="card"><span class="badge ready">Ready</span><div class="tools"><button data-act="up" title="Move left"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"></path></svg></button><button data-act="down" title="Move right"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"></path></svg></button><button data-act="edit" title="Edit"><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9a2.1 2.1 0 0 0-3-3L5 17v3z"></path></svg></button><button data-act="del" class="del" title="Delete"><svg viewBox="0 0 24 24"><path d="M5 7h14M9 7V5h6v2M7 7l1 13h8l1-13"></path></svg></button></div><a class="thumb" href="trapwire.html" target="_blank" rel="noopener"><svg class="art" viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="tw-g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1d2939"></stop><stop offset="1" stop-color="#090e15"></stop></linearGradient><radialGradient id="tw-f"><stop offset="0" stop-color="#fff3cd"></stop><stop offset=".45" stop-color="#ff9d2e" stop-opacity=".8"></stop><stop offset="1" stop-color="#ff6a1f" stop-opacity="0"></stop></radialGradient></defs><rect width="320" height="200" fill="url(#tw-g)"></rect><path d="M20 0V200M40 0V200M60 0V200M80 0V200M100 0V200M120 0V200M140 0V200M160 0V200M180 0V200M200 0V200M220 0V200M240 0V200M260 0V200M280 0V200M300 0V200M0 20H320M0 40H320M0 60H320M0 80H320M0 100H320M0 120H320M0 140H320M0 160H320M0 180H320" stroke="#7fd4ff" stroke-opacity=".09"></path><g fill="#2c3a4e" stroke="#455a76" stroke-width="1.5"><rect x="36" y="36" width="44" height="20" rx="3"></rect><rect x="240" y="144" width="44" height="20" rx="3"></rect><rect x="140" y="16" width="20" height="44" rx="3"></rect><rect x="56" y="140" width="20" height="44" rx="3"></rect></g><g><rect x="90" y="90" width="28" height="28" rx="4" fill="#243549" stroke="#ffb03a" stroke-width="2"></rect><circle cx="104" cy="104" r="5.5" fill="#ffb03a"></circle></g><g><rect x="188" y="44" width="28" height="28" rx="4" fill="#243549" stroke="#4fd6c0" stroke-width="2"></rect><circle cx="202" cy="58" r="5.5" fill="#4fd6c0"></circle></g><g><rect x="188" y="116" width="28" height="28" rx="4" fill="#33445c" stroke="#5b6f8c" stroke-width="1.5"></rect><text x="202" y="136" font-size="17" font-weight="700" font-family="Helvetica,Arial,sans-serif" fill="#93a4bb" text-anchor="middle">?</text></g><circle cx="122" cy="118" r="36" fill="url(#tw-f)"></circle><g><circle cx="70" cy="96" r="9" fill="#ff5d6c"></circle><circle cx="70" cy="96" r="9" fill="none" stroke="#ffc2c8" stroke-width="2"></circle></g><g><circle cx="248" cy="92" r="9" fill="#4aa3ff"></circle><circle cx="248" cy="92" r="9" fill="none" stroke="#bfdcff" stroke-width="2"></circle></g></svg></a><div class="body"><h3><a href="trapwire.html" target="_blank" rel="noopener">TRAPWIRE</a></h3><p>Trap-laying arena brawler for two to four fighters. Six trap types, chain blasts, scan and disarm.</p><div class="foot"><a class="play" href="trapwire.html" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M7 4l12 8-12 8z"></path></svg> Play</a><span class="src" title="trapwire.html">trapwire.html</span></div></div></div><div class="card"><span class="badge ready">Ready</span><div class="tools"><button data-act="up" title="Move left"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"></path></svg></button><button data-act="down" title="Move right"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"></path></svg></button><button data-act="edit" title="Edit"><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9a2.1 2.1 0 0 0-3-3L5 17v3z"></path></svg></button><button data-act="del" class="del" title="Delete"><svg viewBox="0 0 24 24"><path d="M5 7h14M9 7V5h6v2M7 7l1 13h8l1-13"></path></svg></button></div><a class="thumb" href="basedefense.html" target="_blank" rel="noopener"><svg class="art" viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="bt-g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3a4762"></stop><stop offset="1" stop-color="#141a28"></stop></linearGradient><radialGradient id="bt-f"><stop offset="0" stop-color="#ffeec2"></stop><stop offset=".45" stop-color="#ff9a3c" stop-opacity=".85"></stop><stop offset="1" stop-color="#ff6b2c" stop-opacity="0"></stop></radialGradient></defs><rect width="320" height="200" fill="url(#bt-g)"></rect><path d="M20 0V200M40 0V200M60 0V200M80 0V200M100 0V200M120 0V200M140 0V200M160 0V200M180 0V200M200 0V200M220 0V200M240 0V200M260 0V200M280 0V200M300 0V200M0 20H320M0 40H320M0 60H320M0 80H320M0 100H320M0 120H320M0 140H320M0 160H320M0 180H320" stroke="#cfe0ff" stroke-opacity=".07"></path><g fill="#0d121e" opacity=".4"><ellipse cx="118" cy="156" rx="28" ry="10"></ellipse><ellipse cx="214" cy="52" rx="21" ry="8"></ellipse></g><g><path d="M26 100l17-30h34l17 30-17 30H43z" fill="#c9463f"></path><path d="M26 100l17-30h34l17 30-17 30H43z" fill="none" stroke="#ff9b93" stroke-width="2.5"></path><circle cx="60" cy="100" r="8" fill="#ffd6d1" opacity=".85"></circle></g><g><path d="M226 100l17-30h34l17 30-17 30h-34z" fill="#3f6fd0"></path><path d="M226 100l17-30h34l17 30-17 30h-34z" fill="none" stroke="#a8c5ff" stroke-width="2.5"></path><circle cx="260" cy="100" r="8" fill="#dce8ff" opacity=".85"></circle></g><g fill="#ff8f86"><circle cx="112" cy="74" r="5.5"></circle><circle cx="128" cy="106" r="5.5"></circle><circle cx="104" cy="132" r="5.5"></circle></g><g fill="#9dc0ff"><circle cx="202" cy="68" r="5.5"></circle><circle cx="190" cy="108" r="5.5"></circle><circle cx="208" cy="136" r="5.5"></circle></g><g stroke="#ffe0a0" stroke-width="2" stroke-linecap="round" opacity=".8"><path d="M124 77l64-6"></path><path d="M140 106l44 2"></path><path d="M194 134l-78 2"></path></g><circle cx="160" cy="90" r="32" fill="url(#bt-f)"></circle></svg></a><div class="body"><h3><a href="basedefense.html" target="_blank" rel="noopener">Base Defense</a></h3><p>Top-down auto-battler. Set the forces and the victory condition, then watch the match fight itself out.</p><div class="foot"><a class="play" href="basedefense.html" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M7 4l12 8-12 8z"></path></svg> Play</a><span class="src" title="basedefense.html">basedefense.html</span></div></div></div><div class="card"><span class="badge ready">Ready</span><div class="tools"><button data-act="up" title="Move left"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"></path></svg></button><button data-act="down" title="Move right"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"></path></svg></button><button data-act="edit" title="Edit"><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9a2.1 2.1 0 0 0-3-3L5 17v3z"></path></svg></button><button data-act="del" class="del" title="Delete"><svg viewBox="0 0 24 24"><path d="M5 7h14M9 7V5h6v2M7 7l1 13h8l1-13"></path></svg></button></div><a class="thumb" href="pitchlegends.html" target="_blank" rel="noopener"><svg class="art" viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="pt-g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3aa862"></stop><stop offset="1" stop-color="#1c6c3e"></stop></linearGradient></defs><rect width="320" height="200" fill="url(#pt-g)"></rect><rect x="40" y="0" width="40" height="200" fill="#ffffff" opacity=".05"></rect><rect x="120" y="0" width="40" height="200" fill="#ffffff" opacity=".05"></rect><rect x="200" y="0" width="40" height="200" fill="#ffffff" opacity=".05"></rect><rect x="280" y="0" width="40" height="200" fill="#ffffff" opacity=".05"></rect><g fill="none" stroke="#ffffff" stroke-opacity=".8" stroke-width="2.5"><rect x="14" y="14" width="292" height="172" rx="2"></rect><path d="M160 14V186"></path><circle cx="160" cy="100" r="34"></circle><rect x="14" y="56" width="44" height="88"></rect><rect x="262" y="56" width="44" height="88"></rect></g><circle cx="160" cy="100" r="4" fill="#fff"></circle><g stroke="#ffffff" stroke-opacity=".45" stroke-width="3" stroke-linecap="round"><path d="M178 150c9-7 16-11 25-14"></path><path d="M166 160c12-9 22-14 33-18"></path></g><g><circle cx="218" cy="130" r="15" fill="#ffffff"></circle><path d="M218 119l9 7-3.5 11h-11l-3.5-11z" fill="#16281d"></path><g stroke="#16281d" stroke-width="2.2" stroke-linecap="round"><path d="M209 116l5 5"></path><path d="M227 116l-5 5"></path><path d="M206 139l4-6"></path><path d="M230 139l-4-6"></path></g></g></svg></a><div class="body"><h3><a href="pitchlegends.html" target="_blank" rel="noopener">Pitch Legends</a></h3><p>Arcade football on a single screen.</p><div class="foot"><a class="play" href="pitchlegends.html" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M7 4l12 8-12 8z"></path></svg> Play</a><span class="src" title="pitchlegends.html">pitchlegends.html</span></div></div></div><div class="card"><span class="badge ready">Ready</span><div class="tools"><button data-act="up" title="Move left"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"></path></svg></button><button data-act="down" title="Move right"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"></path></svg></button><button data-act="edit" title="Edit"><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9a2.1 2.1 0 0 0-3-3L5 17v3z"></path></svg></button><button data-act="del" class="del" title="Delete"><svg viewBox="0 0 24 24"><path d="M5 7h14M9 7V5h6v2M7 7l1 13h8l1-13"></path></svg></button></div><a class="thumb" href="marblederby.html" target="_blank" rel="noopener"><svg class="art" viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="mb-g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#503278"></stop><stop offset="1" stop-color="#180f2c"></stop></linearGradient><radialGradient id="mb-s" cx=".35" cy=".3"><stop offset="0" stop-color="#ffffff" stop-opacity=".5"></stop><stop offset=".55" stop-color="#ffffff" stop-opacity="0"></stop><stop offset="1" stop-color="#000000" stop-opacity=".35"></stop></radialGradient></defs><rect width="320" height="200" fill="url(#mb-g)"></rect><g fill="#ffffff" opacity=".07"><circle cx="46" cy="168" r="3"></circle><circle cx="268" cy="34" r="3"></circle><circle cx="196" cy="24" r="2"></circle><circle cx="92" cy="182" r="2"></circle></g><path d="M-10 46C58 46 62 98 132 98s70 54 198 32" fill="none" stroke="#120b24" stroke-opacity=".6" stroke-width="32" stroke-linecap="round"></path><path d="M-10 46C58 46 62 98 132 98s70 54 198 32" fill="none" stroke="#7c5cd8" stroke-width="23" stroke-linecap="round"></path><path d="M-10 37C58 37 62 89 132 89s70 54 198 32" fill="none" stroke="#c3a9f2" stroke-opacity=".5" stroke-width="3"></path><g><circle cx="66" cy="52" r="14" fill="#ff6b81"></circle><circle cx="66" cy="52" r="14" fill="url(#mb-s)"></circle><circle cx="62" cy="47" r="4" fill="#fff" opacity=".7"></circle></g><g><circle cx="134" cy="90" r="14" fill="#ffd166"></circle><circle cx="134" cy="90" r="14" fill="url(#mb-s)"></circle><circle cx="130" cy="85" r="4" fill="#fff" opacity=".7"></circle></g><g><circle cx="212" cy="116" r="14" fill="#4cc9f0"></circle><circle cx="212" cy="116" r="14" fill="url(#mb-s)"></circle><circle cx="208" cy="111" r="4" fill="#fff" opacity=".7"></circle></g></svg></a><div class="body"><h3><a href="marblederby.html" target="_blank" rel="noopener">Marble Derby</a></h3><p>Marble race down a twisting track. Pick a runner and watch the drop.</p><div class="foot"><a class="play" href="marblederby.html" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M7 4l12 8-12 8z"></path></svg> Play</a><span class="src" title="marblederby.html">marblederby.html</span></div></div></div><div class="card"><span class="badge ready">Ready</span><div class="tools"><button data-act="up" title="Move left"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"></path></svg></button><button data-act="down" title="Move right"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"></path></svg></button><button data-act="edit" title="Edit"><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9a2.1 2.1 0 0 0-3-3L5 17v3z"></path></svg></button><button data-act="del" class="del" title="Delete"><svg viewBox="0 0 24 24"><path d="M5 7h14M9 7V5h6v2M7 7l1 13h8l1-13"></path></svg></button></div><a class="thumb" href="f1tech.html" target="_blank" rel="noopener"><svg class="art" viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="f1-g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#26364a"></stop><stop offset="1" stop-color="#0c1118"></stop></linearGradient><linearGradient id="f1-t" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#41ddcd"></stop><stop offset="1" stop-color="#1a9188"></stop></linearGradient></defs><rect width="320" height="200" fill="url(#f1-g)"></rect><g stroke="#7fe9df" stroke-opacity=".16" stroke-width="3" stroke-linecap="round"><path d="M12 28h56"></path><path d="M0 56h38"></path><path d="M258 40h56"></path><path d="M282 72h38"></path><path d="M6 148h48"></path><path d="M266 160h48"></path></g><g><rect x="124" y="24" width="72" height="12" rx="4" fill="#1a2532"></rect><rect x="124" y="24" width="72" height="4" rx="2" fill="url(#f1-t)"></rect><rect x="110" y="40" width="20" height="38" rx="6" fill="#11151b"></rect><rect x="190" y="40" width="20" height="38" rx="6" fill="#11151b"></rect><path d="M152 32h16l7 44h-30z" fill="#243344"></path><path d="M143 74h34l10 56h-54z" fill="url(#f1-t)"></path><rect x="149" y="84" width="22" height="22" rx="8" fill="#0e141b"></rect><path d="M149 82a11 11 0 0 1 22 0" fill="none" stroke="#e6f7f5" stroke-width="3"></path><rect x="104" y="120" width="25" height="44" rx="7" fill="#11151b"></rect><rect x="191" y="120" width="25" height="44" rx="7" fill="#11151b"></rect><path d="M138 126h44l-6 34h-32z" fill="#243344"></path><rect x="120" y="162" width="80" height="13" rx="4" fill="#1a2532"></rect><rect x="120" y="162" width="80" height="4" rx="2" fill="url(#f1-t)"></rect></g></svg></a><div class="body"><h3><a href="f1tech.html" target="_blank" rel="noopener">F1 2026 Tech Explorer</a></h3><p>Zoom from the whole 2026 car down to the carbon weave. Fifteen systems, five levels of magnification, eleven teams.</p><div class="foot"><a class="play" href="f1tech.html" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M7 4l12 8-12 8z"></path></svg> Play</a><span class="src" title="f1tech.html">f1tech.html</span></div></div></div></div>
 </main>
 
 <footer class="wrap">
-  <span id="footCount">0 games</span>
+  <span id="footCount">6 games</span>
   <span>Press <b>/</b> to search &nbsp;·&nbsp; <b>Esc</b> to close dialogs</span>
 </footer>
 
@@ -341,7 +350,7 @@
         <h2 id="pwTitle">Admin access</h2>
         <p>Enter the code to manage the game list.</p>
       </div>
-      <button class="x" data-close><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      <button class="x" data-close=""><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
     </header>
     <div class="content">
       <div class="field">
@@ -351,7 +360,7 @@
       <div class="err" id="pwErr">Wrong code. Try again.</div>
     </div>
     <div class="actions">
-      <button class="btn" data-close>Cancel</button>
+      <button class="btn" data-close="">Cancel</button>
       <button class="btn primary" id="pwGo">Unlock</button>
     </div>
   </div>
@@ -365,7 +374,7 @@
         <h2 id="edTitle">Add game</h2>
         <p>Only the title and link are required.</p>
       </div>
-      <button class="x" data-close><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      <button class="x" data-close=""><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
     </header>
     <div class="content">
       <div class="field">
@@ -377,8 +386,9 @@
         <input id="fUrl" placeholder="games/snake.html">
       </div>
       <div class="field">
-        <label for="fImg">Cover image <span class="hint">optional</span></label>
-        <input id="fImg" placeholder="covers/snake.png">
+        <label>Cover <span class="hint">pick built-in art, or paste your own image below</span></label>
+        <div class="artpick" id="artPick"><button type="button" class="none" data-art="" title="Auto colour tile">None</button><button type="button" data-art="battle" title="Battlefield"><svg class="art" viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="bt-g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3a4762"></stop><stop offset="1" stop-color="#141a28"></stop></linearGradient><radialGradient id="bt-f"><stop offset="0" stop-color="#ffeec2"></stop><stop offset=".45" stop-color="#ff9a3c" stop-opacity=".85"></stop><stop offset="1" stop-color="#ff6b2c" stop-opacity="0"></stop></radialGradient></defs><rect width="320" height="200" fill="url(#bt-g)"></rect><path d="M20 0V200M40 0V200M60 0V200M80 0V200M100 0V200M120 0V200M140 0V200M160 0V200M180 0V200M200 0V200M220 0V200M240 0V200M260 0V200M280 0V200M300 0V200M0 20H320M0 40H320M0 60H320M0 80H320M0 100H320M0 120H320M0 140H320M0 160H320M0 180H320" stroke="#cfe0ff" stroke-opacity=".07"></path><g fill="#0d121e" opacity=".4"><ellipse cx="118" cy="156" rx="28" ry="10"></ellipse><ellipse cx="214" cy="52" rx="21" ry="8"></ellipse></g><g><path d="M26 100l17-30h34l17 30-17 30H43z" fill="#c9463f"></path><path d="M26 100l17-30h34l17 30-17 30H43z" fill="none" stroke="#ff9b93" stroke-width="2.5"></path><circle cx="60" cy="100" r="8" fill="#ffd6d1" opacity=".85"></circle></g><g><path d="M226 100l17-30h34l17 30-17 30h-34z" fill="#3f6fd0"></path><path d="M226 100l17-30h34l17 30-17 30h-34z" fill="none" stroke="#a8c5ff" stroke-width="2.5"></path><circle cx="260" cy="100" r="8" fill="#dce8ff" opacity=".85"></circle></g><g fill="#ff8f86"><circle cx="112" cy="74" r="5.5"></circle><circle cx="128" cy="106" r="5.5"></circle><circle cx="104" cy="132" r="5.5"></circle></g><g fill="#9dc0ff"><circle cx="202" cy="68" r="5.5"></circle><circle cx="190" cy="108" r="5.5"></circle><circle cx="208" cy="136" r="5.5"></circle></g><g stroke="#ffe0a0" stroke-width="2" stroke-linecap="round" opacity=".8"><path d="M124 77l64-6"></path><path d="M140 106l44 2"></path><path d="M194 134l-78 2"></path></g><circle cx="160" cy="90" r="32" fill="url(#bt-f)"></circle></svg></button><button type="button" data-art="f1" title="Race car"><svg class="art" viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="f1-g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#26364a"></stop><stop offset="1" stop-color="#0c1118"></stop></linearGradient><linearGradient id="f1-t" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#41ddcd"></stop><stop offset="1" stop-color="#1a9188"></stop></linearGradient></defs><rect width="320" height="200" fill="url(#f1-g)"></rect><g stroke="#7fe9df" stroke-opacity=".16" stroke-width="3" stroke-linecap="round"><path d="M12 28h56"></path><path d="M0 56h38"></path><path d="M258 40h56"></path><path d="M282 72h38"></path><path d="M6 148h48"></path><path d="M266 160h48"></path></g><g><rect x="124" y="24" width="72" height="12" rx="4" fill="#1a2532"></rect><rect x="124" y="24" width="72" height="4" rx="2" fill="url(#f1-t)"></rect><rect x="110" y="40" width="20" height="38" rx="6" fill="#11151b"></rect><rect x="190" y="40" width="20" height="38" rx="6" fill="#11151b"></rect><path d="M152 32h16l7 44h-30z" fill="#243344"></path><path d="M143 74h34l10 56h-54z" fill="url(#f1-t)"></path><rect x="149" y="84" width="22" height="22" rx="8" fill="#0e141b"></rect><path d="M149 82a11 11 0 0 1 22 0" fill="none" stroke="#e6f7f5" stroke-width="3"></path><rect x="104" y="120" width="25" height="44" rx="7" fill="#11151b"></rect><rect x="191" y="120" width="25" height="44" rx="7" fill="#11151b"></rect><path d="M138 126h44l-6 34h-32z" fill="#243344"></path><rect x="120" y="162" width="80" height="13" rx="4" fill="#1a2532"></rect><rect x="120" y="162" width="80" height="4" rx="2" fill="url(#f1-t)"></rect></g></svg></button><button type="button" data-art="marble" title="Marble run"><svg class="art" viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="mb-g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#503278"></stop><stop offset="1" stop-color="#180f2c"></stop></linearGradient><radialGradient id="mb-s" cx=".35" cy=".3"><stop offset="0" stop-color="#ffffff" stop-opacity=".5"></stop><stop offset=".55" stop-color="#ffffff" stop-opacity="0"></stop><stop offset="1" stop-color="#000000" stop-opacity=".35"></stop></radialGradient></defs><rect width="320" height="200" fill="url(#mb-g)"></rect><g fill="#ffffff" opacity=".07"><circle cx="46" cy="168" r="3"></circle><circle cx="268" cy="34" r="3"></circle><circle cx="196" cy="24" r="2"></circle><circle cx="92" cy="182" r="2"></circle></g><path d="M-10 46C58 46 62 98 132 98s70 54 198 32" fill="none" stroke="#120b24" stroke-opacity=".6" stroke-width="32" stroke-linecap="round"></path><path d="M-10 46C58 46 62 98 132 98s70 54 198 32" fill="none" stroke="#7c5cd8" stroke-width="23" stroke-linecap="round"></path><path d="M-10 37C58 37 62 89 132 89s70 54 198 32" fill="none" stroke="#c3a9f2" stroke-opacity=".5" stroke-width="3"></path><g><circle cx="66" cy="52" r="14" fill="#ff6b81"></circle><circle cx="66" cy="52" r="14" fill="url(#mb-s)"></circle><circle cx="62" cy="47" r="4" fill="#fff" opacity=".7"></circle></g><g><circle cx="134" cy="90" r="14" fill="#ffd166"></circle><circle cx="134" cy="90" r="14" fill="url(#mb-s)"></circle><circle cx="130" cy="85" r="4" fill="#fff" opacity=".7"></circle></g><g><circle cx="212" cy="116" r="14" fill="#4cc9f0"></circle><circle cx="212" cy="116" r="14" fill="url(#mb-s)"></circle><circle cx="208" cy="111" r="4" fill="#fff" opacity=".7"></circle></g></svg></button><button type="button" data-art="pitch" title="Football"><svg class="art" viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="pt-g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3aa862"></stop><stop offset="1" stop-color="#1c6c3e"></stop></linearGradient></defs><rect width="320" height="200" fill="url(#pt-g)"></rect><rect x="40" y="0" width="40" height="200" fill="#ffffff" opacity=".05"></rect><rect x="120" y="0" width="40" height="200" fill="#ffffff" opacity=".05"></rect><rect x="200" y="0" width="40" height="200" fill="#ffffff" opacity=".05"></rect><rect x="280" y="0" width="40" height="200" fill="#ffffff" opacity=".05"></rect><g fill="none" stroke="#ffffff" stroke-opacity=".8" stroke-width="2.5"><rect x="14" y="14" width="292" height="172" rx="2"></rect><path d="M160 14V186"></path><circle cx="160" cy="100" r="34"></circle><rect x="14" y="56" width="44" height="88"></rect><rect x="262" y="56" width="44" height="88"></rect></g><circle cx="160" cy="100" r="4" fill="#fff"></circle><g stroke="#ffffff" stroke-opacity=".45" stroke-width="3" stroke-linecap="round"><path d="M178 150c9-7 16-11 25-14"></path><path d="M166 160c12-9 22-14 33-18"></path></g><g><circle cx="218" cy="130" r="15" fill="#ffffff"></circle><path d="M218 119l9 7-3.5 11h-11l-3.5-11z" fill="#16281d"></path><g stroke="#16281d" stroke-width="2.2" stroke-linecap="round"><path d="M209 116l5 5"></path><path d="M227 116l-5 5"></path><path d="M206 139l4-6"></path><path d="M230 139l-4-6"></path></g></g></svg></button><button type="button" data-art="tank" title="Artillery"><svg class="art" viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="tk-s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#26364f"></stop><stop offset=".55" stop-color="#7d5a51"></stop><stop offset="1" stop-color="#cf8f54"></stop></linearGradient><radialGradient id="tk-f"><stop offset="0" stop-color="#fff5cd"></stop><stop offset=".5" stop-color="#ffab3d" stop-opacity=".8"></stop><stop offset="1" stop-color="#ff7a1a" stop-opacity="0"></stop></radialGradient></defs><rect width="320" height="200" fill="url(#tk-s)"></rect><circle cx="256" cy="48" r="17" fill="#ffd694" opacity=".75"></circle><path d="M0 128c42-20 72 4 110-6s60-26 100-16 74 24 110 14v80H0z" fill="#4a4030" opacity=".6"></path><path d="M0 156c48-14 80 12 128 6s72-24 118-16 54 18 74 14v40H0z" fill="#5d5238"></path><path d="M76 138C124 68 202 68 248 142" fill="none" stroke="#ffe6b5" stroke-opacity=".85" stroke-width="2.5" stroke-dasharray="6 8" stroke-linecap="round"></path><g transform="translate(46,134)"><rect x="0" y="9" width="54" height="13" rx="6.5" fill="#2b3023"></rect><g fill="#4a5138"><circle cx="9" cy="15.5" r="4.5"></circle><circle cx="27" cy="15.5" r="4.5"></circle><circle cx="45" cy="15.5" r="4.5"></circle></g><path d="M4 9h46l-6-12H10z" fill="#71804b"></path><rect x="17" y="-14" width="22" height="11" rx="4.5" fill="#829357"></rect><rect x="35" y="-13" width="32" height="5.5" rx="2.75" fill="#5d6a3b" transform="rotate(-26 35 -10)"></rect></g><circle cx="112" cy="102" r="15" fill="url(#tk-f)"></circle><circle cx="250" cy="148" r="24" fill="url(#tk-f)" opacity=".95"></circle></svg></button><button type="button" data-art="trap" title="Trap arena"><svg class="art" viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="tw-g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1d2939"></stop><stop offset="1" stop-color="#090e15"></stop></linearGradient><radialGradient id="tw-f"><stop offset="0" stop-color="#fff3cd"></stop><stop offset=".45" stop-color="#ff9d2e" stop-opacity=".8"></stop><stop offset="1" stop-color="#ff6a1f" stop-opacity="0"></stop></radialGradient></defs><rect width="320" height="200" fill="url(#tw-g)"></rect><path d="M20 0V200M40 0V200M60 0V200M80 0V200M100 0V200M120 0V200M140 0V200M160 0V200M180 0V200M200 0V200M220 0V200M240 0V200M260 0V200M280 0V200M300 0V200M0 20H320M0 40H320M0 60H320M0 80H320M0 100H320M0 120H320M0 140H320M0 160H320M0 180H320" stroke="#7fd4ff" stroke-opacity=".09"></path><g fill="#2c3a4e" stroke="#455a76" stroke-width="1.5"><rect x="36" y="36" width="44" height="20" rx="3"></rect><rect x="240" y="144" width="44" height="20" rx="3"></rect><rect x="140" y="16" width="20" height="44" rx="3"></rect><rect x="56" y="140" width="20" height="44" rx="3"></rect></g><g><rect x="90" y="90" width="28" height="28" rx="4" fill="#243549" stroke="#ffb03a" stroke-width="2"></rect><circle cx="104" cy="104" r="5.5" fill="#ffb03a"></circle></g><g><rect x="188" y="44" width="28" height="28" rx="4" fill="#243549" stroke="#4fd6c0" stroke-width="2"></rect><circle cx="202" cy="58" r="5.5" fill="#4fd6c0"></circle></g><g><rect x="188" y="116" width="28" height="28" rx="4" fill="#33445c" stroke="#5b6f8c" stroke-width="1.5"></rect><text x="202" y="136" font-size="17" font-weight="700" font-family="Helvetica,Arial,sans-serif" fill="#93a4bb" text-anchor="middle">?</text></g><circle cx="122" cy="118" r="36" fill="url(#tw-f)"></circle><g><circle cx="70" cy="96" r="9" fill="#ff5d6c"></circle><circle cx="70" cy="96" r="9" fill="none" stroke="#ffc2c8" stroke-width="2"></circle></g><g><circle cx="248" cy="92" r="9" fill="#4aa3ff"></circle><circle cx="248" cy="92" r="9" fill="none" stroke="#bfdcff" stroke-width="2"></circle></g></svg></button></div>
+        <input id="fImg" placeholder="covers/snake.png  ·  or leave blank">
       </div>
       <div class="field">
         <label for="fDesc">Description <span class="hint">optional</span></label>
@@ -396,7 +406,7 @@
     </div>
     <div class="actions">
       <button class="btn danger left" id="edDelete" style="display:none">Delete</button>
-      <button class="btn" data-close>Cancel</button>
+      <button class="btn" data-close="">Cancel</button>
       <button class="btn primary" id="edSave">Save</button>
     </div>
   </div>
@@ -412,18 +422,215 @@
      1. SETTINGS — edit these two lines if you want
      ===================================================================== */
   var ADMIN_CODE = "gg123";
-  var STORE_KEY  = "gamehub.v1";
+  var STORE_KEY  = "gamehub.v2";
 
   /* =====================================================================
      2. DEFAULT GAME LIST
-        Replace these with your own, or just use the Admin panel and
-        press "Export JSON" to bake your list back into this file.
+        img can be:  "art:tank"  -> built-in cover art (see the ART list below)
+                     "cover.png" -> your own image file or URL
+                     ""          -> auto colour tile with the initials
+        Edit here, or use Admin mode and press "Export JSON".
      ===================================================================== */
   var DEFAULT_GAMES = [
-    { title:"Snake Deluxe",  url:"games/snake.html",   img:"", desc:"Classic snake with a speed ramp and three board sizes.", status:"ready" },
-    { title:"Memory Match",  url:"games/memory.html",  img:"", desc:"Flip-and-match card game. Timed and relaxed modes.",      status:"ready" },
-    { title:"Tower Stack",   url:"games/tower.html",   img:"", desc:"Drop blocks and build the tallest tower you can.",        status:"wip"   }
+    { title:"Tank Showdown", url:"tankshowdown.html", img:"art:tank",
+      desc:"Turn-based artillery duel. Five hulls, a ridge of dirt between you, one shot a turn to find the angle.", status:"ready" },
+
+    { title:"TRAPWIRE", url:"trapwire.html", img:"art:trap",
+      desc:"Trap-laying arena brawler for two to four fighters. Six trap types, chain blasts, scan and disarm.", status:"ready" },
+
+    { title:"Base Defense", url:"basedefense.html", img:"art:battle",
+      desc:"Top-down auto-battler. Set the forces and the victory condition, then watch the match fight itself out.", status:"ready" },
+
+    { title:"Pitch Legends", url:"pitchlegends.html", img:"art:pitch",
+      desc:"Arcade football on a single screen.", status:"ready" },
+
+    { title:"Marble Derby", url:"marblederby.html", img:"art:marble",
+      desc:"Marble race down a twisting track. Pick a runner and watch the drop.", status:"ready" },
+
+    { title:"F1 2026 Tech Explorer", url:"f1tech.html", img:"art:f1",
+      desc:"Zoom from the whole 2026 car down to the carbon weave. Fifteen systems, five levels of magnification, eleven teams.", status:"ready" }
   ];
+
+  /* =====================================================================
+     2b. BUILT-IN COVER ART
+         Drawn as SVG in the page — no image files to host, stays sharp
+         at any size. Add your own by copying one of these blocks.
+     ===================================================================== */
+  function gridPath(step){
+    var s = "", i;
+    for(i = step; i < 320; i += step) s += "M" + i + " 0V200";
+    for(i = step; i < 200; i += step) s += "M0 " + i + "H320";
+    return s;
+  }
+  function svg(inner){
+    return '<svg class="art" viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" ' +
+           'xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' + inner + '</svg>';
+  }
+
+  var ART = {
+
+    /* --- top-down battlefield -------------------------------------- */
+    battle: function(){ return svg(
+      '<defs>' +
+        '<linearGradient id="bt-g" x1="0" y1="0" x2="1" y2="1">' +
+          '<stop offset="0" stop-color="#3a4762"/><stop offset="1" stop-color="#141a28"/></linearGradient>' +
+        '<radialGradient id="bt-f">' +
+          '<stop offset="0" stop-color="#ffeec2"/><stop offset=".45" stop-color="#ff9a3c" stop-opacity=".85"/>' +
+          '<stop offset="1" stop-color="#ff6b2c" stop-opacity="0"/></radialGradient>' +
+      '</defs>' +
+      '<rect width="320" height="200" fill="url(#bt-g)"/>' +
+      '<path d="' + gridPath(20) + '" stroke="#cfe0ff" stroke-opacity=".07"/>' +
+      '<g fill="#0d121e" opacity=".4"><ellipse cx="118" cy="156" rx="28" ry="10"/><ellipse cx="214" cy="52" rx="21" ry="8"/></g>' +
+      '<g><path d="M26 100l17-30h34l17 30-17 30H43z" fill="#c9463f"/>' +
+        '<path d="M26 100l17-30h34l17 30-17 30H43z" fill="none" stroke="#ff9b93" stroke-width="2.5"/>' +
+        '<circle cx="60" cy="100" r="8" fill="#ffd6d1" opacity=".85"/></g>' +
+      '<g><path d="M226 100l17-30h34l17 30-17 30h-34z" fill="#3f6fd0"/>' +
+        '<path d="M226 100l17-30h34l17 30-17 30h-34z" fill="none" stroke="#a8c5ff" stroke-width="2.5"/>' +
+        '<circle cx="260" cy="100" r="8" fill="#dce8ff" opacity=".85"/></g>' +
+      '<g fill="#ff8f86"><circle cx="112" cy="74" r="5.5"/><circle cx="128" cy="106" r="5.5"/><circle cx="104" cy="132" r="5.5"/></g>' +
+      '<g fill="#9dc0ff"><circle cx="202" cy="68" r="5.5"/><circle cx="190" cy="108" r="5.5"/><circle cx="208" cy="136" r="5.5"/></g>' +
+      '<g stroke="#ffe0a0" stroke-width="2" stroke-linecap="round" opacity=".8">' +
+        '<path d="M124 77l64-6"/><path d="M140 106l44 2"/><path d="M194 134l-78 2"/></g>' +
+      '<circle cx="160" cy="90" r="32" fill="url(#bt-f)"/>'
+    );},
+
+    /* --- formula 1 car, top view ----------------------------------- */
+    f1: function(){ return svg(
+      '<defs>' +
+        '<linearGradient id="f1-g" x1="0" y1="0" x2="0" y2="1">' +
+          '<stop offset="0" stop-color="#26364a"/><stop offset="1" stop-color="#0c1118"/></linearGradient>' +
+        '<linearGradient id="f1-t" x1="0" y1="0" x2="0" y2="1">' +
+          '<stop offset="0" stop-color="#41ddcd"/><stop offset="1" stop-color="#1a9188"/></linearGradient>' +
+      '</defs>' +
+      '<rect width="320" height="200" fill="url(#f1-g)"/>' +
+      '<g stroke="#7fe9df" stroke-opacity=".16" stroke-width="3" stroke-linecap="round">' +
+        '<path d="M12 28h56"/><path d="M0 56h38"/><path d="M258 40h56"/><path d="M282 72h38"/>' +
+        '<path d="M6 148h48"/><path d="M266 160h48"/></g>' +
+      '<g>' +
+        '<rect x="124" y="24" width="72" height="12" rx="4" fill="#1a2532"/>' +
+        '<rect x="124" y="24" width="72" height="4" rx="2" fill="url(#f1-t)"/>' +
+        '<rect x="110" y="40" width="20" height="38" rx="6" fill="#11151b"/>' +
+        '<rect x="190" y="40" width="20" height="38" rx="6" fill="#11151b"/>' +
+        '<path d="M152 32h16l7 44h-30z" fill="#243344"/>' +
+        '<path d="M143 74h34l10 56h-54z" fill="url(#f1-t)"/>' +
+        '<rect x="149" y="84" width="22" height="22" rx="8" fill="#0e141b"/>' +
+        '<path d="M149 82a11 11 0 0 1 22 0" fill="none" stroke="#e6f7f5" stroke-width="3"/>' +
+        '<rect x="104" y="120" width="25" height="44" rx="7" fill="#11151b"/>' +
+        '<rect x="191" y="120" width="25" height="44" rx="7" fill="#11151b"/>' +
+        '<path d="M138 126h44l-6 34h-32z" fill="#243344"/>' +
+        '<rect x="120" y="162" width="80" height="13" rx="4" fill="#1a2532"/>' +
+        '<rect x="120" y="162" width="80" height="4" rx="2" fill="url(#f1-t)"/>' +
+      '</g>'
+    );},
+
+    /* --- marble run ------------------------------------------------- */
+    marble: function(){ return svg(
+      '<defs>' +
+        '<linearGradient id="mb-g" x1="0" y1="0" x2="1" y2="1">' +
+          '<stop offset="0" stop-color="#503278"/><stop offset="1" stop-color="#180f2c"/></linearGradient>' +
+        '<radialGradient id="mb-s" cx=".35" cy=".3">' +
+          '<stop offset="0" stop-color="#ffffff" stop-opacity=".5"/>' +
+          '<stop offset=".55" stop-color="#ffffff" stop-opacity="0"/>' +
+          '<stop offset="1" stop-color="#000000" stop-opacity=".35"/></radialGradient>' +
+      '</defs>' +
+      '<rect width="320" height="200" fill="url(#mb-g)"/>' +
+      '<g fill="#ffffff" opacity=".07"><circle cx="46" cy="168" r="3"/><circle cx="268" cy="34" r="3"/>' +
+        '<circle cx="196" cy="24" r="2"/><circle cx="92" cy="182" r="2"/></g>' +
+      '<path d="M-10 46C58 46 62 98 132 98s70 54 198 32" fill="none" stroke="#120b24" stroke-opacity=".6" stroke-width="32" stroke-linecap="round"/>' +
+      '<path d="M-10 46C58 46 62 98 132 98s70 54 198 32" fill="none" stroke="#7c5cd8" stroke-width="23" stroke-linecap="round"/>' +
+      '<path d="M-10 37C58 37 62 89 132 89s70 54 198 32" fill="none" stroke="#c3a9f2" stroke-opacity=".5" stroke-width="3"/>' +
+      marbleBall(66, 52, "#ff6b81") + marbleBall(134, 90, "#ffd166") + marbleBall(212, 116, "#4cc9f0")
+    );},
+
+    /* --- football pitch --------------------------------------------- */
+    pitch: function(){
+      var stripes = "", i;
+      for(i = 0; i < 8; i++) if(i % 2) stripes += '<rect x="' + (i*40) + '" y="0" width="40" height="200" fill="#ffffff" opacity=".05"/>';
+      return svg(
+        '<defs><linearGradient id="pt-g" x1="0" y1="0" x2="0" y2="1">' +
+          '<stop offset="0" stop-color="#3aa862"/><stop offset="1" stop-color="#1c6c3e"/></linearGradient></defs>' +
+        '<rect width="320" height="200" fill="url(#pt-g)"/>' + stripes +
+        '<g fill="none" stroke="#ffffff" stroke-opacity=".8" stroke-width="2.5">' +
+          '<rect x="14" y="14" width="292" height="172" rx="2"/>' +
+          '<path d="M160 14V186"/><circle cx="160" cy="100" r="34"/>' +
+          '<rect x="14" y="56" width="44" height="88"/><rect x="262" y="56" width="44" height="88"/>' +
+        '</g>' +
+        '<circle cx="160" cy="100" r="4" fill="#fff"/>' +
+        '<g stroke="#ffffff" stroke-opacity=".45" stroke-width="3" stroke-linecap="round">' +
+          '<path d="M178 150c9-7 16-11 25-14"/><path d="M166 160c12-9 22-14 33-18"/></g>' +
+        '<g><circle cx="218" cy="130" r="15" fill="#ffffff"/>' +
+          '<path d="M218 119l9 7-3.5 11h-11l-3.5-11z" fill="#16281d"/>' +
+          '<g stroke="#16281d" stroke-width="2.2" stroke-linecap="round">' +
+            '<path d="M209 116l5 5"/><path d="M227 116l-5 5"/><path d="M206 139l4-6"/><path d="M230 139l-4-6"/></g></g>'
+      );
+    },
+
+    /* --- artillery duel, side view ---------------------------------- */
+    tank: function(){ return svg(
+      '<defs>' +
+        '<linearGradient id="tk-s" x1="0" y1="0" x2="0" y2="1">' +
+          '<stop offset="0" stop-color="#26364f"/><stop offset=".55" stop-color="#7d5a51"/>' +
+          '<stop offset="1" stop-color="#cf8f54"/></linearGradient>' +
+        '<radialGradient id="tk-f">' +
+          '<stop offset="0" stop-color="#fff5cd"/><stop offset=".5" stop-color="#ffab3d" stop-opacity=".8"/>' +
+          '<stop offset="1" stop-color="#ff7a1a" stop-opacity="0"/></radialGradient>' +
+      '</defs>' +
+      '<rect width="320" height="200" fill="url(#tk-s)"/>' +
+      '<circle cx="256" cy="48" r="17" fill="#ffd694" opacity=".75"/>' +
+      '<path d="M0 128c42-20 72 4 110-6s60-26 100-16 74 24 110 14v80H0z" fill="#4a4030" opacity=".6"/>' +
+      '<path d="M0 156c48-14 80 12 128 6s72-24 118-16 54 18 74 14v40H0z" fill="#5d5238"/>' +
+      '<path d="M76 138C124 68 202 68 248 142" fill="none" stroke="#ffe6b5" stroke-opacity=".85" ' +
+        'stroke-width="2.5" stroke-dasharray="6 8" stroke-linecap="round"/>' +
+      '<g transform="translate(46,134)">' +
+        '<rect x="0" y="9" width="54" height="13" rx="6.5" fill="#2b3023"/>' +
+        '<g fill="#4a5138"><circle cx="9" cy="15.5" r="4.5"/><circle cx="27" cy="15.5" r="4.5"/><circle cx="45" cy="15.5" r="4.5"/></g>' +
+        '<path d="M4 9h46l-6-12H10z" fill="#71804b"/>' +
+        '<rect x="17" y="-14" width="22" height="11" rx="4.5" fill="#829357"/>' +
+        '<rect x="35" y="-13" width="32" height="5.5" rx="2.75" fill="#5d6a3b" transform="rotate(-26 35 -10)"/>' +
+      '</g>' +
+      '<circle cx="112" cy="102" r="15" fill="url(#tk-f)"/>' +
+      '<circle cx="250" cy="148" r="24" fill="url(#tk-f)" opacity=".95"/>'
+    );},
+
+    /* --- trap arena -------------------------------------------------- */
+    trap: function(){ return svg(
+      '<defs>' +
+        '<linearGradient id="tw-g" x1="0" y1="0" x2="1" y2="1">' +
+          '<stop offset="0" stop-color="#1d2939"/><stop offset="1" stop-color="#090e15"/></linearGradient>' +
+        '<radialGradient id="tw-f">' +
+          '<stop offset="0" stop-color="#fff3cd"/><stop offset=".45" stop-color="#ff9d2e" stop-opacity=".8"/>' +
+          '<stop offset="1" stop-color="#ff6a1f" stop-opacity="0"/></radialGradient>' +
+      '</defs>' +
+      '<rect width="320" height="200" fill="url(#tw-g)"/>' +
+      '<path d="' + gridPath(20) + '" stroke="#7fd4ff" stroke-opacity=".09"/>' +
+      '<g fill="#2c3a4e" stroke="#455a76" stroke-width="1.5">' +
+        '<rect x="36" y="36" width="44" height="20" rx="3"/><rect x="240" y="144" width="44" height="20" rx="3"/>' +
+        '<rect x="140" y="16" width="20" height="44" rx="3"/><rect x="56" y="140" width="20" height="44" rx="3"/></g>' +
+      trapPlate(104, 104, "#ffb03a") + trapPlate(202, 58, "#4fd6c0") +
+      '<g><rect x="188" y="116" width="28" height="28" rx="4" fill="#33445c" stroke="#5b6f8c" stroke-width="1.5"/>' +
+        '<text x="202" y="136" font-size="17" font-weight="700" font-family="Helvetica,Arial,sans-serif" ' +
+        'fill="#93a4bb" text-anchor="middle">?</text></g>' +
+      '<circle cx="122" cy="118" r="36" fill="url(#tw-f)"/>' +
+      '<g><circle cx="70" cy="96" r="9" fill="#ff5d6c"/><circle cx="70" cy="96" r="9" fill="none" stroke="#ffc2c8" stroke-width="2"/></g>' +
+      '<g><circle cx="248" cy="92" r="9" fill="#4aa3ff"/><circle cx="248" cy="92" r="9" fill="none" stroke="#bfdcff" stroke-width="2"/></g>'
+    );}
+  };
+
+  function marbleBall(x, y, c){
+    return '<g><circle cx="' + x + '" cy="' + y + '" r="14" fill="' + c + '"/>' +
+      '<circle cx="' + x + '" cy="' + y + '" r="14" fill="url(#mb-s)"/>' +
+      '<circle cx="' + (x-4) + '" cy="' + (y-5) + '" r="4" fill="#fff" opacity=".7"/></g>';
+  }
+  function trapPlate(x, y, c){
+    return '<g><rect x="' + (x-14) + '" y="' + (y-14) + '" width="28" height="28" rx="4" ' +
+      'fill="#243549" stroke="' + c + '" stroke-width="2"/>' +
+      '<circle cx="' + x + '" cy="' + y + '" r="5.5" fill="' + c + '"/></g>';
+  }
+
+  var ART_LABEL = {
+    battle:"Battlefield", f1:"Race car", marble:"Marble run",
+    pitch:"Football", tank:"Artillery", trap:"Trap arena"
+  };
 
   /* =====================================================================
      3. Storage helpers (degrade to memory if storage is blocked)
@@ -495,6 +702,28 @@
   }
   var LABEL = { ready:"Ready", wip:"In progress", hidden:"Hidden" };
 
+  function artKey(img){
+    var m = /^art:([a-z0-9_-]+)$/i.exec(String(img || "").trim());
+    return (m && ART[m[1]]) ? m[1] : "";
+  }
+  function tile(title, hide){
+    var c = hue(title);
+    return '<div class="ph" style="' + (hide ? "display:none;" : "") +
+           'background:linear-gradient(135deg,' + c[0] + ',' + c[1] + ')">' +
+           esc(initials(title)) + '</div>';
+  }
+  function coverHTML(g){
+    var k = artKey(g.img);
+    if(k) return ART[k]();
+    if(g.img){
+      // a real image, with the colour tile behind it if the file is missing
+      return '<img src="' + esc(g.img) + '" alt="" loading="lazy" ' +
+             'onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'grid\'">' +
+             tile(g.title, true);
+    }
+    return tile(g.title, false);
+  }
+
   function visible(){
     return games.filter(function(g){
       if(g.status === "hidden" && !isAdmin) return false;
@@ -539,11 +768,7 @@
       card.className = "card" + (g.status === "hidden" ? " is-hidden" : "");
 
       var href = esc(g.url || "#");
-      var cols = hue(g.title);
-      var cover = g.img
-        ? '<img src="' + esc(g.img) + '" alt="" loading="lazy" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'grid\'">' +
-          '<div class="ph" style="display:none;background:linear-gradient(135deg,' + cols[0] + ',' + cols[1] + ')">' + esc(initials(g.title)) + '</div>'
-        : '<div class="ph" style="background:linear-gradient(135deg,' + cols[0] + ',' + cols[1] + ')">' + esc(initials(g.title)) + '</div>';
+      var cover = coverHTML(g);
 
       card.innerHTML =
         '<span class="badge ' + g.status + '">' + LABEL[g.status] + '</span>' +
@@ -621,6 +846,42 @@
     });
   });
 
+  /* cover art picker inside the edit dialog */
+  (function buildPicker(){
+    var host = $("artPick");
+    var none = document.createElement("button");
+    none.type = "button";
+    none.className = "none";
+    none.dataset.art = "";
+    none.textContent = "None";
+    none.title = "Auto colour tile";
+    host.appendChild(none);
+    Object.keys(ART).forEach(function(k){
+      var b = document.createElement("button");
+      b.type = "button";
+      b.dataset.art = k;
+      b.title = ART_LABEL[k] || k;
+      b.innerHTML = ART[k]();
+      host.appendChild(b);
+    });
+    host.addEventListener("click", function(e){
+      var b = e.target.closest("button[data-art]");
+      if(!b) return;
+      $("fImg").value = b.dataset.art ? "art:" + b.dataset.art : "";
+      syncPicker();
+    });
+    $("fImg").addEventListener("input", syncPicker);
+  })();
+
+  function syncPicker(){
+    var cur = $("fImg").value.trim();
+    var k = artKey(cur);
+    Array.prototype.forEach.call($("artPick").children, function(b){
+      var on = b.dataset.art ? (b.dataset.art === k) : (cur === "");
+      b.setAttribute("aria-pressed", String(on));
+    });
+  }
+
   function openEdit(i){
     editIdx = i;
     var g = i >= 0 ? games[i] : { title:"", url:"", img:"", desc:"", status:"ready" };
@@ -633,6 +894,7 @@
     Array.prototype.forEach.call($("fStatus").children, function(x){
       x.setAttribute("aria-pressed", String(x.dataset.s === g.status));
     });
+    syncPicker();
     $("edDelete").style.display = i >= 0 ? "inline-flex" : "none";
     $("edErr").classList.remove("show");
     open("edVeil");
@@ -777,5 +1039,6 @@
   render();
 })();
 </script>
-</body>
-</html>
+
+
+</body></html>
