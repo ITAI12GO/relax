@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -186,7 +187,7 @@ tr.qual td:first-child{border-left:2px solid var(--accent);padding-left:8px}
   font-size:12.5px;line-height:1.4}
 .tick b{color:var(--accent);font-variant-numeric:tabular-nums}
 
-.dock{margin-top:auto;padding:10px 10px calc(10px + var(--safe-b));display:flex;gap:8px;align-items:flex-end}
+.dock{margin-top:0;padding:10px 10px calc(10px + var(--safe-b));display:flex;gap:8px;align-items:flex-end}
 .dbtn{flex:1;background:rgba(6,16,10,.82);border:1px solid var(--line2);border-radius:12px;
   padding:11px 8px;color:var(--ink);font-size:11.5px;font-weight:700;text-align:center;
   backdrop-filter:blur(10px);cursor:pointer;font-family:inherit}
@@ -286,6 +287,54 @@ tr.qual td:first-child{border-left:2px solid var(--accent);padding-left:8px}
 .tools button.on{background:var(--accent);border-color:transparent}
 .tools button.on i,.tools button.on u{color:var(--accent-ink)}
 .prow.picked{border-color:var(--accent)}
+
+/* ---------- speed panel ---------- */
+.speedpanel{margin:auto 10px 8px;padding:0 12px;max-height:0;overflow:hidden;opacity:0;
+  background:rgba(6,16,10,.9);border:1px solid var(--line2);border-radius:12px;backdrop-filter:blur(12px);
+  transition:max-height .2s ease,opacity .2s ease,padding .2s ease}
+.speedpanel.open{max-height:150px;opacity:1;padding:12px}
+.speedpanel .sprow{display:flex;justify-content:space-between;align-items:center;font-size:13px;margin-bottom:8px}
+.speedpanel .sprow span{color:var(--accent);font-weight:800;font-variant-numeric:tabular-nums}
+.speedpanel .chip{padding:6px 11px;font-size:12px}
+
+/* ---------- star players on a team card ---------- */
+.stars3{display:flex;flex-direction:column;gap:2px;margin-top:2px;border-top:1px solid var(--line2);padding-top:6px}
+.stars3 span{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--muted)}
+.stars3 b{font-size:9.5px;font-weight:800;color:var(--dim);min-width:15px;text-align:right;font-variant-numeric:tabular-nums}
+.stars3 i{margin-left:auto;font-style:normal;font-weight:800;color:var(--ink);font-size:11px;font-variant-numeric:tabular-nums}
+/* ---------- top three podium ---------- */
+.podium{display:flex;flex-direction:column;gap:7px}
+.pod{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:var(--r);
+  background:var(--panel);border:1px solid var(--line2)}
+.pod.first{background:linear-gradient(120deg,rgba(255,209,102,.16),rgba(255,209,102,.03));border-color:rgba(255,209,102,.32)}
+.pod .pl{font-size:16px;color:var(--muted);font-weight:800;width:18px}
+.pod.first .pl{color:var(--gold)}
+.pod .pn{display:flex;flex-direction:column;min-width:0;flex:1}
+.pod .pn b{font-size:14px;font-weight:700}
+.pod .pn span{font-size:11.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pod .pr{font-size:18px;font-weight:900;font-variant-numeric:tabular-nums}
+.pod.first .pr{color:var(--gold)}
+
+/* ---------- penalty scene ---------- */
+.penscore{font-size:15px;font-weight:900;font-variant-numeric:tabular-nums;letter-spacing:-.01em;white-space:nowrap;flex:none}
+.penwrap{position:relative;flex:1;min-height:0;overflow:hidden}
+#penCanvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.aimgrid6{position:absolute;display:none;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);gap:5px;padding:4px}
+.aimgrid6.on{display:grid}
+.aimgrid6 button{border:1.5px dashed rgba(255,255,255,.42);background:rgba(255,255,255,.07);
+  border-radius:9px;color:rgba(255,255,255,.85);font-size:10.5px;font-weight:800;font-family:inherit;
+  cursor:pointer;letter-spacing:.04em;text-transform:uppercase;padding:0}
+.aimgrid6 button:active{background:var(--accent);color:var(--accent-ink);border-style:solid}
+.pentag{position:absolute;left:0;right:0;bottom:8px;text-align:center;font-size:13px;font-weight:700;
+  text-shadow:0 2px 8px rgba(0,0,0,.8);pointer-events:none}
+.pentag span{color:var(--muted);font-weight:600}
+.penfoot{padding:10px 16px calc(14px + var(--safe-b));border-top:1px solid var(--line2);background:var(--bg)}
+.penfoot .pens{padding:0 0 10px}
+.penfoot .penrow{gap:6px}
+.penfoot .pdot{width:14px;height:14px}
+
+.tielab{font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);font-weight:800;margin:4px 0 -4px}
+.pod .pl{min-width:26px}
 </style>
 </head>
 <body>
@@ -376,6 +425,7 @@ tr.qual td:first-child{border-left:2px solid var(--accent);padding-left:8px}
         <button id="menuBtn" title="Menu" style="display:none"><i>❙❙</i><u>Menu</u></button>
       </div>
       <div class="newswrap"><div class="news" id="newsBar"><b id="newsMin"></b><span id="newsTxt"></span></div></div>
+      <div class="speedpanel" id="speedPanel"></div>
       <div class="dock" id="dock"></div>
     </div>
     <div class="stickzone" id="stickZone"><div class="stick" id="stick"><i id="knob"></i></div></div>
@@ -395,8 +445,20 @@ tr.qual td:first-child{border-left:2px solid var(--accent);padding-left:8px}
 
   <!-- ============ PENALTIES ============ -->
   <section id="pens" class="screen">
-    <div class="topbar"><div><h1>Penalty shootout</h1><div class="sub">Sudden death after five each</div></div></div>
-    <div class="scroll" id="penBody"></div>
+    <div class="topbar">
+      <div><h1 id="penTitle">Penalty shootout</h1><div class="sub" id="penSub">Five kicks each, then sudden death</div></div>
+      <div class="penscore" id="penScore">0 – 0</div>
+    </div>
+    <div class="penwrap">
+      <canvas id="penCanvas"></canvas>
+      <div class="aimgrid6" id="aimGrid"></div>
+      <div class="pentag" id="penTag"></div>
+    </div>
+    <div class="penfoot">
+      <div class="pens" id="penTally"></div>
+      <div id="penCtrl"></div>
+    </div>
+    <div class="scroll" id="penBody" style="display:none"></div>
   </section>
 </div>
 
@@ -609,6 +671,67 @@ const PRESSING = {
   2:{ label:'High press',chase:3, aggression:1.25, drain:1.30 }
 };
 
+
+/* Reputation. Nothing published says how good a player is, so the model leans
+   on shirt numbers — which alone would rate a squad's number seven above its
+   best player. This corrects for the names the game is actually known for,
+   keyed by shirt number so it cannot mis-match. */
+const MARQUEE = {
+  BRA:'7:9,11:7,1:6,4:5,10:5,5:3,14:3,20:3',
+  ARG:'10:10,22:8,23:8,20:7,24:7,13:6,9:5,7:4,26:3,19:3,3:2',
+  FRA:'10:10,7:8,17:7,16:7,8:6,11:6,15:5,19:5,9:5,20:4,24:4,14:3,12:3',
+  ENG:'10:9,9:7,7:7,4:6,5:4,1:4,6:3,18:3,21:3,11:2,2:-3,8:-3',
+  ESP:'19:11,20:10,16:8,17:6,10:5,24:5,23:5,18:5,22:5,21:4,14:3,6:2,9:2,7:-2',
+  POR:'23:9,8:8,3:8,10:7,17:6,15:6,1:5,25:5,7:4,5:3,21:3,26:2,11:1,9:-2',
+  GER:'10:9,17:9,6:8,2:5,1:5,4:4,7:4,19:4,15:3,11:3',
+  NED:'4:8,21:7,11:6,14:5,22:5,15:5,8:5,2:4,10:4,5:3,25:3,1:3,9:-3',
+  BEL:'7:9,1:8,11:6,9:4,8:4,10:3,24:3,5:2,22:2',
+  CRO:'10:8,4:7,8:5,21:3,17:3,16:3,9:3,14:2,1:2',
+  MAR:'2:9,10:6,1:5,23:4,5:4,3:4,17:3,4:3,20:3,6:3',
+  URU:'8:9,4:7,2:5,9:5,5:4,6:4,10:3,16:2',
+  COL:'7:9,10:5,2:4,6:4,3:3,13:2,23:2,9:2',
+  JPN:'8:7,15:4,6:4,4:4,10:4,22:3,1:3,11:3',
+  SUI:'10:6,5:6,1:4,11:4,6:3,14:3,7:3',
+  TUR:'8:9,11:7,10:6,21:5,23:4,3:4,20:3,26:3,2:2',
+  NOR:'9:12,10:9,7:5,20:5,26:3,4:3,8:3,19:3,11:3,22:3,21:3,1:2',
+  USA:'10:8,8:5,4:5,20:4,5:4,2:3,3:3,21:3,17:3,1:2',
+  MEX:'4:6,11:5,9:4,2:3,7:3,21:3,13:2',
+  SEN:'10:6,11:5,3:5,17:5,18:5,5:4,16:4,7:3,19:3',
+  KOR:'7:9,4:7,19:5,11:4,10:3,1:2',
+  AUT:'8:6,9:4,20:4,24:4,19:3,3:3,7:2',
+  SWE:'9:8,17:8,11:5,4:4,7:4,3:3,10:3,18:3',
+  CIV:'15:6,8:5,5:4,21:4,6:4,19:4,10:3,9:3,22:3,7:3',
+  ECU:'23:8,6:6,3:5,10:4,7:3,19:3,2:3',
+  EGY:'10:11,22:7,7:3,25:3,6:2,1:2',
+  ALG:'7:6,15:5,18:5,21:4,11:3,10:3,22:3,19:2',
+  AUS:'1:3,19:3,17:3,22:2,5:2',
+  PAR:'10:4,19:4,9:3,14:3,8:3,15:3,3:3',
+  CZE:'10:6,22:5,9:4,5:3,17:3,7:3,15:3',
+  SCO:'4:7,3:6,19:4,10:3,17:3,2:3,21:3,6:3,11:3,7:3',
+  CAN:'19:8,10:7,17:4,8:4,7:3,9:3,15:3',
+  GHA:'5:6,11:6,22:4,19:4,9:3,24:3,4:2',
+  COD:'20:6,2:5,17:4,22:4,19:4,26:3,13:3,11:3',
+  BIH:'11:5,10:4,5:3,23:3,13:2',
+  IRN:'9:6,7:3,1:2,5:2',
+  TUN:'17:4,3:3,10:3,16:3,12:2,7:2',
+  RSA:'4:3,7:3,10:3,20:3,1:2',
+  QAT:'11:5,19:4,16:2,22:2',
+  UZB:'2:6,14:4,22:4,8:2',
+  PAN:'8:3,7:3,1:2,4:2',
+  CPV:'7:3,19:3,9:3,1:2',
+  JOR:'10:4,9:3,7:2',
+  NZL:'9:5,13:3,1:2,8:2',
+  KSA:'10:4,23:3,21:3,9:2',
+  IRQ:'9:3,10:3,1:2',
+  CUR:'23:3,9:3,13:3,8:3,20:2',
+  HAI:'10:5,20:3,18:3,5:2,1:2'
+};
+function marqueeMap(id){
+  const raw = MARQUEE[id]; const out = {};
+  if(raw) raw.split(',').forEach(pair=>{ const [n,v] = pair.split(':'); out[+n] = +v; });
+  return out;
+}
+
 /* ---------- squads ----------
    Players come from the published tournament squad lists: shirt number,
    position and name. Ability is inferred from the nation's strength, the
@@ -623,6 +746,7 @@ function buildSquad(team){
   const raw = ROSTERS[team.id];
   if(!raw) return [];
   const rng = mulberry(hashStr(team.id + '\u00b7squad'));
+  const fame = marqueeMap(team.id);
   const rows = raw.split(';').map(r=>{
     const [num, role, name] = r.split('|');
     return { num:+num, role, name, group: ROLE_GROUP[role] };
@@ -636,16 +760,21 @@ function buildSquad(team){
   });
   return rows.map(r=>{
     const grp = r.group;
-    const base = grp==='GK' ? (team.def*0.55 + team.mid*0.45)
+    const base = (grp==='GK' ? (team.def*0.55 + team.mid*0.45)
                : grp==='DF' ? team.def
                : grp==='MF' ? team.mid
-               : team.att;
-    const depth = depthOf[r.num] * (grp==='GK' ? 6.5 : 3.4);
-    let star = 0;
-    if(grp!=='GK' && (r.num===9 || r.num===10)) star += 3;
-    if(grp!=='GK' && (r.num===7 || r.num===11)) star += 2;
-    if(grp==='GK' && r.num===1) star += 2;
-    const ovr = Math.round(clampN(base - depth + star + (rng()*6 - 3), 47, 96));
+               : team.att) - 5;
+    let star = fame[r.num] || 0;
+    const di = depthOf[r.num];
+    const depth = star >= 4 ? 0
+                : star > 0 ? Math.min(di, 1) * 2.5
+                : di * (grp==='GK' ? 6.5 : 3.0);
+    if(!star){
+      if(grp!=='GK' && (r.num===9 || r.num===10)) star += 2;
+      if(grp!=='GK' && (r.num===7 || r.num===11)) star += 1;
+      if(grp==='GK' && r.num===1) star += 1;
+    }
+    const ovr = Math.round(clampN(base - depth + star + (rng()*6 - 3), 45, 99));
     const p = {
       name: r.name, role: r.role, group: grp, num: r.num, ovr,
       age: 20 + Math.floor(rng()*15),
@@ -711,10 +840,15 @@ function autoLineup(squad, formationKey, unavailable){
   return { xi, bench };
 }
 
+/* The three names a fan would recognise: best outfield players by rating. */
+function starPlayers(squad, n){
+  return squad.slice().sort((a,b)=> b.ovr - a.ovr).slice(0, n || 3);
+}
+
 function teamOverall(t){ return Math.round((t.att + t.mid*1.1 + t.def)/3.1); }
 
 if (typeof module !== 'undefined') {
-  module.exports = { TEAMS, ROSTERS, FORMATIONS, ROLE_GROUP, MENTALITY, PRESSING, buildSquad, autoLineup, teamOverall, shortName };
+  module.exports = { TEAMS, ROSTERS, FORMATIONS, ROLE_GROUP, MENTALITY, PRESSING, buildSquad, autoLineup, teamOverall, shortName, starPlayers };
 }
 </script>
 <script>/* ============================================================
@@ -1821,24 +1955,65 @@ const Engine = (function () {
     m.state = 'shootout';
     return m.shootout;
   }
-  function shootoutKick(m, aim) {
+  /* Six target zones, numbered left to right, top row then bottom row,
+     from the taker's point of view. */
+  function penaltyDuel(taker, gk, shot, dive) {
+    const col = shot % 3, row = (shot / 3) | 0;
+    const skill = 0.5 + (taker.composure * 0.6 + taker.shooting * 0.4) / 200;
+    let miss = (row === 0 ? 0.16 : 0.06) + (col === 1 ? -0.03 : 0.05);
+    miss = cl(miss * (1.5 - skill), 0.01, 0.4);
+    if (rnd() < miss) {
+      const wide = col === 1 ? 0 : (col === 0 ? -1 : 1);
+      return { result: 'missed', ballZone: shot, wide, high: row === 0 };
+    }
+    const gq = gk ? 0.55 + gk.keeping / 200 : 0.6;
+    const dcol = dive % 3, drow = (dive / 3) | 0;
+    let save;
+    if (dcol === col && drow === row) save = row === 0 ? 0.35 : 0.62;
+    else if (dcol === col) save = row === 0 ? 0.12 : 0.28;
+    else if (Math.abs(dcol - col) === 1) save = row === 0 ? 0.02 : 0.08;
+    else save = 0.01;
+    if (rnd() < cl(save * gq, 0, 0.9)) return { result: 'saved', ballZone: shot };
+    return { result: 'goal', ballZone: shot };
+  }
+
+  const DIVE_WEIGHT = [0.10, 0.08, 0.10, 0.26, 0.22, 0.26];
+  function weightedPick(w) {
+    let total = 0; w.forEach(x => total += x);
+    let r = rnd() * total;
+    for (let i = 0; i < w.length; i++) { r -= w[i]; if (r <= 0) return i; }
+    return w.length - 1;
+  }
+  function aiDive() { return weightedPick(DIVE_WEIGHT); }
+  function aiShot(taker) {
+    const nerve = (taker.composure + taker.shooting) / 2;
+    const corner = cl(0.25 + nerve / 260, 0.2, 0.62);
+    const w = [corner * 0.6, 0.12, corner * 0.6, corner, 0.20, corner];
+    return weightedPick(w);
+  }
+
+  function shootoutKick(m, opts) {
     const s = m.shootout;
     if (s.done) return null;
+    opts = opts || {};
     const side = s[s.turn];
     const t = s.turn === 'home' ? m.home : m.away;
     const gk = onPitch(s.turn === 'home' ? m.away : m.home).find(p => p.group === 'GK');
     const taker = side.takers[s.idx % side.takers.length];
-    let p = cl(0.74 + (taker.composure - 60) / 300 - (gk ? (gk.keeping - 60) / 400 : 0), 0.42, 0.93);
-    if (aim && aim.aimed) p = cl(p + (aim.good ? 0.10 : -0.16), 0.3, 0.95);
-    const scored = rnd() < p;
-    side.res.push({ taker, scored });
-    if (scored) t.shootout.push(1); else t.shootout.push(0);
-    // alternate
+    const shot = opts.shotZone == null ? aiShot(taker) : opts.shotZone;
+    const dive = opts.diveZone == null ? aiDive() : opts.diveZone;
+    const duel = penaltyDuel(taker, gk, shot, dive);
+    const scored = duel.result === 'goal';
+    side.res.push({ taker, scored, shot, dive, result: duel.result });
+    t.shootout.push(scored ? 1 : 0);
+    taker.st.shots++;
+    if (scored) taker.st.goals++; else if (gk && duel.result === 'saved') { gk.st.saves++; }
     s.turn = s.turn === 'home' ? 'away' : 'home';
     if (s.turn === 'home') s.idx++;
     evaluateShootout(m);
-    return { taker, scored, team: t };
+    return { taker, keeper: gk, scored, team: t, shot, dive, result: duel.result, duel };
   }
+
   function evaluateShootout(m) {
     const s = m.shootout;
     const h = m.home.shootout, a = m.away.shootout;
@@ -1866,8 +2041,9 @@ const Engine = (function () {
       });
     });
     const all = m.home.players.concat(m.away.players).filter(p => p.st.touches > 0 || p.group === 'GK');
-    all.sort((a, b) => b.st.rating - a.st.rating);
+    all.sort((a, b) => b.st.rating - a.st.rating || b.st.goals - a.st.goals);
     m.motm = all[0] || null;
+    m.top3 = all.slice(0, 3);
   }
 
   function possessionPct(m) {
@@ -1912,6 +2088,7 @@ const Engine = (function () {
     PW, PH, POST, CY, TUNE,
     createMatch, step, startSecondHalf, beginShootout, shootoutKick,
     substitute, autoSubs, pickControlled, finalise, possessionPct, quickSim, humanTackle,
+    penaltyDuel, aiDive, aiShot,
     minute, onPitch, other, teamsOf, goalX, ownGoalX, startReplay, log
   };
 })();
@@ -2296,6 +2473,262 @@ const Renderer = (function () {
 
   return { init, draw, resize, setZoom, getZoom, pitchPointFromScreen, isPortrait, setRadarTop, setRadar, setInsets, zoomLabel, zoomCount, setNames };
 })();
+
+
+/* ============================================================
+   Penalty view — one shooter, one keeper, six corners of a goal.
+   ============================================================ */
+const PenView = (function () {
+  let cv, ctx, W = 0, H = 0, dpr = 1;
+  const G = { x: 0.13, y: 0.14, w: 0.74, h: 0.30 };   // goal mouth as a fraction of the canvas
+
+  function init(canvas) {
+    cv = canvas; ctx = cv.getContext('2d'); resize();
+    window.addEventListener('resize', resize);
+  }
+  function resize() {
+    if (!cv) return;
+    dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+    const r = cv.getBoundingClientRect();
+    W = Math.max(1, Math.round(r.width)); H = Math.max(1, Math.round(r.height));
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  function goalBox() { return { x: G.x * W, y: G.y * H, w: G.w * W, h: G.h * H }; }
+  function zonePoint(z) {
+    const g = goalBox(), col = z % 3, row = (z / 3) | 0;
+    return { x: g.x + g.w * (0.5 + (col - 1) * 0.33), y: g.y + g.h * (row === 0 ? 0.30 : 0.74) };
+  }
+  function gridRect() {
+    const g = goalBox();
+    return { left: (g.x / W * 100) + '%', top: (g.y / H * 100) + '%', width: (g.w / W * 100) + '%', height: (g.h / H * 100) + '%' };
+  }
+
+  const ease = t => t < 0 ? 0 : t > 1 ? 1 : t * t * (3 - 2 * t);
+
+  function backdrop() {
+    const g = ctx;
+    const sky = g.createLinearGradient(0, 0, 0, H * 0.55);
+    sky.addColorStop(0, '#05100b'); sky.addColorStop(1, '#0c2417');
+    g.fillStyle = sky; g.fillRect(0, 0, W, H * 0.55);
+    // crowd
+    const rows = 7, cols = Math.ceil(W / 9);
+    for (let r2 = 0; r2 < rows; r2++) {
+      for (let c = 0; c < cols; c++) {
+        const seed = (r2 * 131 + c * 79) % 11;
+        if (seed > 7) continue;
+        g.fillStyle = ['rgba(255,255,255,.09)', 'rgba(120,220,180,.09)', 'rgba(255,209,102,.07)', 'rgba(255,255,255,.05)'][seed % 4];
+        g.fillRect(c * 9 + (r2 % 2 ? 4 : 0), 6 + r2 * 12, 4, 5);
+      }
+    }
+    const grass = g.createLinearGradient(0, H * 0.42, 0, H);
+    grass.addColorStop(0, '#1a5b32'); grass.addColorStop(1, '#22703f');
+    g.fillStyle = grass; g.fillRect(0, H * 0.42, W, H * 0.58);
+    for (let i = 0; i < 7; i++) {
+      if (i % 2) continue;
+      g.fillStyle = 'rgba(255,255,255,0.028)';
+      const y0 = H * 0.42 + (H * 0.58) * (i / 7);
+      g.fillRect(0, y0, W, (H * 0.58) / 7);
+    }
+    // six yard box and the arc, in perspective
+    const gb = goalBox();
+    g.strokeStyle = 'rgba(255,255,255,0.55)'; g.lineWidth = 2;
+    g.beginPath();
+    g.moveTo(gb.x - W * 0.07, gb.y + gb.h);
+    g.lineTo(gb.x - W * 0.14, H * 0.72);
+    g.lineTo(gb.x + gb.w + W * 0.14, H * 0.72);
+    g.lineTo(gb.x + gb.w + W * 0.07, gb.y + gb.h);
+    g.stroke();
+    g.beginPath(); g.ellipse(W * 0.5, H * 0.845, W * 0.016, W * 0.007, 0, 0, Math.PI * 2);
+    g.fillStyle = 'rgba(255,255,255,0.8)'; g.fill();
+  }
+
+  function goalFrame(bulge) {
+    const g = ctx, b = goalBox();
+    const post = Math.max(4, W * 0.014);
+    // net
+    g.save();
+    g.beginPath(); g.rect(b.x, b.y, b.w, b.h); g.clip();
+    g.fillStyle = 'rgba(10,26,18,0.55)'; g.fillRect(b.x, b.y, b.w, b.h);
+    g.strokeStyle = 'rgba(255,255,255,0.20)'; g.lineWidth = 1;
+    const step = Math.max(9, b.w / 22);
+    for (let x = b.x; x <= b.x + b.w; x += step) {
+      g.beginPath();
+      if (bulge && Math.abs(x - bulge.x) < b.w * 0.16) {
+        g.moveTo(x, b.y); g.quadraticCurveTo(x + (x - bulge.x) * 0.25, bulge.y, x, b.y + b.h);
+      } else { g.moveTo(x, b.y); g.lineTo(x, b.y + b.h); }
+      g.stroke();
+    }
+    for (let y = b.y; y <= b.y + b.h; y += step) {
+      g.beginPath(); g.moveTo(b.x, y); g.lineTo(b.x + b.w, y); g.stroke();
+    }
+    g.restore();
+    // frame
+    g.fillStyle = '#f2f6f3';
+    g.fillRect(b.x - post, b.y - post, post, b.h + post);
+    g.fillRect(b.x + b.w, b.y - post, post, b.h + post);
+    g.fillRect(b.x - post, b.y - post, b.w + post * 2, post);
+  }
+
+  function keeper(p) {
+    const g = ctx, b = goalBox();
+    const baseX = b.x + b.w / 2, baseY = b.y + b.h;
+    const hgt = b.h * 0.62, wid = hgt * 0.26;
+    let dx = 0, dy = 0, rot = 0, spread = 0;
+    if (p.dive != null && (p.phase === 'flight' || p.phase === 'result')) {
+      const t = ease(p.phase === 'flight' ? p.t / 0.55 : 1);
+      const z = zonePoint(p.dive);
+      dx = (z.x - baseX) * 0.50 * t;
+      dy = (p.dive < 3 ? -b.h * 0.15 : -b.h * 0.01) * t;
+      rot = ((p.dive % 3) - 1) * 0.46 * t;
+      spread = t;
+      const limit = b.w * 0.19;
+      dx = Math.max(-limit, Math.min(limit, dx));
+    } else if (p.phase === 'runup') {
+      dx = Math.sin(p.t * 14) * b.w * 0.02;
+    }
+    g.save();
+    g.translate(baseX + dx, baseY + dy - hgt * 0.45);   // pivot at the hips, not the boots
+    g.rotate(rot);
+    g.translate(0, hgt * 0.45);
+    const kit = p.keeperKit || '#ffd166';
+    const lean = p.dive == null ? 0 : ((p.dive % 3) - 1);
+    // legs
+    g.strokeStyle = '#20242a'; g.lineWidth = Math.max(3, wid * 0.42); g.lineCap = 'round';
+    g.beginPath();
+    g.moveTo(-wid * 0.22, -hgt * 0.34); g.lineTo(-wid * (0.30 + spread * 0.9), -hgt * 0.02);
+    g.moveTo(wid * 0.22, -hgt * 0.34); g.lineTo(wid * (0.30 + spread * 0.9), -hgt * 0.02);
+    g.stroke();
+    // shorts + shirt
+    g.fillStyle = '#20242a';
+    roundRect(-wid * 0.56, -hgt * 0.46, wid * 1.12, hgt * 0.16, wid * 0.2); g.fill();
+    g.fillStyle = kit;
+    roundRect(-wid * 0.52, -hgt * 0.80, wid * 1.04, hgt * 0.38, wid * 0.26); g.fill();
+    // arms — the leading arm reaches, the trailing arm trails
+    g.strokeStyle = kit; g.lineWidth = Math.max(3.5, wid * 0.36); g.lineCap = 'round';
+    const armY = -hgt * 0.74;
+    const lead = wid * (0.9 + spread * 1.15), trail = wid * (0.9 + spread * 0.5);
+    const liftL = hgt * (0.02 + (p.dive != null && p.dive < 3 ? spread * 0.34 : -spread * 0.06));
+    g.beginPath();
+    g.moveTo(-wid * 0.42, armY);
+    g.lineTo(-(lean <= 0 ? lead : trail), armY - liftL);
+    g.moveTo(wid * 0.42, armY);
+    g.lineTo((lean >= 0 ? lead : trail), armY - liftL);
+    g.stroke();
+    g.fillStyle = '#f4f7f5';
+    g.beginPath(); g.arc(-(lean <= 0 ? lead : trail), armY - liftL, wid * 0.26, 0, Math.PI * 2); g.fill();
+    g.beginPath(); g.arc((lean >= 0 ? lead : trail), armY - liftL, wid * 0.26, 0, Math.PI * 2); g.fill();
+    // head
+    g.fillStyle = '#e8c39a';
+    g.beginPath(); g.arc(0, -hgt * 0.93, wid * 0.32, 0, Math.PI * 2); g.fill();
+    g.restore();
+  }
+
+  function taker(p) {
+    const g = ctx;
+    const spotX = W * 0.5, spotY = H * 0.84;
+    let x = spotX - W * 0.12, y = H * 0.90, lean = 0;
+    if (p.phase === 'runup') {
+      const t = ease(p.t / 0.55);
+      x = spotX - W * 0.12 + (W * 0.075) * t;
+      y = H * 0.90 - (H * 0.030) * t;
+      lean = t * 0.3;
+    } else if (p.phase !== 'aim') {
+      x = spotX - W * 0.045; y = H * 0.87; lean = 0.4;
+    }
+    const hgt = H * 0.115, wid = hgt * 0.30;
+    g.save(); g.translate(x, y); g.rotate(-lean * 0.25);
+    g.strokeStyle = '#1b1b1b'; g.lineWidth = Math.max(3, wid * 0.30); g.lineCap = 'round';
+    g.beginPath();
+    g.moveTo(-wid * 0.1, 0); g.lineTo(-wid * 0.55, hgt * 0.30);
+    g.moveTo(wid * 0.1, 0); g.lineTo(wid * (0.5 + lean), hgt * (0.30 - lean * 0.4));
+    g.stroke();
+    g.fillStyle = p.shooterKit || '#ffffff';
+    roundRect(-wid / 2, -hgt * 0.66, wid, hgt * 0.66, wid * 0.32); g.fill();
+    g.strokeStyle = p.shooterKit || '#ffffff'; g.lineWidth = Math.max(3, wid * 0.26);
+    g.beginPath(); g.moveTo(-wid * 0.3, -hgt * 0.5); g.lineTo(-wid * 1.0, -hgt * (0.35 + lean * 0.4));
+    g.moveTo(wid * 0.3, -hgt * 0.5); g.lineTo(wid * 0.95, -hgt * (0.6 - lean * 0.2)); g.stroke();
+    g.fillStyle = '#e8c39a';
+    g.beginPath(); g.arc(0, -hgt * 0.82, wid * 0.28, 0, Math.PI * 2); g.fill();
+    g.restore();
+  }
+
+  function ball(p) {
+    const g = ctx;
+    const spotX = W * 0.5, spotY = H * 0.84;
+    let x = spotX, y = spotY, r = Math.max(6, W * 0.026);
+    if (p.phase === 'flight' || p.phase === 'result') {
+      const dur = 0.52;
+      const t = Math.min(1, (p.phase === 'result' ? dur + p.t * 0.6 : p.t) / dur);
+      const z = zonePoint(p.shot);
+      let tx = z.x, ty = z.y;
+      if (p.result === 'missed') {
+        tx = z.x + (p.duel.wide || (p.shot % 3 === 1 ? 0 : 1)) * W * 0.16;
+        if (p.duel.high || p.duel.wide === 0) ty = goalBox().y - H * 0.10;
+      } else if (p.result === 'saved') {
+        const k = zonePoint(p.dive);
+        tx = z.x + (k.x - z.x) * 0.35; ty = z.y + (k.y - z.y) * 0.35;
+      }
+      const e = Math.min(1, t);
+      x = spotX + (tx - spotX) * e;
+      y = spotY + (ty - spotY) * e - Math.sin(e * Math.PI) * H * 0.05;
+      r = Math.max(4, W * 0.026 * (1 - 0.42 * e));
+      if (p.phase === 'result' && p.result === 'saved' && p.t > 0.2) {
+        const b2 = Math.min(1, (p.t - 0.2) / 0.6);
+        x += (p.dive % 3 === 0 ? -1 : 1) * W * 0.22 * b2;
+        y += H * 0.10 * b2;
+      }
+    }
+    g.beginPath(); g.ellipse(x, y + r * 1.05, r * 0.95, r * 0.42, 0, 0, Math.PI * 2);
+    g.fillStyle = 'rgba(0,0,0,0.24)'; g.fill();
+    g.beginPath(); g.arc(x, y, r, 0, Math.PI * 2);
+    g.fillStyle = '#ffffff'; g.fill();
+    g.lineWidth = Math.max(0.8, r * 0.16); g.strokeStyle = '#20301c'; g.stroke();
+    g.fillStyle = '#20301c';
+    [[0, -0.42], [-0.42, 0.25], [0.42, 0.25]].forEach(o => {
+      g.beginPath(); g.arc(x + o[0] * r, y + o[1] * r, r * 0.17, 0, Math.PI * 2); g.fill();
+    });
+    return { x, y, r };
+  }
+
+  function banner(p) {
+    if (p.phase !== 'result' || p.t < 0.25) return;
+    const g = ctx;
+    const txt = p.result === 'goal' ? 'GOAL!' : p.result === 'saved' ? 'SAVED!' : 'MISSED!';
+    const col = p.result === 'goal' ? '#4de1a0' : p.result === 'saved' ? '#ffd166' : '#ff5f6d';
+    const a = Math.min(1, (p.t - 0.25) * 6);
+    g.save(); g.globalAlpha = a; g.textAlign = 'center';
+    const size = Math.min(W * 0.155, 62);
+    g.font = '900 ' + size + 'px system-ui, sans-serif';
+    g.lineWidth = size * 0.09; g.strokeStyle = 'rgba(0,0,0,0.6)';
+    g.strokeText(txt, W / 2, H * 0.60); g.fillStyle = col;
+    g.fillText(txt, W / 2, H * 0.60);
+    g.restore();
+  }
+
+  function roundRect(x, y, w, h, r) {
+    const g = ctx; g.beginPath();
+    g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r);
+    g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath();
+  }
+
+  function draw(p) {
+    if (!ctx) return;
+    backdrop();
+    let bulge = null;
+    if (p.phase === 'result' && p.result === 'goal') {
+      const z = zonePoint(p.shot);
+      bulge = { x: z.x, y: z.y + Math.min(1, p.t * 4) * 10 };
+    }
+    goalFrame(bulge);
+    keeper(p);
+    ball(p);
+    taker(p);
+    banner(p);
+  }
+
+  return { init, resize, draw, gridRect };
+})();
 </script>
 <script>/* ============================================================
    SOCCER LEGENDS — screens, tournament and controls
@@ -2448,7 +2881,9 @@ const UI = (function () {
           <div><span>ATT</span><div class="bar"><i style="width:${t.att}%"></i></div></div>
           <div><span>MID</span><div class="bar"><i style="width:${t.mid}%"></i></div></div>
           <div><span>DEF</span><div class="bar"><i style="width:${t.def}%"></i></div></div>
-        </div>`);
+        </div>
+        <div class="stars3">${starPlayers(squadOf(t.id), 3).map(pl =>
+          `<span><b>${pl.num}</b>${pl.short}<i>${pl.ovr}</i></span>`).join('')}</div>`);
       c.onclick = () => {
         if (opp) S.oppId = t.id; else { S.myId = t.id; if (S.oppId === t.id) S.oppId = null; }
         renderTeams();
@@ -2458,6 +2893,12 @@ const UI = (function () {
     $('#teamGo').disabled = !(opp ? S.oppId : S.myId);
     $('#teamGo').textContent = (!opp && needsOpponent()) ? 'Choose the opposition'
       : (S.mode === 'shootout' && opp) ? 'To the spot' : 'Continue';
+  }
+
+  const squadCache = {};
+  function squadOf(id) {
+    if (!squadCache[id]) squadCache[id] = buildSquad(team(id));
+    return squadCache[id];
   }
 
   /* ---------------------------------------------------------- squad + formation */
@@ -2598,6 +3039,12 @@ const UI = (function () {
     return o;
   }
   const cmpRec = (A, B) => B.pts - A.pts || (B.gf - B.ga) - (A.gf - A.ga) || B.gf - A.gf;
+  function koWinner(f) {
+    if (!f.res) return f.h;
+    if (f.res.pens) return f.res.pens[0] > f.res.pens[1] ? f.h : f.a;
+    return f.res.home >= f.res.away ? f.h : f.a;
+  }
+  function koLoser(f) { return koWinner(f) === f.h ? f.a : f.h; }
 
   function myFixture() {
     const r = S.tourn.rounds[S.tourn.idx];
@@ -2653,17 +3100,29 @@ const UI = (function () {
       return;
     }
     if (cur.stage === 'ko') {
-      const winners = cur.fx.map(f => {
-        if (!f.res) return f.h;
-        if (f.res.pens) return f.res.pens[0] > f.res.pens[1] ? f.h : f.a;
-        return f.res.home >= f.res.away ? f.h : f.a;
-      });
-      if (winners.length === 1) { T.champion = winners[0]; return; }
-      const names = { 16: 'Round of 16', 8: 'Quarter-finals', 4: 'Semi-finals', 2: 'Final' };
+      const winners = cur.fx.map(koWinner);
+      const losers = cur.fx.map(koLoser);
+      if (winners.length === 2) {                     // the semi-finals have just been played
+        T.rounds.push({
+          name: 'Final weekend', stage: 'final', fx: [
+            { h: losers[0], a: losers[1], res: null, ko: true, label: 'Third place play-off' },
+            { h: winners[0], a: winners[1], res: null, ko: true, label: 'Final' }
+          ]
+        });
+        T.idx++;
+        return;
+      }
+      const names = { 16: 'Round of 16', 8: 'Quarter-finals', 4: 'Semi-finals' };
       const fx = [];
       for (let i = 0; i < winners.length; i += 2) fx.push({ h: winners[i], a: winners[i + 1], res: null, ko: true });
       T.rounds.push({ name: names[winners.length] || 'Next round', stage: 'ko', fx });
       T.idx++;
+      return;
+    }
+    if (cur.stage === 'final') {
+      const third = cur.fx[0], fin = cur.fx[1];
+      T.champion = koWinner(fin); T.runnerUp = koLoser(fin);
+      T.third = koWinner(third); T.fourth = koLoser(third);
       return;
     }
     T.idx++;
@@ -2685,7 +3144,7 @@ const UI = (function () {
       const h = team(fx.h), a = team(fx.a);
       const card = el('div', 'card');
       card.innerHTML = `<div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
-          <span class="badge">Your match</span><span class="hint" style="margin:0">${round.name}</span></div>
+          <span class="badge">Your match</span><span class="hint" style="margin:0">${fx.label || round.name}</span></div>
         <div class="ftscore" style="padding:12px 0 4px">
           <div class="t"><div class="ftkit"><i style="background:${h.c1}"></i><i style="background:${h.c2}"></i></div><div class="nm">${h.name}</div></div>
           <div class="sc" style="font-size:20px;color:var(--muted)">v</div>
@@ -2707,6 +3166,14 @@ const UI = (function () {
       b.appendChild(go);
     }
 
+    if (round.stage === 'final') {
+      const mine = myFixture();
+      if (mine && mine.label === 'Third place play-off') {
+        b.appendChild(el('p', 'hint', 'You came up short in the semi-final, but there is still a medal on the table. Win this and you finish third.'));
+      } else if (mine) {
+        b.appendChild(el('p', 'hint', 'One match from the trophy.'));
+      }
+    }
     if (T.groups) {
       const myGroup = T.groups.findIndex(g => g.teams.indexOf(S.myId) >= 0);
       b.appendChild(el('h2', null, T.rounds[T.idx].stage === 'group' ? 'Your group' : 'Groups'));
@@ -2764,10 +3231,11 @@ const UI = (function () {
 
   function bracketView() {
     const wrap = el('div', 'bracket');
-    S.tourn.rounds.filter(r => r.stage === 'ko').forEach(r => {
+    S.tourn.rounds.filter(r => r.stage === 'ko' || r.stage === 'final').forEach(r => {
       const col = el('div', 'round');
       col.appendChild(el('h3', null, r.name));
       r.fx.forEach(f => {
+        if (f.label) col.appendChild(el('div', 'tielab', f.label));
         const t = el('div', 'tie' + ((f.h === S.myId || f.a === S.myId) ? ' live' : ''));
         t.innerHTML = tieRow(f);
         col.appendChild(t);
@@ -2777,20 +3245,66 @@ const UI = (function () {
     return wrap;
   }
 
+  function playerFinish(T) {
+    if (T.champion === S.myId) return { rank: 1, text: 'Champions' };
+    if (T.runnerUp === S.myId) return { rank: 2, text: 'Runners-up' };
+    if (T.third === S.myId) return { rank: 3, text: 'Third place' };
+    if (T.fourth === S.myId) return { rank: 4, text: 'Fourth place' };
+    let last = null;
+    T.rounds.forEach(r => { if (r.fx.some(f => f.h === S.myId || f.a === S.myId)) last = r; });
+    if (!last) return { rank: null, text: 'Did not take part' };
+    if (last.stage === 'group') return { rank: null, text: 'Out in the group stage' };
+    return { rank: null, text: 'Out in the ' + last.name.toLowerCase() };
+  }
+
   function renderChampion() {
     const T = S.tourn, b = $('#hubBody');
+    b.innerHTML = '';
+    const medals = [
+      { pos: '1st', id: T.champion, col: '#ffd166', lab: 'Champions' },
+      { pos: '2nd', id: T.runnerUp, col: '#cfd8dc', lab: 'Runners-up' },
+      { pos: '3rd', id: T.third, col: '#cd8b46', lab: 'Third place' }
+    ].filter(m => m.id);
+    b.appendChild(el('div', 'trophy', '🏆'));
     const c = team(T.champion);
-    const mine = T.champion === S.myId;
-    b.innerHTML = `<div class="trophy">🏆</div>
-      <div class="center" style="margin-top:6px">
-        <div style="font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-weight:700">Champions</div>
-        <div style="font-size:30px;font-weight:900;margin-top:6px">${c.name}</div>
-        <p class="hint" style="margin-top:10px">${mine ? 'You took them all the way. Every round, every card, every substitution — that was yours.' : 'Your run ended earlier. ' + c.name + ' finished the job.'}</p>
-      </div>`;
+    b.appendChild(el('div', 'center', `<div style="font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-weight:700">Champions</div>
+      <div style="font-size:30px;font-weight:900;margin-top:4px">${c.name}</div>`));
+    b.appendChild(el('h2', null, 'Final standings'));
+    const pod = el('div', 'podium');
+    medals.forEach(m => {
+      const t = team(m.id);
+      pod.appendChild(el('div', 'pod' + (m.id === S.myId ? ' first' : ''), `
+        <span class="pl" style="color:${m.col}">${m.pos}</span>
+        <span class="dotc" style="background:${t.c1}"></span>
+        <div class="pn"><b>${t.name}</b><span>${m.lab}${m.id === S.myId ? ' · your nation' : ''}</span></div>
+        <span class="pr" style="color:${m.col}">${m.pos === '1st' ? '🥇' : m.pos === '2nd' ? '🥈' : '🥉'}</span>`));
+    });
+    if (T.fourth) {
+      const t4 = team(T.fourth);
+      pod.appendChild(el('div', 'pod', `<span class="pl">4th</span>
+        <span class="dotc" style="background:${t4.c1}"></span>
+        <div class="pn"><b>${t4.name}</b><span>Fourth place${T.fourth === S.myId ? ' · your nation' : ''}</span></div>`));
+    }
+    b.appendChild(pod);
+
+    const fin = playerFinish(T);
+    const me = team(S.myId);
+    b.appendChild(el('h2', null, 'Your tournament'));
+    b.appendChild(el('div', 'card', `<div style="display:flex;align-items:center;gap:10px">
+        <span class="dotc" style="background:${me.c1}"></span><b style="font-size:15px">${me.name}</b>
+        <span class="badge" style="margin-left:auto">${fin.text}</span></div>
+      <p class="hint" style="margin-top:8px">${
+        fin.rank === 1 ? 'You took them all the way. Every round, every card, every substitution — that was yours.'
+        : fin.rank === 2 ? 'One match short. A final is a hard thing to reach and a harder thing to lose.'
+        : fin.rank === 3 ? 'Beaten in the semi-final, but you came back and took the bronze.'
+        : fin.rank === 4 ? 'Two defeats at the end of a long run. Fourth is still further than most get.'
+        : 'The tournament carried on without you. Next time.'}</p>`));
+
     const again = el('button', 'btn primary', 'New tournament');
-    again.style.marginTop = '18px';
+    again.style.marginTop = '16px';
     again.onclick = () => { S.unavailable = {}; S.tourn = null; show('setup'); renderSetup(); };
     b.appendChild(again);
+    b.appendChild(el('h2', null, 'Knockout bracket'));
     b.appendChild(bracketView());
   }
 
@@ -2867,13 +3381,14 @@ const UI = (function () {
     });
     m.mine = homeIsMine ? m.home : m.away;
     m.theirs = homeIsMine ? m.away : m.home;
-    S.match = m; S.seenEvents = 0; S.newsQ = []; S.newsUntil = 0; S.newsGap = 0; S.speed = 1; m.speed = 1;
+    S.match = m; S.seenEvents = 0; S.newsQ = []; S.newsUntil = 0; S.newsGap = 0; m.speed = S.speed;
     $('#newsBar').className = 'news';
     Renderer.setNames(S.showNames);
     show('match');
     Renderer.resize();
     setTimeout(placeRadar, 30); setTimeout(placeRadar, 400);
     buildDock();
+    buildSpeedPanel();
     m.running = true;
     S.last = performance.now();
     if (S.raf) cancelAnimationFrame(S.raf);
@@ -2995,15 +3510,36 @@ const UI = (function () {
     }
     Renderer.setInsets(top, bottom);
   }
+  const SPEED_MIN = 1, SPEED_MAX = 3, SPEED_STEP = 0.25;
+  function setSpeed(v) {
+    S.speed = Math.round(Math.max(SPEED_MIN, Math.min(SPEED_MAX, v)) / SPEED_STEP) * SPEED_STEP;
+    if (S.match) S.match.speed = S.speed;
+    updateSpeedLabel();
+    const sl = $('#speedSlider'); if (sl) sl.value = S.speed;
+    const vv = $('#speedVal'); if (vv) vv.textContent = speedText();
+    document.querySelectorAll('#speedPanel .chip').forEach(c => c.classList.toggle('on', +c.dataset.v === S.speed));
+  }
+  const speedText = () => (S.speed % 1 === 0 ? S.speed : S.speed.toFixed(2).replace(/0$/, '')) + '×';
   function toggleSpeed() {
-    const m = S.match;
-    S.speed = S.speed === 1 ? 2 : S.speed === 2 ? 3 : 1;
-    m.speed = S.speed; updateSpeedLabel();
+    const panel = $('#speedPanel');
+    panel.classList.toggle('open');
+    if (panel.classList.contains('open')) setSpeed(S.speed);
   }
   function updateSpeedLabel() {
     const b = $('#speedBtn'); if (!b) return;
-    b.innerHTML = `<i>⚡</i>${S.speed}x speed`;
-    b.classList.toggle('on', S.speed > 1);
+    b.innerHTML = `<i>⚡</i>${speedText()}`;
+    b.classList.toggle('on', S.speed !== 1);
+  }
+  function buildSpeedPanel() {
+    const p2 = $('#speedPanel');
+    p2.innerHTML = `<div class="sprow"><b>Match speed</b><span id="speedVal">${speedText()}</span></div>
+      <input class="slider" type="range" min="${SPEED_MIN}" max="${SPEED_MAX}" step="${SPEED_STEP}" value="${S.speed}" id="speedSlider">
+      <div class="chips" style="margin-top:8px">
+        ${[1, 1.5, 2, 2.5, 3].map(v => `<div class="chip" data-v="${v}">${v}×</div>`).join('')}
+      </div>`;
+    $('#speedSlider').oninput = e => setSpeed(+e.target.value);
+    p2.querySelectorAll('.chip').forEach(c => c.onclick = () => setSpeed(+c.dataset.v));
+    setSpeed(S.speed);
   }
 
   function statsView(m) {
@@ -3140,6 +3676,11 @@ const UI = (function () {
       tabs.append(t1, t2, t3);
       w.append(tabs, body);
       setTimeout(() => t1.click(), 0);
+      const sp = el('div');
+      sp.innerHTML = `<div class="rowlab"><b>Match speed</b><span id="pauseSpeedVal">${speedText()}</span></div>
+        <input class="slider" type="range" min="${SPEED_MIN}" max="${SPEED_MAX}" step="${SPEED_STEP}" value="${S.speed}">`;
+      sp.querySelector('input').oninput = e => { setSpeed(+e.target.value); sp.querySelector('#pauseSpeedVal').textContent = speedText(); };
+      w.appendChild(sp);
       const tw2 = el('div', 'btn-row'); tw2.style.marginTop = '14px';
       const tb1 = el('button', 'btn ghost small', 'Tactics'); tb1.style.flex = '1'; tb1.onclick = () => tacticsSheet(true);
       const tb2 = el('button', 'btn ghost small', 'Substitutions'); tb2.style.flex = '1'; tb2.onclick = () => subsSheet(true);
@@ -3224,11 +3765,24 @@ const UI = (function () {
       goals.forEach(e => sc.appendChild(el('div', null, `<b>${e.min}'</b> ${e.text.replace('GOAL! ', '').replace('Own goal! ', 'OG · ')}`)));
       b.appendChild(sc);
     }
-    if (m.motm) {
-      b.appendChild(el('h2', null, 'Player of the match'));
-      b.appendChild(el('div', 'motm', `<div><div style="font-weight:750">${m.motm.name}</div>
-        <div class="hint" style="margin:2px 0 0">${m.motm.team.data.name} · ${m.motm.role} · ${m.motm.st.goals} goals, ${m.motm.st.assists} assists</div></div>
-        <div class="r">${m.motm.st.rating.toFixed(1)}</div>`));
+    if (m.top3 && m.top3.length) {
+      b.appendChild(el('h2', null, 'Top three players'));
+      const pod = el('div', 'podium');
+      const medal = ['①', '②', '③'];
+      m.top3.forEach((pl, i) => {
+        const line = [];
+        if (pl.st.goals) line.push(pl.st.goals + (pl.st.goals > 1 ? ' goals' : ' goal'));
+        if (pl.st.assists) line.push(pl.st.assists + (pl.st.assists > 1 ? ' assists' : ' assist'));
+        if (pl.group === 'GK' && pl.st.saves) line.push(pl.st.saves + ' saves');
+        if (pl.st.tacklesWon && line.length < 2) line.push(pl.st.tacklesWon + ' balls won');
+        pod.appendChild(el('div', 'pod' + (i === 0 ? ' first' : ''), `
+          <span class="pl">${medal[i]}</span>
+          <span class="dotc" style="background:${pl.team.kitA}"></span>
+          <div class="pn"><b>${pl.name}</b><span>${pl.team.data.name} · ${pl.role}${line.length ? ' · ' + line.join(', ') : ''}</span></div>
+          <span class="pr">${pl.st.rating.toFixed(1)}</span>`));
+      });
+      b.appendChild(pod);
+      if (m.motm) b.appendChild(el('p', 'hint', m.motm.name + ' takes the player of the match award.'));
     }
     b.appendChild(el('h2', null, 'Match stats'));
     b.appendChild(statsView(m));
@@ -3267,92 +3821,138 @@ const UI = (function () {
 
   function startShootout(m) {
     S.lastKick = null;
-    const s = Engine.beginShootout(m);
+    Engine.beginShootout(m);
     show('pens');
-    renderPens(m);
+    PenView.init($('#penCanvas'));
+    setTimeout(() => PenView.resize(), 30);
+    $('#penTitle').textContent = m.penOnly ? 'Penalty shootout' : m.home.data.name + ' v ' + m.away.data.name;
+    S.pen = { phase: 'aim', t: 0, shot: null, dive: null, result: null, duel: {},
+      shooterKit: m.home.kitA, keeperKit: m.away.kitGK };
+    penChrome(m);
+    if (S.penRaf) cancelAnimationFrame(S.penRaf);
+    S.penLast = performance.now();
+    penLoop();
+    nextKick(m);
   }
-  function renderPens(m) {
-    const s = m.shootout, b = $('#penBody'); b.innerHTML = '';
-    b.appendChild(el('div', 'center', `<div style="font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-weight:700">Penalties</div>
-      <div style="font-size:34px;font-weight:900;margin-top:6px">${m.home.data.id} ${m.home.shootout.reduce((x, y) => x + y, 0)} – ${m.away.shootout.reduce((x, y) => x + y, 0)} ${m.away.data.id}</div>
-      <div class="hint">${m.penOnly ? m.home.data.name + ' v ' + m.away.data.name
-        : m.home.data.name + ' ' + m.home.score + '–' + m.away.score + ' ' + m.away.data.name + ' after 90 minutes'}</div>`));
-    const pens = el('div', 'pens');
+
+  const ZONE_LABEL = ['Top left', 'High centre', 'Top right', 'Low left', 'Low centre', 'Low right'];
+
+  function penChrome(m) {
+    const hs = m.home.shootout.reduce((a, b) => a + b, 0);
+    const as = m.away.shootout.reduce((a, b) => a + b, 0);
+    $('#penScore').textContent = m.home.data.id + ' ' + hs + ' – ' + as + ' ' + m.away.data.id;
+    const s = m.shootout;
+    const tally = $('#penTally'); tally.innerHTML = '';
     [m.home, m.away].forEach(t => {
       const row = el('div', 'penrow');
-      row.innerHTML = `<span class="code"><span class="dotc" style="background:${t.data.c1};display:inline-block;margin-right:5px"></span>${t.data.id}</span>` +
+      row.innerHTML = `<span class="code"><span class="dotc" style="background:${t.kitA};display:inline-block;margin-right:5px"></span>${t.data.id}</span>` +
         Array.from({ length: Math.max(5, t.shootout.length) }, (_, i) => {
           const v = t.shootout[i];
           return `<span class="pdot ${v === 1 ? 'sc' : v === 0 ? 'ms' : ''}"></span>`;
         }).join('');
-      pens.appendChild(row);
+      tally.appendChild(row);
     });
-    b.appendChild(pens);
+    $('#penSub').textContent = s.sudden ? 'Sudden death' : 'Five kicks each, then sudden death';
+  }
 
-    if (s.done) {
-      const win = s.winner === 'home' ? m.home : m.away;
-      const mineWon = win === m.mine;
-      b.appendChild(el('div', 'center', `<div style="font-size:18px;font-weight:800;margin:10px 0 4px">${win.data.name} ${m.penOnly ? 'win it' : 'go through'}</div>
-        ${m.penOnly ? '<p class="hint">' + (mineWon ? 'Nerve held.' : 'That is how it goes from twelve yards.') + '</p>' : ''}`));
-      if (m.penOnly) {
-        const again = el('button', 'btn primary', 'Go again');
-        again.style.marginTop = '12px';
-        again.onclick = () => startShootoutOnly();
-        b.appendChild(again);
-        const other = el('button', 'btn ghost', 'Different opponent');
-        other.style.marginTop = '8px';
-        other.onclick = () => { S.pickStage = 'opp'; show('teams'); renderTeams(); };
-        b.appendChild(other);
-        const home = el('button', 'btn ghost', 'Back to the menu');
-        home.style.marginTop = '8px';
-        home.onclick = () => { S.match = null; S.penOnly = false; S.tourn = null; show('home'); };
-        b.appendChild(home);
-        b.appendChild(el('h2', null, 'Every kick'));
-        const log = el('div', 'stack');
-        ['home', 'away'].forEach(k => {
-          const t = k === 'home' ? m.home : m.away;
-          s[k].res.forEach((r, i) => log.appendChild(el('div', 'tick',
-            `<b>${t.data.id}</b> ${r.taker.short || r.taker.name} — ${r.scored ? 'scored' : 'missed'}`)));
-        });
-        b.appendChild(log);
-        return;
-      }
-      const go = el('button', 'btn primary', 'Continue');
-      go.style.marginTop = '12px';
-      go.onclick = () => {
-        const pensArr = [m.home.shootout.reduce((x, y) => x + y, 0), m.away.shootout.reduce((x, y) => x + y, 0)];
-        recordAndShow(m, pensArr);
-      };
-      b.appendChild(go);
-      return;
+  function penLoop() {
+    S.penRaf = requestAnimationFrame(penLoop);
+    const now = performance.now();
+    const dt = Math.min(0.05, (now - S.penLast) / 1000); S.penLast = now;
+    const p = S.pen, m = S.match;
+    if (!p || !m) return;
+    p.t += dt;
+    if (p.phase === 'runup' && p.t > 0.55) { p.phase = 'flight'; p.t = 0; }
+    else if (p.phase === 'flight' && p.t > 0.55) {
+      p.phase = 'result'; p.t = 0;
+      penChrome(m);
+      const r = p.last;
+      $('#penTag').innerHTML = r ? `<b style="color:${r.result === 'goal' ? 'var(--accent)' : r.result === 'saved' ? 'var(--gold)' : 'var(--danger)'}">${r.taker.short || r.taker.name}</b>` : '';
     }
-    if (S.lastKick) {
-      b.appendChild(el('div', 'center', `<div style="font-size:15px;font-weight:750;margin:10px 0 2px;color:${S.lastKick.scored ? 'var(--accent)' : 'var(--danger)'}">
-        ${S.lastKick.taker.name} — ${S.lastKick.scored ? 'scores' : 'misses'}</div>`));
-    }
-    const turnTeam = s.turn === 'home' ? m.home : m.away;
-    const mineTurn = turnTeam === m.mine;
+    else if (p.phase === 'result' && !p.done && p.t > 1.7) { nextKick(m); }
+    else if (p.phase === 'aim' && p.auto && p.t > 0.8) { takeKick(m, null); }
+    PenView.draw(p);
+  }
+
+  function nextKick(m) {
+    const s = m.shootout;
+    const grid = $('#aimGrid'), ctrl = $('#penCtrl'), tag = $('#penTag');
+    grid.classList.remove('on'); grid.innerHTML = ''; ctrl.innerHTML = '';
+    if (s.done) { penFinish(m); return; }
+    const shooting = (s.turn === 'home' ? m.home : m.away);
     const side = s[s.turn];
     const taker = side.takers[s.idx % side.takers.length];
-    b.appendChild(el('div', 'center hint', `${turnTeam.data.name} to take · ${taker ? taker.name : ''}`));
-    if (mineTurn && S.control !== 'spectator') {
-      const grid = el('div', 'aimgrid');
-      [['Top left', 1], ['Top middle', 0], ['Top right', 1], ['Low left', 1], ['Low middle', 0], ['Low right', 1]].forEach(([lab, good]) => {
-        const btn = el('button', '', lab);
-        btn.onclick = () => { kick(m, { aimed: true, good: good === 1 && Math.random() < 0.7 }); };
-        grid.appendChild(btn);
-      });
-      b.appendChild(grid);
-      b.appendChild(el('p', 'hint center', 'Corners are harder for the keeper but easier to drag wide.'));
+    const keeper = Engine.onPitch(shooting === m.home ? m.away : m.home).find(p => p.group === 'GK');
+    const mineShooting = shooting === m.mine;
+    const watching = S.control === 'spectator';
+    S.pen = {
+      phase: 'aim', t: 0, shot: null, dive: null, result: null, duel: {},
+      shooterKit: shooting.kitA, keeperKit: (shooting === m.home ? m.away : m.home).kitGK,
+      auto: watching, last: null
+    };
+    const box = PenView.gridRect();
+    Object.assign(grid.style, box);
+    tag.innerHTML = `<b>${taker.short || taker.name}</b> <span>· ${shooting.data.name}</span>`;
+    if (watching) {
+      ctrl.innerHTML = '<p class="hint center" style="margin:0">Watching the shootout.</p>';
+      return;
+    }
+    if (mineShooting) {
+      ctrl.innerHTML = `<p class="hint center" style="margin:0 0 2px"><b style="color:var(--ink)">${taker.short || taker.name}</b> steps up. Pick your corner.</p>`;
+      buildGrid(grid, z => takeKick(m, { shotZone: z }));
     } else {
-      const go = el('button', 'btn primary', 'Take the kick');
-      go.onclick = () => kick(m, null);
-      b.appendChild(go);
+      ctrl.innerHTML = `<p class="hint center" style="margin:0 0 2px"><b style="color:var(--ink)">${keeper ? (keeper.short || keeper.name) : 'Your keeper'}</b> is on the line. Where do you dive?</p>`;
+      buildGrid(grid, z => takeKick(m, { diveZone: z }));
     }
   }
-  function kick(m, aim) {
-    S.lastKick = Engine.shootoutKick(m, aim);
-    renderPens(m);
+
+  function buildGrid(grid, fn) {
+    ZONE_LABEL.forEach((lab, z) => {
+      const b = el('button', '', lab);
+      b.onclick = () => { grid.classList.remove('on'); fn(z); };
+      grid.appendChild(b);
+    });
+    grid.classList.add('on');
+  }
+
+  function takeKick(m, opts) {
+    const r = Engine.shootoutKick(m, opts || {});
+    if (!r) return;
+    const p = S.pen;
+    p.phase = 'runup'; p.t = 0;
+    p.shot = r.shot; p.dive = r.dive; p.result = r.result; p.duel = r.duel || {};
+    p.last = r;
+    $('#penCtrl').innerHTML = '';
+    $('#aimGrid').classList.remove('on');
+  }
+
+  function penFinish(m) {
+    const s = m.shootout;
+    if (S.pen) S.pen.done = true;          // the scene freezes here; stop rebuilding it
+    const win = s.winner === 'home' ? m.home : m.away;
+    const mineWon = win === m.mine;
+    const ctrl = $('#penCtrl');
+    $('#penTag').innerHTML = `<b>${win.data.name} ${m.penOnly ? 'win it' : 'go through'}</b>`;
+    ctrl.innerHTML = `<p class="hint center" style="margin:0 0 10px">${win.data.name} ${m.penOnly ? 'win the shootout' : 'go through'}${m.penOnly ? '. ' + (mineWon ? 'Nerve held.' : 'That is how it goes from twelve yards.') : ''}</p>`;
+    if (m.penOnly) {
+      const again = el('button', 'btn primary', 'Go again');
+      again.onclick = () => { if (S.penRaf) cancelAnimationFrame(S.penRaf); startShootoutOnly(); };
+      ctrl.appendChild(again);
+      const row = el('div', 'btn-row'); row.style.marginTop = '8px';
+      const other = el('button', 'btn ghost small', 'Different opponent'); other.style.flex = '1';
+      other.onclick = () => { if (S.penRaf) cancelAnimationFrame(S.penRaf); S.pickStage = 'opp'; show('teams'); renderTeams(); };
+      const home = el('button', 'btn ghost small', 'Menu'); home.style.flex = '1';
+      home.onclick = () => { if (S.penRaf) cancelAnimationFrame(S.penRaf); S.match = null; S.penOnly = false; S.tourn = null; show('home'); };
+      row.append(other, home); ctrl.appendChild(row);
+      return;
+    }
+    const go = el('button', 'btn primary', 'Continue');
+    go.onclick = () => {
+      if (S.penRaf) cancelAnimationFrame(S.penRaf);
+      const pens = [m.home.shootout.reduce((x, y) => x + y, 0), m.away.shootout.reduce((x, y) => x + y, 0)];
+      recordAndShow(m, pens);
+    };
+    ctrl.appendChild(go);
   }
 
   /* ---------------------------------------------------------- arcade input */
@@ -3496,6 +4096,10 @@ const UI = (function () {
         <p class="hint">Fouls are judged on where and how they happen. A cynical trip on a player through on goal is treated far more seriously than a nudge in midfield. Two yellows is a red, and a sending off keeps that player out of your next match.</p>
         <h2>The competitions</h2>
         <p class="hint">The World Cup runs the real format: twelve groups of four, the top two from each plus the eight best third-placed teams into a round of 32, then knockout to the final. The Champions Cup is a straight knockout between the sixteen strongest nations. A friendly is one match against anyone you pick, and the shootout takes you straight to the spot.</p>
+        <h2>Penalties</h2>
+        <p class="hint">A shootout is played out rather than simulated. When your side is on the spot you pick one of six corners; when you are facing one you pick where to dive. Low corners are the hardest for a keeper to reach but the easiest to drag wide, and going down the middle only works while the keeper is still committing himself. Guess right as a keeper and you have a real chance of a save.</p>
+        <h2>Speed</h2>
+        <p class="hint">Match speed runs from normal up to three times, in quarter steps. Nudge it up when a match is settled and back down when it matters.</p>
         <h2>Reading the numbers</h2>
         <p class="hint">Expected goals tells you how good the chances were, not how many went in. A team can lose 2-0 having created the better game — and the ratings will show it.</p>`;
       return w;
