@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="en"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>Marble Derby</title>
@@ -289,7 +287,7 @@ td .dot{width:16px;height:16px;border-radius:50%;display:inline-block;vertical-a
 <!-- ============ SETUP ============ -->
 <section id="setup" class="screen on">
   <div class="brand">
-    <div class="logo-marbles" id="logoM"></div>
+    <div class="logo-marbles" id="logoM"><span class="lm" style="background:radial-gradient(circle at 34% 30%,rgb(255,211,215),#ff4d5e 45%,rgb(128,39,47))"></span><span class="lm" style="background:radial-gradient(circle at 34% 30%,rgb(255,244,201),#ffd426 45%,rgb(128,106,19))"></span><span class="lm" style="background:radial-gradient(circle at 34% 30%,rgb(200,244,251),#22d3ee 45%,rgb(17,106,119))"></span><span class="lm" style="background:radial-gradient(circle at 34% 30%,rgb(226,214,253),#8b5cf6 45%,rgb(70,46,123))"></span></div>
     <h1>Marble&nbsp;Derby</h1>
   </div>
   <p class="tag">Overhead marble racing. One grid line, one distance, one set of rules for everyone.</p>
@@ -300,7 +298,7 @@ td .dot{width:16px;height:16px;border-radius:50%;display:inline-block;vertical-a
       <div class="preview"><canvas id="pvC" width="152" height="152"></canvas></div>
       <div class="grow">
         <input type="text" id="pName" maxlength="12" value="You" placeholder="Name your marble">
-        <div class="swatches" id="swatches"></div>
+        <div class="swatches" id="swatches"><button class="sw" style="background: rgb(255, 77, 94);"></button><button class="sw" style="background: rgb(255, 138, 61);"></button><button class="sw" style="background: rgb(255, 212, 38);"></button><button class="sw" style="background: rgb(168, 232, 36);"></button><button class="sw" style="background: rgb(62, 232, 107);"></button><button class="sw on" style="background: rgb(34, 211, 238);"></button><button class="sw" style="background: rgb(59, 130, 246);"></button><button class="sw" style="background: rgb(139, 92, 246);"></button><button class="sw" style="background: rgb(224, 76, 224);"></button><button class="sw" style="background: rgb(255, 95, 162);"></button><button class="sw" style="background: rgb(248, 250, 252);"></button><button class="sw" style="background: rgb(148, 163, 184);"></button><button class="sw" style="background: rgb(14, 165, 160);"></button><button class="sw" style="background: rgb(244, 114, 182);"></button><button class="sw" style="background: rgb(250, 204, 21);"></button><button class="sw" style="background: rgb(74, 222, 128);"></button><button class="sw" style="background: rgb(96, 165, 250);"></button><button class="sw" style="background: rgb(192, 132, 252);"></button><button class="sw" style="background: rgb(251, 146, 60);"></button><button class="sw" style="background: rgb(45, 212, 191);"></button><button class="sw" style="background: rgb(225, 29, 72);"></button><button class="sw" style="background: rgb(132, 204, 22);"></button><label class="sw custom">🎨<input type="color" value="#22d3ee"></label></div>
       </div>
     </div>
   </div>
@@ -325,16 +323,44 @@ td .dot{width:16px;height:16px;border-radius:50%;display:inline-block;vertical-a
       <span class="muted">Tap a marble to recolour or rename it</span>
     </div>
     <div class="sp"></div>
-    <div class="roster" id="roster"></div>
+    <div class="roster" id="roster"><button class="chip me"><span class="dot" style="background:#22d3ee"></span>
+      <span class="nm grow">You</span><span class="tagme">YOU</span></button><button class="chip"><span class="dot" style="background:#ff4d5e"></span>
+      <span class="nm grow">Waffle</span></button><button class="chip"><span class="dot" style="background:#ff8a3d"></span>
+      <span class="nm grow">Nugget</span></button><button class="chip"><span class="dot" style="background:#ffd426"></span>
+      <span class="nm grow">Zippy</span></button><button class="chip"><span class="dot" style="background:#a8e824"></span>
+      <span class="nm grow">Whizz</span></button><button class="chip"><span class="dot" style="background:#3ee86b"></span>
+      <span class="nm grow">Sizzle</span></button><button class="chip"><span class="dot" style="background:#3b82f6"></span>
+      <span class="nm grow">Coco</span></button><button class="chip"><span class="dot" style="background:#8b5cf6"></span>
+      <span class="nm grow">Luna</span></button></div>
   </div>
 
   <div class="card">
-    <h2><span class="n">3</span> Circuit <span id="courseCount" class="muted" style="letter-spacing:0;margin-left:auto;text-transform:none"></span></h2>
+    <h2><span class="n">3</span> Circuit <span id="courseCount" class="muted" style="letter-spacing:0;margin-left:auto;text-transform:none">20 circuits</span></h2>
     <div class="row" style="margin-bottom:11px">
       <button class="btn sm" id="randCourse">🎲 Random each race</button>
       <span class="muted" id="randNote"></span>
     </div>
-    <div class="courses" id="courses"></div>
+    <div class="courses" id="courses"><button class="cc on"><canvas width="308" height="252"></canvas><div class="t">🌅 Sunrise Oval</div>
+      <div class="d"><span>Wide, fast, friendly</span><span class="stars">★</span></div></button><button class="cc"><canvas width="308" height="252"></canvas><div class="t">🥜 Peanut Pass</div>
+      <div class="d"><span>Two loops pinched in the middle</span><span class="stars">★★</span></div></button><button class="cc"><canvas width="308" height="252"></canvas><div class="t">🍀 Clover Corners</div>
+      <div class="d"><span>Four big sweeping bends</span><span class="stars">★★★</span></div></button><button class="cc"><canvas width="308" height="252"></canvas><div class="t">🔴 Bumper Boulevard</div>
+      <div class="d"><span>Posts everywhere, chaos guaranteed</span><span class="stars">★★★</span></div></button><button class="cc"><canvas width="308" height="252"></canvas><div class="t">⚡ Boost Alley</div>
+      <div class="d"><span>Find the arrows, hold on</span><span class="stars">★★</span></div></button><button class="cc"><canvas width="308" height="252"></canvas><div class="t">🟤 Mud Flats</div>
+      <div class="d"><span>Pick a clean line or wallow</span><span class="stars">★★★</span></div></button><button class="cc"><canvas width="308" height="252"></canvas><div class="t">❄️ Frost Ring</div>
+      <div class="d"><span>No grip, all slide</span><span class="stars">★★★★</span></div></button><button class="cc"><canvas width="308" height="252"></canvas><div class="t">🌬️ Windmill Plaza</div>
+      <div class="d"><span>Spinning arms across the road</span><span class="stars">★★★★</span></div></button><button class="cc"><canvas width="308" height="252"></canvas><div class="t">⛰️ Zigzag Gorge</div>
+      <div class="d"><span>Narrow, twisty, elbows out</span><span class="stars">★★★★</span></div></button><button class="cc"><canvas width="308" height="252"></canvas><div class="t">🔄 Roundabout Rally</div>
+      <div class="d"><span>Long islands, choose a side</span><span class="stars">★★★</span></div></button><button class="cc"><canvas width="308" height="252"></canvas><div class="t">🌋 Lava Loop</div>
+      <div class="d"><span>Boost, sand, spinners, no mercy</span><span class="stars">★★★★★</span></div></button><button class="cc"><canvas width="308" height="252"></canvas><div class="t">🎆 Grand Chaos</div>
+      <div class="d"><span>Every trick on one long lap</span><span class="stars">★★★★★</span></div></button><button class="cc"><canvas width="308" height="252"></canvas><div class="t">🐠 Ribbon Reef</div>
+      <div class="d"><span>Long flowing curves</span><span class="stars">★★</span></div></button><button class="cc"><canvas width="308" height="252"></canvas><div class="t">🌵 Cactus Curl</div>
+      <div class="d"><span>Sandy edges, tight elbows</span><span class="stars">★★★</span></div></button><button class="cc"><canvas width="308" height="252"></canvas><div class="t">🔮 Neon Knot</div>
+      <div class="d"><span>Wiggle after wiggle</span><span class="stars">★★★★</span></div></button><button class="cc"><canvas width="308" height="252"></canvas><div class="t">🍭 Sugar Rush</div>
+      <div class="d"><span>Boost after boost after boost</span><span class="stars">★★</span></div></button><button class="cc"><canvas width="308" height="252"></canvas><div class="t">⛈️ Storm Chase</div>
+      <div class="d"><span>Puddles and spinning arms</span><span class="stars">★★★★</span></div></button><button class="cc"><canvas width="308" height="252"></canvas><div class="t">☄️ Comet Trail</div>
+      <div class="d"><span>Fast, open, long straights</span><span class="stars">★★★</span></div></button><button class="cc"><canvas width="308" height="252"></canvas><div class="t">💚 Emerald Eight</div>
+      <div class="d"><span>Two big loops, one waist</span><span class="stars">★★★</span></div></button><button class="cc"><canvas width="308" height="252"></canvas><div class="t">🔥 Ember Ridge</div>
+      <div class="d"><span>Everything, and then some</span><span class="stars">★★★★★</span></div></button></div>
   </div>
 
   <div class="card">
@@ -363,7 +389,8 @@ td .dot{width:16px;height:16px;border-radius:50%;display:inline-block;vertical-a
     </div>
     <div class="sp"></div>
     <div class="row">
-      <button class="btn sm" id="sndBtn">🔊 Sound on</button>
+      <button class="btn sm on" id="sndBtn">🔊 Effects on</button>
+      <button class="btn sm on" id="musBtn">🎵 Music on</button>
       <button class="btn sm" id="camBtn">🎥 Follow the pack</button>
       <button class="btn sm" id="statsBtn">📊 Stats</button>
     </div>
@@ -403,7 +430,7 @@ td .dot{width:16px;height:16px;border-radius:50%;display:inline-block;vertical-a
   </div>
   <div class="replay hidden" id="replayBar">
     <button class="btn sm" id="rpPlay">⏸</button>
-    <input type="range" id="rpSeek" min="0" max="100" value="100">
+    <input type="range" id="rpSeek" min="0" max="1000" value="100">
     <span class="muted" id="rpTime" style="font-variant-numeric:tabular-nums">0.0s</span>
     <button class="btn sm" id="rpSpeed">1×</button>
     <button class="btn sm" id="rpExit">Done</button>
@@ -499,7 +526,15 @@ const TH = {
   jungle: {g1:'#08240f',g2:'#215c1c',road:'#2c3a2b',line:'#e6ffcf',accent:'#8ee02a',wall:'#c8f08a',deco:'leaf'},
   dusk:   {g1:'#181034',g2:'#4b1f6b',road:'#33294d',line:'#f0dcff',accent:'#e04ce0',wall:'#e3c6ff',deco:'star'},
   steel:  {g1:'#10151f',g2:'#2b3646',road:'#333c49',line:'#e6edf7',accent:'#facc15',wall:'#cbd5e1',deco:'plate'},
-  desert: {g1:'#3d2410',g2:'#9a6b28',road:'#4a3d2c',line:'#ffe9c2',accent:'#ffd166',wall:'#ffdca8',deco:'dune'}
+  desert: {g1:'#3d2410',g2:'#9a6b28',road:'#4a3d2c',line:'#ffe9c2',accent:'#ffd166',wall:'#ffdca8',deco:'dune'},
+  reef:   {g1:'#04202e',g2:'#0d6e7a',road:'#20444f',line:'#c9fff4',accent:'#3ee8c8',wall:'#a6f5e6',deco:'bubble'},
+  cactus: {g1:'#20300f',g2:'#5f7a24',road:'#3a4128',line:'#f0ffd0',accent:'#c9e85a',wall:'#e2f7a8',deco:'grass'},
+  cyber:  {g1:'#0d0620',g2:'#4a0f6b',road:'#251a45',line:'#8ff0ff',accent:'#ff3ec8',wall:'#66e5ff',deco:'grid'},
+  sugar:  {g1:'#4a1230',g2:'#c25a8a',road:'#4e3243',line:'#fff0f6',accent:'#ffc2e0',wall:'#ffe3f0',deco:'sprinkle'},
+  storm:  {g1:'#0c1524',g2:'#2c4a68',road:'#2e3a4a',line:'#dbeeff',accent:'#7fd0ff',wall:'#c4dcf0',deco:'plate'},
+  comet:  {g1:'#0a0620',g2:'#2e2360',road:'#2a2452',line:'#ecdcff',accent:'#a5b4ff',wall:'#d8d2ff',deco:'star'},
+  emerald:{g1:'#052a1c',g2:'#12764a',road:'#22423a',line:'#d8ffe8',accent:'#4de89a',wall:'#b6f5d4',deco:'leaf'},
+  ridge:  {g1:'#2a0a08',g2:'#8a3210',road:'#40302a',line:'#ffd6b8',accent:'#ff7a3d',wall:'#ffc09a',deco:'ember'}
 };
 
 /* ---------- closed centripetal Catmull–Rom, resampled by arc length ---------- */
@@ -594,7 +629,7 @@ function buildTrack(ti, rev) {
   retangent();
 
   /* iron the circuit until no corner is tighter than a marble pack can take */
-  for (let pass = 0; pass < 40; pass++) {
+  for (let pass = 0; pass < 150; pass++) {
     let minR = 1e9;
     for (let i = 0; i < N; i++) minR = Math.min(minR, T.rad[i]);
     if (minR >= 132) break;
@@ -685,9 +720,9 @@ function buildTrack(ti, rev) {
         else for (const q of p.pts) near.push(q);
       }
       let bi = idx(f), best = -1e9, bw = T.w[bi];
-      for (let k = -18; k <= 18; k++) {
+      for (let k = -9; k <= 9; k++) {
         const j = ((idx(f) + k) % N + N) % N;
-        let sc = T.w[j] - Math.abs(k) * 1.5;
+        let sc = T.w[j] - Math.abs(k) * 4;
         for (const q of near) {
           const d = Math.hypot(T.x[j] - q[0], T.y[j] - q[1]);
           if (d < 170) sc -= (170 - d) * 4;
@@ -706,8 +741,8 @@ function buildTrack(ti, rev) {
   /* Turnstiles. These are what keep the racing honest: each one holds the pack
      briefly and lets it out in a fresh order, so a good grid slot is worth
      nothing by the second corner. Their starting angle is random every race. */
-  for (let k = 0; k < CFG.gate; k++)
-    F.gate(.26 + k * (.70 / CFG.gate) + ti * .013, (k % 2 ? 1 : -1) * CFG.gateOm);
+  for (let k = 0; k < CFG.gate; k++)                       // kept well clear of the start grid
+    F.gate(.22 + (k + .5) * (.56 / CFG.gate) + (ti % 4) * .012, (k % 2 ? 1 : -1) * CFG.gateOm);
   for (let k = 0; k < CFG.zebra; k++) F.zebra(.22 + k * (.74 / CFG.zebra), .22 + k * (.74 / CFG.zebra) + .05, 6);
 
   pruneObstacles(T);
@@ -884,7 +919,62 @@ const TRACKS = [
     F.strip(.44,.50,I); F.strip(.60,.66,B,.05,1); F.strip(.78,.83,S,-1,-.05);
     F.spin(.36,0,110,2.2); F.spin(.72,0,110,-2.2);
     F.island(.20,0,280,30); F.chic(.90,4,150);
-    for(let k=0;k<5;k++) F.post(k/5*.16+.52,(k%2?1:-1)*.45,22); }}
+    for(let k=0;k<5;k++) F.post(k/5*.16+.52,(k%2?1:-1)*.45,22); }},
+
+{ name:'Ribbon Reef', emoji:'🐠', diff:2, laps:3, w:320, theme:TH.reef,
+  blurb:'Long flowing curves',
+  pts: ringLoop(0,0,760,470,20,[[3,.14,1.2],[2,.07,.3]]),
+  feats(F){ F.strip(.14,.21,B,-1,-.05); F.strip(.56,.63,B,.05,1);
+    F.strip(.37,.40,I,-1,1); F.strip(.40,.45,B,-.4,.4); F.island(.80,0,260,28);
+    for(let k=0;k<3;k++) F.post(k/3+.08,(k%2?1:-1)*.4,20); }},
+
+{ name:'Cactus Curl', emoji:'🌵', diff:3, laps:3, w:310, theme:TH.cactus,
+  blurb:'Sandy edges, tight elbows',
+  pts: ringLoop(0,0,700,550,22,[[5,.085,.9],[2,.07,.4]]),
+  feats(F){ F.strip(.12,.155,S,-1,-.2); F.strip(.62,.655,S,.2,1);
+    F.strip(.30,.36,B,.05,1); F.strip(.80,.86,B,-1,-.05);
+    for(let k=0;k<4;k++) F.post(k/4+.05,(k%2?1:-1)*.42,20); }},
+
+{ name:'Neon Knot', emoji:'🔮', diff:4, laps:3, w:345, theme:TH.cyber,
+  blurb:'Wiggle after wiggle',
+  pts: ringLoop(0,0,720,530,24,[[6,.07,1.7],[3,.09,.2]]),
+  feats(F){ F.chic(.16,4,170);
+    F.strip(.30,.36,B,-1,-.05); F.strip(.72,.78,B,.05,1);
+    for(let k=0;k<3;k++) F.post(k/3+.52,(k%2?1:-1)*.4,20); }},
+
+{ name:'Sugar Rush', emoji:'🍭', diff:2, laps:3, w:330, theme:TH.sugar,
+  blurb:'Boost after boost after boost',
+  pts: ringLoop(0,0,780,450,20,[[3,.13,2.8],[1,.09,.6]]),
+  feats(F){ for(let k=0;k<6;k++) F.strip(k/6+.04,k/6+.10,B,k%2?-1:.05,k%2?-.05:1);
+    F.island(.50,0,280,30); F.post(.22,.4,22); F.post(.70,-.4,22); }},
+
+{ name:'Storm Chase', emoji:'⛈️', diff:4, laps:3, w:320, theme:TH.storm,
+  blurb:'Puddles and spinning arms',
+  pts: ringLoop(0,0,720,520,20,[[4,.12,.7],[2,.07,2.4]]),
+  feats(F){ F.spin(.30,0,120,2.3); F.spin(.74,0,120,-2.3);
+    F.strip(.10,.17,M,-1,-.05); F.strip(.52,.59,M,.05,1);
+    F.strip(.40,.46,B,-.3,.3); for(let k=0;k<4;k++) F.post(k/4+.08,(k%2?1:-1)*.45,21); }},
+
+{ name:'Comet Trail', emoji:'☄️', diff:3, laps:3, w:330, theme:TH.comet,
+  blurb:'Fast, open, long straights',
+  pts: ringLoop(0,0,820,430,20,[[3,.12,.15],[1,.10,2.1]]),
+  feats(F){ F.strip(.08,.16,B,-1,-.05); F.strip(.44,.52,B,.05,1); F.strip(.76,.84,B,-.3,.3);
+    F.island(.30,0,340,32); F.island(.64,0,300,32); F.post(.94,.42,22); }},
+
+{ name:'Emerald Eight', emoji:'💚', diff:3, laps:3, w:310, theme:TH.emerald,
+  blurb:'Two big loops, one waist',
+  pts: ringLoop(0,0,790,470,22,[[2,.155,1.57],[4,.07,.4]]),
+  feats(F){ F.island(.26,0,260,30); F.island(.76,0,260,30);
+    F.strip(.46,.53,B,-1,-.05); F.strip(.90,.96,M,.05,1);
+    for(let k=0;k<4;k++) F.post(k/4+.09,(k%2?1:-1)*.45,21); }},
+
+{ name:'Ember Ridge', emoji:'🔥', diff:5, laps:3, w:300, theme:TH.ridge,
+  blurb:'Everything, and then some',
+  pts: ringLoop(0,0,740,530,22,[[5,.11,2.2],[3,.09,.8]]),
+  feats(F){ F.spin(.24,0,116,2.5); F.spin(.66,0,116,-2.5);
+    F.strip(.12,.18,S,-1,-.05); F.strip(.34,.41,B,.05,1);
+    F.strip(.54,.60,M,-1,-.05); F.strip(.84,.90,B,-.35,.35);
+    F.chic(.44,4,150); F.island(.94,0,240,28); }}
 ];
 /* =====================================================================
    PHYSICS — top-down. The table is tilted along the track, so every
@@ -910,7 +1000,7 @@ function createRace(trackIdx, roster, laps, T0) {
   const marbles = roster.map((r, i) => ({
     i, name: r.name, color: r.color, me: !!r.me,
     x: T.x[0] + nx * lanes[i] + rnd(-2.5, 2.5), y: T.y[0] + ny * lanes[i] + rnd(-2.5, 2.5),
-    vx: rnd(-14, 14), vy: rnd(-14, 14), r: rad, rot: rnd(0, TAU), spin: 0,
+    vx: 0, vy: 0, r: rad, rot: rnd(0, TAU), spin: 0,
     si: 0, s: 0, lap: 0, prog: 0, lat: lanes[i], lane: lanes[i],
     fin: false, finT: 0, place: 0, ghost: 0, slow: 0, nudge: 0,
     best: -1e9, stall: 0, pass: 0, surf: 0, spd: 0, trail: []
@@ -1024,8 +1114,15 @@ function collideMarbles(R) {
 
 function stepRace(R, dt) {
   if (R.ended) return;
-  if (R.phase === 'cd') { R.cd -= dt; if (R.cd <= 0) R.phase = 'run'; }
-  const T = R.T, h = dt / SUB, live = R.phase === 'run';
+  const T = R.T, h = dt / SUB;
+  if (R.phase === 'cd') {
+    R.cd -= dt;
+    for (let sb = 0; sb < SUB; sb++) updateActs(R, h);   // gates turn, the grid does not
+    if (R.cd > 0) return;
+    R.phase = 'run';
+    for (const m of R.marbles) { m.vx = rnd(-12, 12); m.vy = rnd(-12, 12); }
+  }
+  const live = R.phase === 'run';
   T.zphase = Math.sin(R.t * CFG.zspeed + T.zoff);
   for (let sb = 0; sb < SUB; sb++) {
     updateActs(R, h);
@@ -1457,7 +1554,7 @@ const DPR = Math.min(2, window.devicePixelRatio || 1);
 const state = {
   player: { name: 'You', color: '#22d3ee' },
   count: 8, roster: [], trackIdx: 0, randTrack: false, laps: 2,
-  mode: 'single', champN: 5, sound: true, cam: 'pack',
+  mode: 'single', champN: 5, sound: true, music: true, cam: 'pack',
   champ: null,
   stats: { races: 0, wins: {}, recs: {}, log: [] }
 };
@@ -1470,29 +1567,171 @@ let commHist = [], lastLeader = -1, commT = 0, stuckSaid = {};
 function trackOf(i, rev) { const k = i + (rev ? 'r' : ''); 
   return trackCache[k] || (trackCache[k] = buildTrack(i, rev)); }
 
-/* ================= AUDIO ================= */
-let AC = null, lastClink = 0;
-function audio() { if (!AC) { try { AC = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { } }
-  if (AC && AC.state === 'suspended') AC.resume(); return AC; }
-function beep(freq, dur, type, vol, when) {
-  if (!state.sound) return; const ac = audio(); if (!ac) return;
-  const t0 = ac.currentTime + (when || 0);
-  const o = ac.createOscillator(), g = ac.createGain();
-  o.type = type || 'triangle'; o.frequency.setValueAtTime(freq, t0);
-  g.gain.setValueAtTime(0, t0);
-  g.gain.linearRampToValueAtTime(vol == null ? .16 : vol, t0 + .008);
-  g.gain.exponentialRampToValueAtTime(.0001, t0 + dur);
-  o.connect(g); g.connect(ac.destination); o.start(t0); o.stop(t0 + dur + .02);
+/* =====================================================================
+   AUDIO — everything is synthesised, so the file stays self-contained.
+   Two buses: music and effects, each with its own switch.
+   ===================================================================== */
+let AC = null, MASTER = null, MUSG = null, SFXG = null, NOISE = null, lastClink = 0;
+function audio() {
+  if (!AC) {
+    try { AC = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return null; }
+    MASTER = AC.createGain(); MASTER.gain.value = .85;
+    const comp = AC.createDynamicsCompressor();
+    comp.threshold.value = -14; comp.ratio.value = 6;
+    MASTER.connect(comp); comp.connect(AC.destination);
+    MUSG = AC.createGain(); MUSG.gain.value = state.music ? .3 : 0; MUSG.connect(MASTER);
+    SFXG = AC.createGain(); SFXG.gain.value = state.sound ? .9 : 0; SFXG.connect(MASTER);
+    const n = AC.sampleRate * 1.2; NOISE = AC.createBuffer(1, n, AC.sampleRate);
+    const d = NOISE.getChannelData(0);
+    for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
+  }
+  if (AC.state === 'suspended') AC.resume();
+  return AC;
 }
+function busGains() {
+  if (!AC) return;
+  MUSG.gain.setTargetAtTime(state.music ? .3 : 0, AC.currentTime, .05);
+  SFXG.gain.setTargetAtTime(state.sound ? .9 : 0, AC.currentTime, .05);
+}
+const semi = n => 261.626 * Math.pow(2, n / 12);
+
+function tone(freq, t, dur, type, vol, dest, glideTo) {
+  const o = AC.createOscillator(), g = AC.createGain();
+  o.type = type || 'triangle';
+  o.frequency.setValueAtTime(freq, t);
+  if (glideTo) o.frequency.exponentialRampToValueAtTime(glideTo, t + dur);
+  g.gain.setValueAtTime(.0001, t);
+  g.gain.exponentialRampToValueAtTime(vol, t + .012);
+  g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+  o.connect(g); g.connect(dest || SFXG);
+  o.start(t); o.stop(t + dur + .03);
+}
+function noiseHit(t, dur, vol, type, freq, q, dest) {
+  const s = AC.createBufferSource(); s.buffer = NOISE;
+  const f = AC.createBiquadFilter(); f.type = type || 'bandpass';
+  f.frequency.setValueAtTime(freq, t); f.Q.value = q || 1;
+  const g = AC.createGain();
+  g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+  s.connect(f); f.connect(g); g.connect(dest || SFXG);
+  s.start(t); s.stop(t + dur + .02);
+}
+
+/* ---------- effects ---------- */
 function clink(vn, style) {
+  if (!state.sound) return;
+  const ac = audio(); if (!ac) return;
   const now = performance.now();
-  if (now - lastClink < 30) return; lastClink = now;
-  const v = clamp(Math.abs(vn) / 1000, .05, 1);
-  const base = style === 'post' ? 640 : style === 'blade' ? 300 : style === 'marble' ? 880 : 420;
-  beep(base * rnd(.9, 1.15), .05 + v * .05, 'triangle', .03 + v * .055);
+  if (now - lastClink < 26) return; lastClink = now;
+  const v = clamp(Math.abs(vn) / 900, .06, 1), t = ac.currentTime;
+  if (style === 'marble') {                       // glassy click
+    const f = 900 * rnd(.9, 1.2);
+    tone(f, t, .07, 'sine', .05 + v * .1);
+    tone(f * 2.6, t, .045, 'sine', .02 + v * .05);
+    noiseHit(t, .03, .04 + v * .05, 'highpass', 5000, 1);
+  } else if (style === 'post' || style === 'island') {
+    tone(500 * rnd(.92, 1.1), t, .1, 'triangle', .05 + v * .1, null, 300);
+    noiseHit(t, .06, .05 + v * .06, 'bandpass', 1400, 1.4);
+  } else if (style === 'blade') {                 // turnstile clack
+    tone(190 * rnd(.95, 1.06), t, .13, 'square', .04 + v * .07, null, 120);
+    noiseHit(t, .07, .05 + v * .05, 'lowpass', 900, .8);
+  } else {                                        // barrier scuff
+    noiseHit(t, .07 + v * .05, .04 + v * .07, 'bandpass', 380 + v * 500, .9);
+  }
 }
-function fanfare() { [523, 659, 784, 1047].forEach((f, i) => beep(f, .3, 'triangle', .13, i * .1)); }
-function bigFanfare() { [523, 659, 784, 1047, 784, 1047, 1319].forEach((f, i) => beep(f, .42, 'triangle', .14, i * .13)); }
+function whoosh() {
+  if (!state.sound) return; const ac = audio(); if (!ac) return;
+  const t = ac.currentTime;
+  const s = ac.createBufferSource(); s.buffer = NOISE;
+  const f = ac.createBiquadFilter(); f.type = 'bandpass'; f.Q.value = 2;
+  f.frequency.setValueAtTime(500, t); f.frequency.exponentialRampToValueAtTime(3600, t + .3);
+  const g = ac.createGain();
+  g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.16, t + .06);
+  g.gain.exponentialRampToValueAtTime(.0001, t + .38);
+  s.connect(f); f.connect(g); g.connect(SFXG); s.start(t); s.stop(t + .4);
+}
+function lightBeep(high) {
+  if (!state.sound) return; const ac = audio(); if (!ac) return;
+  const t = ac.currentTime;
+  if (high) {
+    [0, 7, 12].forEach((n, i) => tone(semi(n + 12), t + i * .012, .5, 'sawtooth', .09));
+    noiseHit(t, .25, .1, 'highpass', 2500, .7);
+  } else {
+    tone(semi(-5), t, .28, 'square', .1);
+    tone(semi(-17), t, .3, 'sine', .12);
+  }
+}
+function lapChime() {
+  if (!state.sound) return; const ac = audio(); if (!ac) return;
+  const t = ac.currentTime;
+  tone(semi(16), t, .22, 'sine', .1); tone(semi(23), t + .09, .3, 'sine', .09);
+}
+function fanfare() {
+  if (!state.sound) return; const ac = audio(); if (!ac) return;
+  const t = ac.currentTime;
+  [0, 4, 7, 12].forEach((n, i) => { tone(semi(n + 12), t + i * .09, .32, 'triangle', .12);
+    tone(semi(n), t + i * .09, .32, 'sine', .08); });
+  noiseHit(t, .5, .07, 'highpass', 4000, .6);
+}
+function bigFanfare() {
+  if (!state.sound) return; const ac = audio(); if (!ac) return;
+  const t = ac.currentTime;
+  [[0, 0], [4, .12], [7, .24], [12, .36], [7, .5], [12, .6], [19, .72]].forEach(([n, d]) => {
+    tone(semi(n + 12), t + d, .5, 'triangle', .13);
+    tone(semi(n), t + d, .5, 'sawtooth', .05);
+  });
+  tone(semi(-12), t, 1.5, 'sine', .12);
+  for (let i = 0; i < 6; i++) noiseHit(t + i * .18, .25, .06, 'highpass', 3000 + i * 400, .6);
+}
+
+/* ---------- music ---------- */
+const MUS = { on: false, mode: 'menu', step: 0, next: 0, timer: 0, bpm: 100, lift: 1 };
+const CHORDS = [[0, 4, 7], [7, 11, 14], [9, 12, 16], [5, 9, 12]];   // I V vi IV
+const ROOTS = [-12, -5, -3, -7];
+const HOOK = [12, 16, 19, 16, 14, 12, 9, 12];
+function musicSet(mode) {
+  audio(); if (!AC) return;
+  if (mode === 'off') { MUS.on = false; return; }
+  MUS.mode = mode; MUS.bpm = mode === 'race' ? 134 : 96; MUS.lift = 1;
+  if (!MUS.on) { MUS.on = true; MUS.step = 0; MUS.next = AC.currentTime + .08; }
+  if (!MUS.timer) MUS.timer = setInterval(musicTick, 25);
+}
+function musicTick() {
+  if (!AC || !MUS.on || !state.music) return;
+  const sixteenth = 60 / (MUS.bpm * MUS.lift) / 4;
+  let guard = 0;
+  while (MUS.next < AC.currentTime + .15 && guard++ < 40) {
+    musicStep(MUS.step, MUS.next);
+    MUS.step = (MUS.step + 1) % 64;
+    MUS.next += sixteenth;
+  }
+}
+function musicStep(s, t) {
+  if (!isFinite(t) || !AC) return;
+  const bar = Math.floor(s / 16), b = s % 16, race = MUS.mode === 'race';
+  const chord = CHORDS[bar], root = ROOTS[bar];
+  if (race) {
+    if (b % 4 === 0) {                                     // kick
+      const o = AC.createOscillator(), g = AC.createGain();
+      o.frequency.setValueAtTime(160, t); o.frequency.exponentialRampToValueAtTime(48, t + .11);
+      g.gain.setValueAtTime(.5, t); g.gain.exponentialRampToValueAtTime(.001, t + .17);
+      o.connect(g); g.connect(MUSG); o.start(t); o.stop(t + .2);
+    }
+    if (b === 4 || b === 12) noiseHit(t, .13, .22, 'bandpass', 1900, .8, MUSG);   // snare
+    if (b % 2 === 0) noiseHit(t, .035, b % 4 ? .07 : .11, 'highpass', 8000, .7, MUSG);
+    if (b % 2 === 0) tone(semi(root), t, .14, 'sawtooth', .1, MUSG);              // driving bass
+    if (b === 2 || b === 6 || b === 10 || b === 14)
+      chord.forEach(n => tone(semi(n), t, .12, 'square', .028, MUSG));            // stabs
+    if (b % 4 === 0) {                                       // melodic hook
+      const n = HOOK[(bar * 4 + b / 4) % HOOK.length];
+      tone(semi(n), t, .22, 'triangle', .075, MUSG);
+    }
+  } else {
+    if (b === 0) chord.forEach(n => tone(semi(n - 12), t, 1.5, 'triangle', .05, MUSG));
+    if (b === 0 || b === 8) tone(semi(root), t, .5, 'sine', .09, MUSG);
+    if (b === 6 || b === 14) noiseHit(t, .05, .05, 'highpass', 9000, .7, MUSG);
+    if (b === 4 || b === 12) tone(semi(chord[(bar + b / 4) % 3] + 12), t, .45, 'sine', .05, MUSG);
+  }
+}
 
 /* ================= SETUP UI ================= */
 function makeRoster() {
@@ -1621,6 +1860,7 @@ function renderTracks() {
 function show(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.toggle('on', s.id === id));
   window.scrollTo(0, 0);
+  if (state.music) musicSet(id === 'race' ? (R && R.phase === 'run' ? 'race' : 'menu') : 'menu');
 }
 
 /* ================= RACE ================= */
@@ -1685,6 +1925,11 @@ function loop(ts) {
       stepSparks(dt * simSpeed);
       tickComm(dt * simSpeed);
       if (R.phase === 'cd') countdownUI();
+      else if (!R.musOn) { R.musOn = 1; if (state.music) musicSet('race'); }
+      const lead0 = standings(R)[0];
+      MUS.lift = (lead0 && R.laps > 1 && lead0.lap >= R.laps - 1) ? 1.06 : 1;
+      const me0 = R.marbles.find(m => m.me);
+      if (me0) { if (me0.surf === 1 && R.meSurf !== 1) whoosh(); R.meSurf = me0.surf; }
       if (R.ended) { finishUp(); return; }
     }
     const t = camTarget(), k = R.phase === 'cd' ? 1 : .12;
@@ -1720,7 +1965,7 @@ function countdownUI() {
     lastCd = n;
     o.innerHTML = n > 0 ? `<div id="cd">${n}</div>`
       : `<div id="cd" style="font-size:min(17vw,110px);color:#8dffc8">GO!</div>`;
-    if (n > 0) beep(440, .12, 'square', .1); else beep(880, .3, 'square', .13);
+    lightBeep(n <= 0);
     if (n <= 0) setTimeout(() => { o.innerHTML = ''; }, 700);
   }
 }
@@ -1767,9 +2012,9 @@ function tickComm(dt) {
     if (ev.type === 'fin') {
       const badge = ['🥇', '🥈', '🥉'][ev.place - 1] || ('P' + ev.place);
       say(`${badge} ${esc(ev.m.name)} takes the flag — ${ev.t.toFixed(2)}s`);
-      if (ev.place === 1) fanfare(); else beep(700 + Math.random() * 200, .12, 'triangle', .08);
+      if (ev.place === 1) fanfare(); else { audio(); if (state.sound && AC) tone(semi(12 + Math.min(ev.place, 12)), AC.currentTime, .16, 'sine', .07); }
     } else if (ev.type === 'lap') {
-      if (ev.lap <= R.laps) say(`🔔 Lap ${ev.lap} of ${R.laps} — ${esc(ev.m.name)} leads them through.`);
+      if (ev.lap <= R.laps) { say(`🔔 Lap ${ev.lap} of ${R.laps} — ${esc(ev.m.name)} leads them through.`); lapChime(); }
     } else if (ev.type === 'stuck') {
       const k = ev.m.name;
       if (!stuckSaid[k] && Math.random() < .4) { stuckSaid[k] = 1;
@@ -1984,8 +2229,13 @@ document.querySelectorAll('#champSeg button').forEach(b => b.onclick = () => {
   $('startBtn').innerHTML = `Start championship<span class="sub">${state.champN} races · points table</span>`;
 });
 $('sndBtn').onclick = () => { state.sound = !state.sound;
-  $('sndBtn').textContent = state.sound ? '🔊 Sound on' : '🔇 Sound off';
-  $('sndBtn').classList.toggle('on', state.sound); if (state.sound) audio(); };
+  $('sndBtn').textContent = state.sound ? '🔊 Effects on' : '🔇 Effects off';
+  $('sndBtn').classList.toggle('on', state.sound); audio(); busGains(); };
+$('musBtn').onclick = () => { state.music = !state.music;
+  $('musBtn').textContent = state.music ? '🎵 Music on' : '🎵 Music off';
+  $('musBtn').classList.toggle('on', state.music);
+  audio(); busGains();
+  if (state.music) musicSet($('race').classList.contains('on') ? 'race' : 'menu'); else MUS.on = false; };
 const CAMS = { pack: '🎥 Follow the pack', me: '⭐ Follow my marble', all: '🔭 Whole circuit' };
 function cycleCam() {
   state.cam = state.cam === 'pack' ? 'me' : state.cam === 'me' ? 'all' : 'pack';
@@ -2041,11 +2291,15 @@ $('logoM').innerHTML = ['#ff4d5e', '#ffd426', '#22d3ee', '#8b5cf6'].map(c =>
   `<span class="lm" style="background:radial-gradient(circle at 34% 30%,${shade(c, .75)},${c} 45%,${shade(c, -.5)})"></span>`).join('');
 
 renderSwatches(); makeRoster(); renderTracks();
-$('sndBtn').classList.add('on');
+$('sndBtn').classList.add('on'); $('musBtn').classList.add('on');
+window.addEventListener('pointerdown', () => {          // browsers need a tap before any sound
+  audio(); busGains(); if (state.music) musicSet($('race').classList.contains('on') ? 'race' : 'menu');
+}, { once: true });
 window.addEventListener('keydown', e => {
   if (e.code === 'Space' && $('race').classList.contains('on')) { e.preventDefault(); $('pauseBtn').click(); }
 });
 
 </script>
-</body>
-</html>
+
+
+</body></html>
