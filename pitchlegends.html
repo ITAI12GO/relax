@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#060d09">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>Pitch Legends</title>
+<title>Soccer Legends</title>
 <style>*,*::before,*::after{box-sizing:border-box}
 html,body{margin:0;padding:0;height:100%;overflow:hidden;background:#060d09}
 body{
@@ -295,9 +295,9 @@ tr.qual td:first-child{border-left:2px solid var(--accent);padding-left:8px}
   <section id="home" class="screen active">
     <div class="pitchmark"></div>
     <div class="hero">
-      <div class="kicker">National teams · live simulation</div>
-      <h1>Pitch<span>Legends</span></h1>
-      <p>Pick a nation, set your shape and play it out. Twenty-two simulated players, a referee with opinions, and a tournament that does not care how well you started.</p>
+      <div class="kicker">48 nations · real squads · live simulation</div>
+      <h1>Soccer<span>Legends</span></h1>
+      <p>Pick a nation, set your shape and play it out. Real squads, twenty-two simulated players, a referee with opinions, and a tournament that does not care how well you started.</p>
     </div>
     <div class="home-actions">
       <button class="btn primary" id="btnPlay">Play</button>
@@ -319,7 +319,7 @@ tr.qual td:first-child{border-left:2px solid var(--accent);padding-left:8px}
   <section id="teams" class="screen">
     <div class="topbar">
       <button class="back" data-back="setup">‹</button>
-      <div><h1>Choose a nation</h1><div class="sub">32 teams, sorted by strength</div></div>
+      <div><h1>Choose a nation</h1><div class="sub">All 48 nations, sorted by strength</div></div>
     </div>
     <div class="scroll"><div class="grid" id="teamGrid"></div></div>
     <div class="footer"><button class="btn primary" id="teamGo" disabled>Continue</button></div>
@@ -414,103 +414,113 @@ tr.qual td:first-child{border-left:2px solid var(--accent);padding-left:8px}
 </div>
 
 <script>/* ============================================================
-   PITCH LEGENDS — data layer
-   Nations, name pools, squad generation, formations, tactics
+   SOCCER LEGENDS — data layer
+   48 nations of the 2026 World Cup, their real squads,
+   formations and tactical presets.
    ============================================================ */
 
-const NAMEPOOL = {
-  latin: {
-    f: ['Mateo','Thiago','Lucas','Bruno','Rafael','Diego','Emiliano','Nicolas','Facundo','Gabriel','Joaquin','Vinicius','Andres','Santiago','Tomas','Julian'],
-    l: ['Ferreira','Moretti','Salazar','Duarte','Cardoso','Vasquez','Ibarra','Quiroga','Peralta','Almeida','Bustos','Nogueira','Ramires','Cordero','Alvarenga','Zabala']
-  },
-  iberian: {
-    f: ['Pablo','Sergio','Alvaro','Ruben','Iker','Nuno','Goncalo','Miguel','Rodrigo','Adrian','Hugo','Dani','Marco','Vitor','Joel','Isco'],
-    l: ['Marquez','Serrano','Bautista','Carvalho','Figueira','Ortega','Palacios','Rendon','Guerrero','Trindade','Moraes','Escobar','Villalba','Otero','Sampaio','Rivas']
-  },
-  anglo: {
-    f: ['Harry','Callum','Jude','Reece','Mason','Declan','Ollie','Kieran','Ashton','Tyler','Marcus','Jordan','Liam','Ethan','Cole','Bryce'],
-    l: ['Whitlock','Harrington','Ashcombe','Bramley','Nolan','Radcliffe','Sinclair','Marsden','Tolliver','Kingsley','Hartley','Crawford','Fenwick','Ludlow','Bassett','Norwood']
-  },
-  germanic: {
-    f: ['Jonas','Leon','Niklas','Felix','Kai','Florian','Maximilian','Lennart','Timo','Jannik','Moritz','Elias','Fabian','Lukas','Tobias','Sven'],
-    l: ['Hoffmann','Brandt','Kirchner','Wenzel','Steinbach','Ostermann','Reinhardt','Lindner','Vogler','Rauch','Baumgart','Dieterle','Kessler','Feldmann','Hartwig','Sauer']
-  },
-  nordic: {
-    f: ['Erling','Mathias','Kasper','Viktor','Emil','Anton','Oskar','Rasmus','Elias','Jonatan','Sindre','Nils','Filip','Ludvig','Aksel','Henrik'],
-    l: ['Bjornstad','Haugen','Lindqvist','Sorensen','Nygaard','Ekstrom','Dahlberg','Hovland','Karlsen','Ravnsborg','Nordvik','Ahlgren','Steen','Ulriksen','Fagerlund','Molde']
-  },
-  slavic: {
-    f: ['Luka','Marko','Filip','Nikola','Ivan','Dusan','Milos','Andrej','Stefan','Vlado','Petar','Bogdan','Danylo','Oleksii','Yaroslav','Roman'],
-    l: ['Kovacevic','Petrovic','Radulov','Milenko','Jankovic','Sokolov','Bartosz','Wieczorek','Zielinski','Kaminski','Hrytsenko','Bondar','Melnyk','Havrylyuk','Vrabec','Doric']
-  },
-  french: {
-    f: ['Kylian','Theo','Aurelien','Ousmane','Lucas','Adrien','Enzo','Baptiste','Yanis','Corentin','Maxence','Nolan','Amine','Thibaut','Romain','Clement'],
-    l: ['Dubois','Marchand','Lefevre','Baptiste','Cordier','Vasseur','Rousseau','Delacroix','Mercier','Fontaine','Bertrand','Chevalier','Aubert','Guillon','Perrault','Noiret']
-  },
-  italic: {
-    f: ['Alessandro','Federico','Lorenzo','Matteo','Giacomo','Riccardo','Davide','Nicolo','Andrea','Simone','Gianluca','Emanuele','Pietro','Tommaso','Marco','Fabio'],
-    l: ['Barella','Rinaldi','Colombo','Gattuso','Ferrante','Bellini','Moretti','Scalvini','Trevisan','Lombardi','Vitale','Pagano','Ricciardi','Fiore','Grimaldi','Sartori']
-  },
-  dutch: {
-    f: ['Cody','Jurrien','Sven','Daan','Bram','Ruud','Stefan','Joey','Teun','Milan','Kees','Lars','Jelle','Rick','Thijs','Wout'],
-    l: ['van Dijk','de Boer','Klaassen','Vermeer','van Hoorn','Bakker','Molenaar','de Groot','Rensen','Kuipers','van Aert','Timmer','Hoekstra','Dekker','Visser','Veenstra']
-  },
-  westafrican: {
-    f: ['Kwame','Sadio','Ibrahim','Musa','Emeka','Yaw','Cheikh','Abdoulaye','Kofi','Samuel','Victor','Lamine','Baba','Osei','Idrissa','Serge'],
-    l: ['Mensah','Diallo','Okafor','Traore','Boateng','Nwosu','Sarr','Ndiaye','Adeyemi','Kouassi','Bakayoko','Owusu','Dembele','Eze','Gueye','Asante']
-  },
-  northafrican: {
-    f: ['Youssef','Achraf','Karim','Hakim','Amine','Mahmoud','Bilal','Nasser','Sofiane','Anas','Tarek','Omar','Ayoub','Zakaria','Ismail','Walid'],
-    l: ['El Amrani','Benali','Hafid','Ziyani','Chaouki','Mansouri','El Sayed','Bouzid','Rahmani','Ghazi','Tounsi','Abdellah','Neffati','Marzouk','Fathi','Salhi']
-  },
-  eastasian: {
-    f: ['Takumi','Sora','Kaito','Ren','Haruto','Yuto','Minjae','Jihoon','Seungho','Doyoung','Hyunwoo','Woojin','Daiki','Kenta','Sungmin','Jaehyun'],
-    l: ['Tanaka','Nakamura','Yamashita','Kobayashi','Fujimoto','Okazaki','Kim','Park','Lee','Choi','Jung','Kang','Shimizu','Morita','Han','Yoon']
-  },
-  oceanic: {
-    f: ['Jackson','Riley','Hayden','Lachlan','Angus','Bailey','Cooper','Flynn','Darcy','Mitchell','Cameron','Beau','Sonny','Jarrod','Tane','Reuben'],
-    l: ['Hollis','Berridge','Kinsella','Tremaine','Waverly','Ashby','Cullimore','Draysen','Whitaker','Barlowe','Hutchings','Callaghan','Prentice','Tuiloma','Rakau','Manning']
-  },
-  northam: {
-    f: ['Christian','Tyler','Weston','Brandon','Gio','Malik','Cade','Dominic','Alphonso','Jonathan','Hector','Cesar','Ricardo','Miles','Owen','Trey'],
-    l: ['Mercer','Delgado','Whitfield','Buchanan','Aldridge','Corrales','Montalvo','Ferreiro','Kingston','Vargas','Beckham','Ocampo','Sandoval','Reyes','Talbot','Crowell']
-  }
+/* Real 2026 World Cup squads: shirt number, position, name.
+   Source: published tournament squad lists. */
+const ROSTERS = {
+  BRA:'1|GK|A. Becker;2|RB|Wesley;3|LB|Gabriel;4|CB|Marquinhos;5|DM|Casemiro;6|CB|Alex Sandro;7|RW|Vini Jr.;8|CM|Bruno G.;9|ST|Cunha;10|ST|Neymar Jr;11|LW|Raphinha;12|GK|Weverton;13|CB|Danilo;14|LB|Bremer;15|CB|Leo Pereira;16|LB|Douglas Santos;17|CM|Fabinho;18|DM|Danilo S.;19|ST|Endrick;20|CM|L. Paqueta;21|RW|L. Henrique;22|LW|Martinelli;23|GK|Ederson;24|CB|Ibanez;25|RW|Thiago;26|ST|Rayan',
+  ARG:'1|GK|Musso;2|RB|Balerdi;3|LB|Tagliafico;4|CB|Montiel;5|DM|Paredes;6|CB|Martínez;7|RM|De Paul;8|CM|Barco;9|ST|J. Alvarez;10|ST|Messi;11|LM|Lo Celso;12|GK|Rulli;13|CB|Romero;14|CM|Palacios;15|DM|N. González;16|ST|Almada;17|RW|Simeone;18|ST|Nico Paz;19|CB|Otamendi;20|CM|Mac Allister;21|RW|Lopez;22|LW|L. Martínez;23|GK|E. Martínez;24|DM|E. Fernández;25|CB|Medina;26|CB|Molina',
+  FRA:'1|GK|Samba;2|RB|Gusto;3|LB|Digne;4|CB|Upamecano;5|CB|Kounde;6|DM|Kone;7|RW|Dembele;8|CM|Tchouameni;9|ST|Thuram;10|ST|Mbappe;11|LW|Olise;12|ST|Barcola;13|CM|Kante;14|DM|Rabiot;15|CB|Konate;16|GK|Maignan;17|RB|Saliba;18|CM|Zaire Emery;19|CB|T. Hernandez;20|LW|Doue;21|RB|L. Hernandez;22|LW|Mateta;23|GK|Risser;24|DM|Cherki;25|CM|Akliouche;26|CB|Lacroix',
+  ENG:'1|GK|Pickford;2|RB|Konsa;3|LB|O\'Reilly;4|DM|Rice;5|CB|Stones;6|CB|Guehi;7|RW|Saka;8|CM|Anderson;9|ST|Kane;10|AM|Bellingham;11|LW|Rashford;12|RB|Livramento;13|GK|D. Henderson;14|DM|J. Henderson;15|CB|Burn;16|CM|Mainoo;17|DM|Rogers;18|RW|Gordon;19|ST|Watkins;20|LW|Madueke;21|CM|Eze;22|LW|Toney;23|GK|Trafford;24|CB|James;25|CB|Spence;26|CB|Quansah',
+  ESP:'1|GK|Raya;2|RB|Marc Pubill;3|LB|Grimaldo;4|CB|Eric;5|CB|M. Llorente;6|DM|Merino;7|RW|Ferran;8|CM|Fabián;9|CM|Gavi;10|ST|Olmo;11|LW|Jeremy;12|RB|Pedro Porro;13|GK|Joan García;14|LB|Laporte;15|DM|Alex B.;16|CM|Rodrigo;17|RW|Williams Jr;18|DM|Zubimendi;19|ST|Lamine Yamal;20|CM|Pedri;21|RW|Oyarzabal;22|CB|Cubarsi;23|GK|Unai Simón;24|CB|Cucurella;25|ST|Victor M.V.;26|RW|B. Iglesias',
+  POR:'1|GK|Diogo Costa;2|RB|N. Semedo;3|LB|Rúben Dias;4|CB|Tomas A.;5|CB|Dalot;6|DM|Matheus N.;7|RW|Ronaldo;8|CM|B. Fernandes;9|ST|G. Ramos;10|AM|Bernardo;11|LW|João Félix;12|GK|José Sá;13|CB|Renato Veiga;14|LB|G. Inácio;15|DM|João Neves;16|RW|Trincão;17|RW|Rafa Leão;18|LW|Neto;19|ST|G. Guedes;20|LB|João Cancelo;21|CM|R. Neves;22|GK|Rui Silva;23|DM|Vitinha;24|CB|Samu;25|CB|N. Mendes;26|RW|F. Conceição',
+  NED:'1|GK|Verbruggen;2|RB|J. Timber;3|CM|De Roon;4|CB|Virgil;5|LB|Aké;6|CB|Van Hecke;7|RM|Kluivert;8|CM|Gravenberch;9|ST|Weghorst;10|ST|Memphis;11|LW|Gakpo;12|RB|Wieffer;13|GK|Roefs;14|DM|Reijnders;15|CB|Van de Ven;16|CM|Til;17|RW|Lang;18|ST|Malen;19|LW|Brobbey;20|DM|Koopmeiners;21|CM|F. de Jong;22|CB|Dumfries;23|GK|Flekken;24|ST|Summerville;25|CB|Hato;26|DM|Q. Timber',
+  BEL:'1|GK|Courtois;2|RB|Debast;3|LB|Thiate;4|CB|Mechele;5|CB|De Cuyper;6|DM|Witsel;7|RM|De Bruyne;8|CM|Tielemans;9|ST|Lukaku;10|ST|Trossard;11|LW|Doku;12|GK|Lammens;13|GK|Penders;14|RW|Lukebakio;15|CB|Meunier;16|LB|De Winter;17|RW|De Ketelaere;18|CB|Seys;19|DM|Moreira;20|CM|Vanaken;21|RB|Castagne;22|DM|Saelemaekers;23|CM|Raskin;24|DM|Onana;25|CB|Ngoy;26|LW|Fernandez-Pardo',
+  GER:'1|GK|Neuer;2|RB|Rudiger;3|LB|Anton;4|CB|Tah;5|DM|Pavlovic;6|CB|Kimmich;7|RW|Havertz;8|CM|Goretzka;9|CM|Leweling;10|AM|Musiala;11|LW|Woltemade;12|GK|Baumann;13|CM|Gross;14|ST|Beier;15|CB|Schlotterbeck;16|DM|Stiller;17|CM|Wirtz;18|CB|Brown;19|DM|Sané;20|CM|Amiri;21|GK|Nübel;22|CB|Raum;23|DM|Nmecha;24|CB|Thiaw;25|CM|Karl;26|RW|Undav',
+  CRO:'1|GK|Livakovic;2|RB|Stanisic;3|LB|Pongracic;4|CB|Gvardiol;5|CB|Caleta-Car;6|CB|Sutalo;7|RM|Moro;8|CM|Kovacic;9|ST|Kramaric;10|AM|Modric;11|LW|Budimir;12|GK|Pandur;13|DM|Vlasic;14|ST|Perisic;15|CM|Pasalic;16|DM|Baturina;17|CM|P. Sucic;18|CB|Jakic;19|DM|Fruk;20|LW|Matanovic;21|CM|Sucic;22|CB|Vuskovic;23|GK|Kotarski;24|ST|M. Pasalic;25|CB|Erlic;26|LW|Musa',
+  URU:'1|GK|S. Rochet;2|RB|J.M. Giménez;3|LB|S. Cáceres;4|CB|R. Araujo;5|DM|M. Ugarte;6|DM|R. Bentancur;7|RM|N. de la Cruz;8|CM|F. Valverde;9|ST|D. Núñez;10|AM|G. de Arrascaeta;11|LW|F. Pellistri;12|GK|S. Mele;13|CB|G. Varela;14|DM|A. Canobbio;15|CM|E. Martínez;16|LB|M. Olivera;17|RB|M. Viña;18|ST|B. Rodríguez;19|RW|R. Aguirre;20|DM|M. Araujo;21|RW|F. Viñas;22|CM|J. Piquerez;23|GK|F. Muslera;24|CB|S. Bueno;25|DM|J.M. Sanabria;26|CM|R. Zalazar',
+  COL:'1|GK|Ospina;2|RB|D. Muñoz;3|LB|J. Lucumi;4|CB|Arias;5|DM|K. Castaño;6|DM|Richard Rios;7|RW|Luis Diaz;8|CM|Carrascal;9|ST|Cordoba;10|AM|James;11|LM|J. Arias;12|GK|C. Vargas;13|CB|Y. Mina;14|LB|Puerta;15|DM|Portilla;16|CM|J. Lerma;17|RB|J. Mojica;18|CB|W. Ditta;19|ST|C. Hernandez;20|DM|Quintero;21|RW|Campaz;22|CB|Machado;23|CB|Sanchez;24|GK|Montero;25|ST|Suarez;26|LW|A. Gomez',
+  MAR:'1|GK|Bono;2|RB|Hakimi;3|LB|Mazraoui;4|DM|Amrabat;5|CB|Aguerd;6|DM|Bouaddi;7|RM|Talbi;8|CM|Ouahi;9|ST|Rahimi;10|ST|Brahim;11|LM|Saibari;12|GK|El Kajoui;13|CB|El Ouahdi;14|LB|Issa;15|DM|El Mourabet;16|CM|Yassine;17|RW|Ezzalzouli;18|CB|Riad;19|CB|Belammari;20|LW|El Kaabi;21|RW|Amaimouni;22|GK|Tagnaouti;23|DM|El Khannouss;24|CM|El Aynaoui;25|CB|Halhal;26|CB|Salah-Eddine',
+  JPN:'1|GK|Suzuki;2|RB|Sugawara;3|LB|Taniguchi;4|CB|Itakura;5|CB|Nagatomo;6|DM|Endo;7|RM|Tanaka;8|CM|Kubo;9|ST|Goto;10|AM|Doan;11|LM|Daizen;12|GK|Osako;13|DM|Nakamura;14|CM|Ito;15|DM|Kamada;16|LB|Watanabe;17|CM|Y. Suzuki;18|LW|Ayase;19|ST|Ogawa;20|LB|Seko;21|RB|H. Ito;22|CB|Tomiyasu;23|GK|Hayakawa;24|DM|Sano;25|CB|J. Suzuki;26|RW|Shiogai',
+  USA:'1|GK|Turner;2|RB|Dest;3|LB|Richards;4|DM|Adams;5|CB|A. Robinson;6|CB|Trusty;7|RM|Reyna;8|CM|McKennie;9|ST|Pepi;10|ST|Pulisic;11|LW|Aaronson;12|RB|M. Robinson;13|CB|Ream;14|DM|Berhalter;15|CM|Roldan;16|LB|Freeman;17|DM|Tillman;18|CB|Arfsten;19|RW|Wright;20|LW|Balogun;21|RW|Weah;22|CB|McKenzie;23|CB|Scally;24|GK|Freese;25|GK|Brady;26|ST|Zendejas',
+  MEX:'1|GK|R. Rangel;2|RB|J. Sánchez;3|LB|C. Montes;4|CB|E. Álvarez;5|CB|J. Vásquez;6|DM|E. Lira;7|RM|L. Romo;8|CM|Fidalgo;9|ST|Raúl;10|ST|A. Vega;11|LW|S. Giménez;12|GK|C. Acevedo;13|GK|G. Ochoa;14|RW|A. González;15|CB|I. Reyes;16|ST|J. Quiñones;17|DM|Orbelín;18|CM|O. Vargas;19|DM|G. Mora;20|LB|M. Chávez;21|RW|C. Huerta;22|LW|G. Martínez;23|CB|J. Gallardo;24|CM|L. Chávez;25|RW|R. Alvarado;26|DM|B. Gutiérrez',
+  SUI:'1|GK|Kobel;2|RB|Muheim;3|LB|Widmer;4|CB|Elvedi;5|CB|Akanji;6|DM|Zakaria;7|RW|Embolo;8|CM|Freuler;9|CM|Manzambi;10|AM|Xhaka;11|LW|Ndoye;12|GK|Mvogo;13|CB|Rodríguez;14|CM|Jashari;15|DM|Sow;16|ST|Fassnacht;17|RW|Vargas;18|CB|Comert;19|ST|Okafor;20|CM|Aebischer;21|GK|Keller;22|DM|Rieder;23|LW|Amdouni;24|CB|Amenda;25|CB|Jaquez;26|ST|Itten',
+  SEN:'1|GK|Y. Diouf;2|RB|Sarr;3|LB|Koulibaly;4|CB|Seck;5|DM|Gana;6|DM|P.I. Ciss;7|RW|Diao;8|CM|Lamine;9|ST|B. Dieng;10|ST|Mané;11|LW|Jackson;12|ST|Cherif;13|LW|Ndiaye;14|LB|Jakobs;15|CB|Krépin;16|GK|Mendy;17|DM|P.M. Sarr;18|ST|I. Sarr;19|CB|Niakhate;20|LW|Mbaye;21|CM|H. Diarra;22|DM|Bara;23|GK|Diaw;24|CB|A. Mendy;25|CB|Diouf;26|CM|Gueye',
+  KOR:'1|GK|Seunggyu;2|RB|Hanbeom;3|CM|Gihyuk;4|CB|Minjae;5|CB|Taehyeon;6|DM|Inbeom;7|RW|Heungmin;8|CM|Seungho;9|ST|Guseung;10|AM|Jaesung;11|LM|Heechan;12|GK|Bumkeun;13|CB|Taeseok;14|LB|Wije;15|CB|Moonhwan;16|LB|Jinseob;17|DM|Junho;18|ST|Hyeongyu;19|CM|Kangin;20|DM|Hyunjun;21|GK|Hyeonwoo;22|CB|Youngwoo;23|CB|Jens;24|CM|Jingyu;25|DM|Jisung;26|CM|Donggyeong',
+  AUS:'1|GK|Ryan;2|RB|Degenek;3|LB|Circati;4|CB|Italiano;5|CB|Bos;6|CB|Geria;7|RW|Leckie;8|CM|Metcalfe;9|ST|Toure;10|ST|Hrustic;11|LW|Mabil;12|GK|Izzo;13|DM|O\'Neill;14|CM|Devlin;15|CB|Trewin;16|LB|Behich;17|RW|Irankunda;18|GK|Beach;19|CB|Souttar;20|LW|Volpato;21|RB|Burgess;22|DM|Irvine;23|ST|Velupillay;24|CM|Okon-Engstler;25|CB|Herrington;26|RW|Yengi',
+  CAN:'1|GK|St. Clair;2|RB|Johnston;3|LB|Jones;4|CB|De Fougerolles;5|CB|Waterman;6|DM|Choinière;7|RM|Eustaquio;8|CM|Koné;9|ST|Larin;10|ST|J. David;11|LM|Millar;12|ST|Oluwaseyi;13|CB|Cornelius;14|CM|Shaffelburg;15|CB|Bombito;16|GK|Crepeau;17|RW|Buchanan;18|GK|Goodman;19|CB|Davies;20|LW|Ahmed;21|DM|Osorio;22|CB|Laryea;23|CB|Sigur;24|LW|Promise;25|CM|Saliba;26|DM|Marcelo',
+  ECU:'1|GK|Galindez;2|RB|Torres;3|LB|Hincapie;4|CB|Ordoñez;5|DM|Alcivar;6|CB|Pacho;7|CB|Estupiñan;8|CM|A. Valencia;9|ST|Yeboah Zamora;10|AM|Paez;11|LW|Rodriguez;12|GK|Ramirez;13|ST|E. Valencia;14|DM|Minda;15|CM|Vite;16|RW|J. Caicedo;17|RB|Preciado;18|DM|Castillo;19|ST|Plata;20|LW|Angulo;21|CM|Franco;22|GK|Valle;23|DM|M. Caicedo;24|ST|Arevalo;25|CB|Porozo;26|CB|Medina',
+  NOR:'1|GK|Nyland;2|CM|Thorsby;3|LB|Vassbakk Ajer;4|CB|Østigård;5|CB|Møller Wolfe;6|DM|Berg;7|RW|Sørloth;8|CM|Berge;9|ST|Braut Haaland;10|AM|Ødegaard;11|LW|Strand Larsen;12|GK|Tangvik;13|GK|Selvik;14|CM|Aursnes;15|CB|Bjørkan;16|LB|Holmgren;17|RB|Heggem;18|DM|Thorstvedt;19|CM|Aasgaard;20|LW|Nusa;21|DM|Schjelderup;22|CM|Bobb;23|DM|Hauge;24|CB|Langås;25|CB|Falchener;26|ST|Ryerson',
+  EGY:'1|GK|M. Elshenawy;2|RB|Yasser;3|LB|M. Hany;4|CB|Hossam;5|CB|R. Rabiaa;6|CB|M. Abdelmoneim;7|RW|M. Trezeguet;8|CM|E. Ashour;9|ST|Abdelkarim;10|ST|M. Salah;11|LM|Zico;12|RW|H. Hassan;13|CB|A. Fatouh;14|CM|H. Fathy;15|CB|K. Hafez;16|GK|M. Soliman;17|DM|M. Lashin;18|CM|Donga;19|DM|M. Attia;20|LW|I. Adel;21|CM|M. Saber;22|LW|Marmoush;23|GK|Shoubir;24|CB|T. Alaa;25|ST|Zizo;26|GK|M. Alaa',
+  GHA:'1|GK|Zigi;2|RB|Seidu;3|CM|Caleb;4|CB|Adjetey;5|DM|Thomas;6|CB|Suleman;7|RW|Fatawu;8|CM|Sibo;9|ST|Ayew;10|ST|Asante;11|LM|Semenyo;12|GK|Anang;13|RW|Baah;14|LB|Mensah;15|CM|Owusu;16|GK|Asare;17|RB|Baba;18|CB|Opoku;19|ST|Williams;20|DM|Boakye;21|RB|Peprah;22|LW|Kamaldeen;23|CB|Luckassen;24|ST|Nuamah;25|RW|Adu;26|CB|Seneya',
+  ALG:'1|GK|Mastil;2|RB|Mandi;3|LB|Abada;4|CB|Tougai;5|CB|Belaid;6|DM|Zerrouki;7|RW|Mahrez;8|CM|Aouar;9|ST|Ghouri;10|AM|Chaibi;11|LW|Hadj Moussa;12|RW|Benbouali;13|CB|Hadjam;14|DM|Boudaoui;15|CB|Ait Nouri;16|GK|Benbot;17|RB|Belghali;18|ST|Amoura;19|CM|Bentaleb;20|LW|Boulbina;21|RB|Bensebaini;22|DM|Maza;23|GK|Zidane;24|CM|Titraoui;25|ST|Ghedjemis;26|CB|Chergui',
+  AUT:'1|GK|Schlager;2|RB|Affengruber;3|LB|Danso;4|DM|Xaver;5|CB|Posch;6|DM|Seiwald;7|RW|Arnautovic;8|CB|Alaba;9|CM|Sabitzer;10|AM|Grillitsch;11|LW|Gregoritsch;12|GK|Wiegele;13|GK|Pentz;14|ST|Kalajdzic;15|CB|Lienhart;16|LB|Mwene;17|CM|Chukwuemeka;18|DM|Schmid;19|CM|Baumgartner;20|DM|Laimer;21|RW|Wimmer;22|CM|Prass;23|CB|Friedl;24|DM|Wanner;25|CB|Svoboda;26|CM|Schöpf',
+  SWE:'1|GK|Zetterström;2|RB|Lagerbielke;3|LB|Lindelöf;4|CB|Hien;5|CB|Gudmundsson;6|CB|H. Johansson;7|RM|Bergvall;8|CB|Svensson;9|ST|Isak;10|AM|Nygren;11|LW|Elanga;12|GK|V. Johansson;13|CM|Sema;14|LB|Ekdal;15|CB|Starfelt;16|DM|Karlström;17|RW|Gyökeres;18|CM|Ayari;19|DM|Svanberg;20|LB|Smith;21|RB|Bernhardsson;22|CM|Zeneli;23|GK|Nordfeldt;24|CB|Stroud;25|RW|Nilsson;26|ST|Ali',
+  SCO:'1|GK|Gunn;2|RB|Hickey;3|LB|Robertson;4|DM|McTominay;5|CB|Hanley;6|CB|Tierney;7|RM|McGinn;8|CM|Fletcher;9|ST|Dykes;10|ST|Adams;11|LM|Christie;12|GK|Kelly;13|CB|Hendry;14|ST|Stewart;15|CB|Souttar;16|LB|Hyam;17|RW|Gannon Doak;18|ST|Hirst;19|CM|Ferguson;20|LW|Shankland;21|GK|Gordon;22|CB|Patterson;23|DM|McLean;24|CB|Ralston;25|ST|Curtis;26|CB|McKenna',
+  TUN:'1|GK|Chamakh;2|RB|Abdi;3|LB|Talbi;4|CB|Rekik;5|CB|Arous;6|CB|Bronn;7|RW|Achouri;8|LW|Saad;9|ST|Mastouri;10|AM|Mejbri;11|LM|Gharbi;12|RB|Ben Ouanes;13|CM|Khedira;14|DM|Ayari;15|CM|Belhadj Mahmoud;16|GK|Dahmen;17|DM|Skhiri;18|RW|Elloumi;19|ST|Chaouat;20|LB|Valery;21|RB|Ben Hmida;22|GK|Ben Hsan;23|CB|Neffati;24|CB|Chikhaoui;25|CM|Slimane;26|DM|Tounekti',
+  KSA:'1|GK|Alaqidi;2|RB|Majrashi;3|LB|Lajami;4|CB|Alamri;5|CB|Altambakti;6|DM|Nasser;7|RM|Musab;8|ST|Aiman;9|ST|Feras;10|ST|Salem;11|LW|Alshehri;12|RB|Saud;13|CB|Nawaf;14|LB|Kadish;15|CM|Alkhaibari;16|DM|Ziyad;17|RW|Khalid;18|CM|Alhajji;19|LW|Alhamddan;20|LW|Mandash;21|GK|Alowais;22|GK|Alkassar;23|DM|Kanno;24|CB|Moteb;25|CB|Jehad;26|CB|Mohammed',
+  TUR:'1|GK|Mert;2|RB|Zeki Çelik;3|LB|Demiral;4|CB|Çağlar;5|DM|Ozcan;6|DM|Orkun Kökçü;7|RW|Aktürkoğlu;8|LW|Arda Güler;9|ST|Deniz Gül;10|AM|Çalhanoğlu;11|LW|Yildiz;12|GK|Altay;13|CB|Eren Elmali;14|LB|Abdülkerim;15|CB|Ozan Kabak;16|DM|Ismail;17|RW|Kahveci;18|CB|Mert Muldur;19|LW|Yunus;20|LB|F. Kadioğlu;21|RW|Bariş;22|CM|Kaan;23|GK|Ugurcan;24|RW|Oguz;25|CB|Samet Akaydin;26|ST|Can Uzun',
+  CZE:'1|GK|Kovar;2|RB|Zima;3|LB|Holes;4|CB|Hranac;5|CB|Coufal;6|CB|Chaloupek;7|CB|Krejci;8|CM|Darida;9|ST|Hlozek;10|ST|Schick;11|LW|Kuchta;12|DM|Cerv;13|RW|Chytil;14|LB|Jurasek;15|ST|Sulc;16|GK|Stanek;17|CM|Provod;18|DM|Sadilek;19|LW|Chory;20|LB|Zeleny;21|RB|Doudera;22|CM|Soucek;23|GK|Hornicek;24|DM|Sojka;25|CM|Sochurek;26|ST|Visinsky',
+  PAR:'1|GK|Fernandez;2|RB|Velázquez;3|LB|Alderete;4|CB|Cáceres;5|CB|Balbuena;6|CB|Alonso;7|RM|Sosa;8|CM|D. Gomez;9|ST|Sanabria;10|AM|M. Almirón;11|LM|Mauricio;12|GK|O. Gill;13|CB|Canale;14|CM|Cubas;15|CB|G. Gomez;16|DM|Bobadilla;17|RW|R. Gamarra;18|ST|Arce;19|RW|Enciso;20|CM|Ojeda;21|RW|Avalos;22|GK|Oliveira;23|DM|Galarza;24|CM|Caballero;25|LW|Pitta;26|CB|Maidana',
+  PAN:'1|GK|Mejía;2|RB|Blackman;3|LB|Cordoba;4|CB|F. Escobar;5|CB|Fariña;6|DM|Martínez;7|RM|J.L. Rodríguez;8|CM|Carrasquilla;9|ST|T. Rodríguez;10|AM|Ismael;11|LM|Bárcenas;12|GK|Samudio;13|CB|Ramos;14|LB|Harvey;15|CB|Davis;16|LB|Andrade;17|RW|Fajardo;18|ST|Waterman;19|DM|Quintero;20|CM|Godoy;21|DM|Yanis;22|GK|Mosquera;23|CB|A. Murillo;24|RW|Londono;25|CB|Miller;26|CB|Gutiérrez',
+  NZL:'1|GK|Crocombe;2|RB|Payne;3|LB|De Vries;4|CB|Bindon;5|CB|Boxall;6|DM|Bell;7|RM|Garbett;8|CM|Stamenic;9|ST|Wood;10|AM|Singh;11|LM|Just;12|GK|Paulsen;13|CB|Cacace;14|DM|Rufer;15|CB|Pijnaker;16|LB|Surman;17|RW|Barbarouses;18|ST|Waine;19|CM|Old;20|DM|McCowatt;21|RW|Randall;22|GK|Woud;23|CM|Thomas;24|CB|Elliot;25|DM|Bayliss;26|CB|Smith',
+  RSA:'1|GK|Williams;2|RB|Matuludi;3|LB|Ndamane;4|DM|Mokoena;5|DM|Mbatha;6|CB|Modiba;7|RW|Appollis;8|LW|Moremi;9|ST|Foster;10|ST|Mofokeng;11|LM|Zwane;12|ST|Maseko;13|DM|Sithole;14|LB|Mbokazi;15|LW|Rayners;16|GK|Chaine;17|RW|Makgopa;18|CB|Kabini;19|CB|Sibisi;20|LB|Mudau;21|RB|Okon;22|GK|Goss;23|CM|Adams;24|CB|Makhanya;25|RW|Sebelebele;26|CB|Cross',
+  UZB:'1|GK|Yusupov;2|RB|Khusanov;3|LB|Alijonov;4|CB|Sayfiev;5|CB|Ashurmatov;6|DM|Mozgovoy;7|RM|Shukurov;8|CM|Iskanderov;9|DM|Xamrobekov;10|AM|Masharipov;11|LM|Urunov;12|GK|Nematov;13|CB|Nasrullaev;14|ST|Shomurodov;15|CB|Eshmurodov;16|GK|Ergashev;17|CM|Khamdamov;18|CB|Abdullaev;19|DM|Ganiev;20|LW|Amonov;21|RW|Sergeev;22|CM|Fayzullaev;23|DM|Esanov;24|CB|Karimov;25|CB|Ulmasaliyev;26|CB|Urozov',
+  QAT:'1|GK|Abunada;2|RB|Pedro;3|LB|L. Mendes;4|CB|Gueye;5|CB|Jassem;6|DM|A. Aziz;7|RW|Alaeddin;8|LW|Edmilson Jr.;9|ST|Muntari;10|ST|Alhaydos;11|LW|Afif;12|DM|Karim;13|CB|Ayoub;14|LB|Homam;15|LW|Yusuf;16|LB|Khoukhi;17|CM|A. Alganehi;18|CB|Sultan;19|ST|Almoez;20|DM|A. Fathy;21|GK|Salah;22|GK|Barsham;23|CM|Madibo;24|RW|Tahsin;25|CB|Alhashmi;26|ST|Manai',
+  JOR:'1|GK|Yazeed;2|RB|Abu Hasheesh;3|LB|Nasib;4|CB|Abu Dhab;5|CB|Alarab;6|DM|Jamous;7|RW|Abu Zraiq;8|CM|Alrawabdeh;9|ST|Olwan;10|ST|Altamari;11|LW|Odeh;12|GK|Bani Ateyah;13|ST|Almardi;14|CM|Rajaei;15|DM|Sadeh;16|LB|Abulnadi;17|RB|Salem;18|LW|Sabra;19|CB|Saeed;20|CM|Abu Taha;21|DM|Nizar;22|GK|Alfakhori;23|CB|Ehsan;24|ST|Azaizeh;25|CM|Aldaoud;26|CB|Badawi',
+  IRQ:'1|GK|Fahad;2|RB|Rebin;3|LB|Hussein;4|CB|Zaid T.;5|CB|Akam;6|CB|Munaf;7|RM|Youssef;8|CM|Ibrahim;9|ST|Al-Hamadi;10|ST|Mohanad;11|LW|Ahmed Q.;12|GK|Jalal;13|RW|Ali Y.;14|CM|Z. Iqbal;15|CB|Ahmed;16|DM|Al-Ammari;17|RW|Ali J.;18|LW|Aymen;19|CM|K. Yakob;20|DM|Aimar;21|RW|Marko;22|GK|Ahmed B.;23|CB|Doski;24|CM|Zaid I.;25|CB|Mustafa;26|CB|Frans',
+  HAI:'1|GK|Placide;2|RB|Arcus;3|LB|Thermoncy;4|CB|Ade;5|CB|Delcroix;6|DM|Sainte;7|RW|Etienne Jr;8|CB|Experience;9|ST|Nazon;10|AM|Bellegarde;11|LW|Deedson;12|GK|A. Pierre;13|CB|Lacroix;14|CM|L. Pierre;15|RW|Providence;16|ST|Joseph;17|DM|Jean Jacques;18|LW|Isidor;19|ST|Fortune;20|LW|Pierrot;21|RW|Casimir;22|CB|Duverne;23|GK|Duverger;24|CB|Paugin;25|CM|Simon;26|DM|W. Pierre',
+  CUR:'1|GK|Room;2|RB|Sambo;3|LB|Gaari;4|CB|Van Eijma;5|CB|Floranus;6|DM|Roemeratoe;7|RM|J. Bacuna;8|CM|Comenencia;9|ST|Locadia;10|AM|L. Bacuna;11|LW|Antonisse;12|ST|Hansen;13|RW|Noslin;14|ST|Gorre;15|CM|Martha;16|LW|Margaritha;17|RW|Kuwas;18|CB|Obispo;19|RW|Kastaneer;20|LB|Brenet;21|DM|Chong;22|CM|Felida;23|CB|Bazoer;24|CB|Fonville;25|GK|Bodak;26|GK|Doornbusch',
+  IRN:'1|GK|Beiranvand;2|RB|Saleh;3|LB|E. Hajisafi;4|CB|Shoja;5|CB|M. Mohammadi;6|DM|S. Ezatolahi;7|RM|A. Jahanbakhsh;8|CM|M. Mohebi;9|ST|Taremi;10|ST|Mehdi Ghayedi;11|LW|A. Alipour;12|GK|Payam;13|CB|Kanani;14|DM|Ghoddoos;15|CM|Roozbeh;16|DM|M. Torabi;17|RB|Arya;18|RW|Amirhossein;19|CB|Ali;20|LW|Shahriyar;21|CM|Mohammad;22|GK|Hosseini;23|CB|Ramin;24|LW|Dargahi;25|CB|Danial;26|DM|Razagh',
+  CPV:'1|GK|Vozinha;2|RB|Stopira;3|LB|Borges;4|CB|Lopes;5|CB|Logan;6|DM|Kevin L.;7|RM|Jovane;8|CM|Joao Paulo;9|ST|Benchimol;10|AM|Monteiro;11|LM|Rodrigues;12|GK|Marcio;13|CB|Lopes Cabral;14|DM|D. Duarte;15|CM|Duarte;16|DM|Y. Semedo;17|CM|Semedo;18|DM|Arcanjo;19|LW|Livramento;20|LW|Ryan;21|CM|Da Costa;22|CB|Moreira;23|GK|Dos Santos;24|CB|Wagner P.;25|CB|Kelvin;26|DM|Hélio',
+  COD:'1|GK|Mpasi;2|RB|Wan Bissaka;3|LB|Kapuadi;4|CB|Tuanzebe;5|CB|Batubinsika;6|DM|Mukau;7|RM|Mbuku;8|CM|Moutoussamy;9|ST|Cipenga;10|AM|Bongonda;11|LW|Kakuta;12|RB|J. Kayembe;13|ST|Elia;14|CM|Sadiki;15|DM|Tshibola;16|GK|Fayulu;17|RW|Bakambu;18|CM|Pickel;19|ST|Mayele;20|LW|Wissa;21|GK|Epolo;22|CB|Mbemba;23|ST|Banza;24|CB|G. Kalulu;25|DM|Kayembe;26|CB|Masuaku',
+  CIV:'1|GK|Y. Fofana;2|RB|O. Diomande;3|LB|G. Konan;4|DM|Seri;5|CB|Singo;6|DM|Fofana;7|CB|Kossounou;8|CM|Kessie;9|ST|Bonny;10|ST|Adingra;11|LW|Yan Diomande;12|RW|Wahi;13|CB|Operi;14|ST|Diakite;15|LW|Amad;16|GK|Kone;17|RB|G. Doue;18|DM|Sangare;19|ST|Pepe;20|LB|Agbadou;21|RB|Ndicka;22|LW|Guessand;23|GK|Lafont;24|ST|Toure;25|CM|Guiagon;26|DM|Inao',
+  BIH:'1|GK|Vasilj;2|RB|Mujakic;3|LB|Hadzikadunic;4|CB|Muharemovic;5|CB|Kolasinac;6|DM|Tahirovic;7|CB|Dedic;8|CM|Gigovic;9|ST|Bazdar;10|ST|Demirovic;11|LW|Dzeko;12|GK|Jurkas;13|CM|Basic;14|DM|Sunjic;15|CM|Memic;16|DM|Hadziahmetovic;17|CM|Burnic;18|CB|Katic;19|RW|Alajbegovic;20|LW|Bajraktarevic;21|RB|Radeljic;22|GK|Zlomislic;23|LW|Tabakovic;24|CB|Celik;25|ST|Lukic;26|DM|Mahmic',
 };
 
-/* Rating scale ~ 60-92. att/mid/def shape how squads are generated. */
 const TEAMS = [
-  { id:'BRA', name:'Brazil',        pool:'latin',       att:90, mid:87, def:84, c1:'#f7d417', c2:'#0a5c36', c3:'#1b3fa0', style:'flair' },
-  { id:'ARG', name:'Argentina',     pool:'latin',       att:89, mid:88, def:84, c1:'#75c4e8', c2:'#ffffff', c3:'#0b1b3a', style:'balanced' },
-  { id:'FRA', name:'France',        pool:'french',      att:90, mid:86, def:87, c1:'#20358f', c2:'#ffffff', c3:'#d0202e', style:'counter' },
-  { id:'ENG', name:'England',       pool:'anglo',       att:87, mid:86, def:85, c1:'#ffffff', c2:'#1b3fa0', c3:'#d0202e', style:'balanced' },
-  { id:'ESP', name:'Spain',         pool:'iberian',     att:85, mid:89, def:84, c1:'#c8102e', c2:'#f7d417', c3:'#1b1b1b', style:'possession' },
-  { id:'POR', name:'Portugal',      pool:'iberian',     att:88, mid:85, def:83, c1:'#8b1c2b', c2:'#0a5c36', c3:'#ffffff', style:'flair' },
-  { id:'NED', name:'Netherlands',   pool:'dutch',       att:85, mid:84, def:85, c1:'#f4650c', c2:'#ffffff', c3:'#1b3fa0', style:'possession' },
-  { id:'BEL', name:'Belgium',       pool:'french',      att:84, mid:84, def:80, c1:'#c8102e', c2:'#1b1b1b', c3:'#f7d417', style:'balanced' },
-  { id:'GER', name:'Germany',       pool:'germanic',    att:85, mid:86, def:82, c1:'#ffffff', c2:'#1b1b1b', c3:'#d0202e', style:'press' },
-  { id:'ITA', name:'Italy',         pool:'italic',      att:81, mid:84, def:88, c1:'#1b3fa0', c2:'#ffffff', c3:'#0a5c36', style:'defensive' },
-  { id:'CRO', name:'Croatia',       pool:'slavic',      att:80, mid:87, def:81, c1:'#e8e8e8', c2:'#c8102e', c3:'#1b3fa0', style:'possession' },
-  { id:'URU', name:'Uruguay',       pool:'latin',       att:83, mid:81, def:83, c1:'#6fa8dc', c2:'#ffffff', c3:'#1b1b1b', style:'counter' },
-  { id:'COL', name:'Colombia',      pool:'latin',       att:83, mid:82, def:80, c1:'#f7d417', c2:'#1b3fa0', c3:'#d0202e', style:'flair' },
-  { id:'MAR', name:'Morocco',       pool:'northafrican',att:80, mid:82, def:85, c1:'#c8102e', c2:'#0a5c36', c3:'#ffffff', style:'defensive' },
-  { id:'JPN', name:'Japan',         pool:'eastasian',   att:80, mid:83, def:79, c1:'#1b3fa0', c2:'#ffffff', c3:'#c8102e', style:'press' },
-  { id:'USA', name:'United States', pool:'northam',     att:79, mid:80, def:79, c1:'#ffffff', c2:'#1b3fa0', c3:'#c8102e', style:'press' },
-  { id:'MEX', name:'Mexico',        pool:'northam',     att:80, mid:80, def:78, c1:'#0a5c36', c2:'#ffffff', c3:'#c8102e', style:'balanced' },
-  { id:'DEN', name:'Denmark',       pool:'nordic',      att:80, mid:81, def:81, c1:'#c8102e', c2:'#ffffff', c3:'#1b1b1b', style:'balanced' },
-  { id:'SUI', name:'Switzerland',   pool:'germanic',    att:78, mid:80, def:82, c1:'#c8102e', c2:'#ffffff', c3:'#1b1b1b', style:'defensive' },
-  { id:'SEN', name:'Senegal',       pool:'westafrican', att:81, mid:79, def:81, c1:'#0a5c36', c2:'#ffffff', c3:'#f7d417', style:'counter' },
-  { id:'KOR', name:'South Korea',   pool:'eastasian',   att:80, mid:79, def:77, c1:'#c8102e', c2:'#1b3fa0', c3:'#ffffff', style:'press' },
-  { id:'AUS', name:'Australia',     pool:'oceanic',     att:75, mid:77, def:79, c1:'#f7d417', c2:'#0a5c36', c3:'#1b1b1b', style:'defensive' },
-  { id:'POL', name:'Poland',        pool:'slavic',      att:80, mid:76, def:77, c1:'#ffffff', c2:'#c8102e', c3:'#1b1b1b', style:'counter' },
-  { id:'SRB', name:'Serbia',        pool:'slavic',      att:81, mid:79, def:75, c1:'#c8102e', c2:'#1b3fa0', c3:'#ffffff', style:'flair' },
-  { id:'ECU', name:'Ecuador',       pool:'latin',       att:76, mid:78, def:79, c1:'#f7d417', c2:'#1b3fa0', c3:'#c8102e', style:'counter' },
-  { id:'NGA', name:'Nigeria',       pool:'westafrican', att:80, mid:77, def:77, c1:'#0a5c36', c2:'#ffffff', c3:'#1b1b1b', style:'flair' },
-  { id:'GHA', name:'Ghana',         pool:'westafrican', att:77, mid:76, def:75, c1:'#ffffff', c2:'#c8102e', c3:'#f7d417', style:'balanced' },
-  { id:'CMR', name:'Cameroon',      pool:'westafrican', att:77, mid:75, def:75, c1:'#0a5c36', c2:'#c8102e', c3:'#f7d417', style:'counter' },
-  { id:'CAN', name:'Canada',        pool:'northam',     att:77, mid:76, def:74, c1:'#c8102e', c2:'#ffffff', c3:'#1b1b1b', style:'press' },
-  { id:'SWE', name:'Sweden',        pool:'nordic',      att:78, mid:76, def:76, c1:'#f7d417', c2:'#1b3fa0', c3:'#ffffff', style:'balanced' },
-  { id:'UKR', name:'Ukraine',       pool:'slavic',      att:77, mid:78, def:76, c1:'#f7d417','c2':'#1b3fa0', c3:'#ffffff', style:'possession' },
-  { id:'EGY', name:'Egypt',         pool:'northafrican',att:79, mid:76, def:75, c1:'#c8102e', c2:'#1b1b1b', c3:'#ffffff', style:'counter' }
+  { id:'ESP', name:'Spain', att:91, mid:93, def:88, c1:'#c8102e', c2:'#f7d417', c3:'#1b1b1b', style:'possession' },
+  { id:'FRA', name:'France', att:91, mid:87, def:88, c1:'#20358f', c2:'#ffffff', c3:'#d0202e', style:'counter' },
+  { id:'ARG', name:'Argentina', att:90, mid:89, def:86, c1:'#75c4e8', c2:'#ffffff', c3:'#0b1b3a', style:'balanced' },
+  { id:'ENG', name:'England', att:88, mid:87, def:86, c1:'#ffffff', c2:'#1b3fa0', c3:'#d0202e', style:'balanced' },
+  { id:'BRA', name:'Brazil', att:89, mid:86, def:84, c1:'#f7d417', c2:'#0a5c36', c3:'#1b3fa0', style:'flair' },
+  { id:'POR', name:'Portugal', att:88, mid:86, def:84, c1:'#8b1c2b', c2:'#0a5c36', c3:'#ffffff', style:'flair' },
+  { id:'NED', name:'Netherlands', att:85, mid:84, def:85, c1:'#f4650c', c2:'#ffffff', c3:'#1b3fa0', style:'possession' },
+  { id:'GER', name:'Germany', att:85, mid:86, def:82, c1:'#ffffff', c2:'#1b1b1b', c3:'#d0202e', style:'press' },
+  { id:'BEL', name:'Belgium', att:84, mid:84, def:80, c1:'#c8102e', c2:'#1b1b1b', c3:'#f7d417', style:'balanced' },
+  { id:'MAR', name:'Morocco', att:81, mid:82, def:85, c1:'#c8102e', c2:'#0a5c36', c3:'#ffffff', style:'defensive' },
+  { id:'URU', name:'Uruguay', att:83, mid:82, def:83, c1:'#6fa8dc', c2:'#ffffff', c3:'#1b1b1b', style:'counter' },
+  { id:'CRO', name:'Croatia', att:80, mid:86, def:81, c1:'#e8e8e8', c2:'#c8102e', c3:'#1b3fa0', style:'possession' },
+  { id:'NOR', name:'Norway', att:87, mid:82, def:78, c1:'#c8102e', c2:'#1b3fa0', c3:'#ffffff', style:'counter' },
+  { id:'COL', name:'Colombia', att:83, mid:82, def:80, c1:'#f7d417', c2:'#1b3fa0', c3:'#d0202e', style:'flair' },
+  { id:'JPN', name:'Japan', att:81, mid:83, def:79, c1:'#1b3fa0', c2:'#ffffff', c3:'#c8102e', style:'press' },
+  { id:'TUR', name:'Turkiye', att:83, mid:82, def:78, c1:'#c8102e', c2:'#ffffff', c3:'#1b1b1b', style:'flair' },
+  { id:'SEN', name:'Senegal', att:82, mid:79, def:81, c1:'#0a5c36', c2:'#ffffff', c3:'#f7d417', style:'counter' },
+  { id:'SUI', name:'Switzerland', att:78, mid:80, def:82, c1:'#c8102e', c2:'#ffffff', c3:'#1b1b1b', style:'defensive' },
+  { id:'USA', name:'United States', att:79, mid:80, def:79, c1:'#ffffff', c2:'#1b3fa0', c3:'#c8102e', style:'press' },
+  { id:'AUT', name:'Austria', att:79, mid:80, def:79, c1:'#c8102e', c2:'#ffffff', c3:'#1b1b1b', style:'press' },
+  { id:'CIV', name:'Cote d Ivoire', att:80, mid:79, def:79, c1:'#f4650c', c2:'#ffffff', c3:'#0a5c36', style:'balanced' },
+  { id:'MEX', name:'Mexico', att:79, mid:79, def:78, c1:'#0a5c36', c2:'#ffffff', c3:'#c8102e', style:'balanced' },
+  { id:'KOR', name:'South Korea', att:80, mid:79, def:77, c1:'#c8102e', c2:'#1b3fa0', c3:'#ffffff', style:'press' },
+  { id:'SWE', name:'Sweden', att:82, mid:77, def:77, c1:'#f7d417', c2:'#1b3fa0', c3:'#ffffff', style:'counter' },
+  { id:'ECU', name:'Ecuador', att:76, mid:79, def:80, c1:'#f7d417', c2:'#1b3fa0', c3:'#c8102e', style:'counter' },
+  { id:'ALG', name:'Algeria', att:79, mid:78, def:76, c1:'#ffffff', c2:'#0a5c36', c3:'#c8102e', style:'flair' },
+  { id:'PAR', name:'Paraguay', att:75, mid:77, def:79, c1:'#c8102e', c2:'#1b3fa0', c3:'#ffffff', style:'defensive' },
+  { id:'EGY', name:'Egypt', att:80, mid:76, def:75, c1:'#c8102e', c2:'#1b1b1b', c3:'#ffffff', style:'counter' },
+  { id:'SCO', name:'Scotland', att:75, mid:78, def:77, c1:'#1b2a5e', c2:'#ffffff', c3:'#c8102e', style:'press' },
+  { id:'CZE', name:'Czechia', att:76, mid:77, def:76, c1:'#c8102e', c2:'#ffffff', c3:'#1b3fa0', style:'balanced' },
+  { id:'CAN', name:'Canada', att:78, mid:76, def:75, c1:'#c8102e', c2:'#ffffff', c3:'#1b1b1b', style:'press' },
+  { id:'GHA', name:'Ghana', att:78, mid:76, def:75, c1:'#ffffff', c2:'#c8102e', c3:'#f7d417', style:'balanced' },
+  { id:'AUS', name:'Australia', att:74, mid:76, def:78, c1:'#f7d417', c2:'#0a5c36', c3:'#1b1b1b', style:'defensive' },
+  { id:'IRN', name:'Iran', att:74, mid:74, def:76, c1:'#ffffff', c2:'#c8102e', c3:'#0a5c36', style:'defensive' },
+  { id:'BIH', name:'Bosnia', att:75, mid:75, def:73, c1:'#1f4faa', c2:'#f7d417', c3:'#ffffff', style:'balanced' },
+  { id:'COD', name:'DR Congo', att:75, mid:74, def:74, c1:'#1b6fd4', c2:'#f7d417', c3:'#c8102e', style:'counter' },
+  { id:'TUN', name:'Tunisia', att:73, mid:74, def:76, c1:'#c8102e', c2:'#ffffff', c3:'#1b1b1b', style:'defensive' },
+  { id:'RSA', name:'South Africa', att:72, mid:73, def:73, c1:'#f7d417', c2:'#0a5c36', c3:'#ffffff', style:'possession' },
+  { id:'QAT', name:'Qatar', att:72, mid:73, def:72, c1:'#6d1a36', c2:'#ffffff', c3:'#1b1b1b', style:'possession' },
+  { id:'UZB', name:'Uzbekistan', att:71, mid:72, def:73, c1:'#ffffff', c2:'#1b3fa0', c3:'#0a5c36', style:'balanced' },
+  { id:'PAN', name:'Panama', att:71, mid:72, def:72, c1:'#c8102e', c2:'#ffffff', c3:'#1b3fa0', style:'counter' },
+  { id:'CPV', name:'Cabo Verde', att:71, mid:72, def:72, c1:'#1b3fa0', c2:'#ffffff', c3:'#c8102e', style:'counter' },
+  { id:'JOR', name:'Jordan', att:71, mid:71, def:72, c1:'#ffffff', c2:'#c8102e', c3:'#1b1b1b', style:'defensive' },
+  { id:'NZL', name:'New Zealand', att:70, mid:71, def:72, c1:'#ffffff', c2:'#1b1b1b', c3:'#c8102e', style:'defensive' },
+  { id:'KSA', name:'Saudi Arabia', att:70, mid:71, def:71, c1:'#ffffff', c2:'#0a5c36', c3:'#1b1b1b', style:'press' },
+  { id:'IRQ', name:'Iraq', att:70, mid:71, def:71, c1:'#ffffff', c2:'#0a5c36', c3:'#1b1b1b', style:'defensive' },
+  { id:'CUR', name:'Curacao', att:70, mid:70, def:70, c1:'#1b3fa0', c2:'#f7d417', c3:'#ffffff', style:'counter' },
+  { id:'HAI', name:'Haiti', att:70, mid:70, def:69, c1:'#1b3fa0', c2:'#c8102e', c3:'#ffffff', style:'counter' },
 ];
 
 /* ---------- Formations ----------
@@ -578,6 +588,11 @@ const FORMATIONS = {
     ]}
 };
 
+const NEAR_ROLE = {
+  LB:['LM','CB'], RB:['RM','CB'], CB:['DM','LB','RB'],
+  DM:['CM','CB'], CM:['DM','AM'], AM:['CM','LW','RW'],
+  LM:['LW','LB'], RM:['RW','RB'], LW:['LM','AM'], RW:['RM','AM'], ST:['AM','LW','RW']
+};
 const ROLE_GROUP = { GK:'GK', LB:'DF', CB:'DF', RB:'DF', DM:'MF', CM:'MF', AM:'MF', LM:'MF', RM:'MF', LW:'FW', RW:'FW', ST:'FW' };
 
 const MENTALITY = {
@@ -594,68 +609,82 @@ const PRESSING = {
   2:{ label:'High press',chase:3, aggression:1.25, drain:1.30 }
 };
 
-/* ---------- squad generation ---------- */
+/* ---------- squads ----------
+   Players come from the published tournament squad lists: shirt number,
+   position and name. Ability is inferred from the nation's strength, the
+   player's position and where he sits in the pecking order, so it is a
+   model of a squad rather than a scouting report.                        */
 function hashStr(s){ let h=2166136261; for(let i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=Math.imul(h,16777619);} return h>>>0; }
 function mulberry(seed){ return function(){ seed|=0; seed=seed+0x6D2B79F5|0; let t=Math.imul(seed^seed>>>15,1|seed); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
-
-const SQUAD_PLAN = [
-  ['GK',3],['CB',4],['LB',2],['RB',2],['DM',2],['CM',3],['AM',1],['LM',1],['RM',1],['LW',1],['RW',1],['ST',3]
-];
+function clampN(v,a,b){ return v<a?a:v>b?b:v; }
+function attr(ovr, bias, rng){ return Math.round(clampN(ovr + bias + (rng()*12 - 6), 35, 99)); }
 
 function buildSquad(team){
-  const rng = mulberry(hashStr(team.id + '·squad'));
-  const pool = NAMEPOOL[team.pool];
-  const used = new Set();
-  const players = [];
-  let num = 1;
-  const nums = [];
-  for(let i=1;i<=30;i++) nums.push(i);
-  SQUAD_PLAN.forEach(([role,count])=>{
-    for(let i=0;i<count;i++){
-      let first, last, guard=0;
-      do {
-        last = pool.l[Math.floor(rng()*pool.l.length)];
-        guard++;
-      } while(used.has(last) && guard<60);
-      used.add(last);
-      first = pool.f[Math.floor(rng()*pool.f.length)];
-      const nm = first + ' ' + last;
-      const grp = ROLE_GROUP[role];
-      const base = grp==='GK' ? (team.def*0.55 + team.mid*0.45)
-                 : grp==='DF' ? team.def
-                 : grp==='MF' ? team.mid
-                 : team.att;
-      // depth: first player of each role is the starter, later ones weaker
-      const depth = i * (4.5 + rng()*2.5);
-      const ovr = Math.round(clampN(base - depth + (rng()*7 - 3.5), 48, 96));
-      const p = {
-        name: nm, role, group: grp, ovr,
-        num: nums.splice(Math.floor(rng()*nums.length),1)[0] || (31+players.length),
-        age: 20 + Math.floor(rng()*15),
-        pace:      attr(ovr, grp==='DF'?0:grp==='FW'?6:2, rng),
-        dribble:   attr(ovr, grp==='FW'?7:grp==='MF'?4:-6, rng),
-        passing:   attr(ovr, grp==='MF'?7:grp==='DF'?0:-2, rng),
-        shooting:  attr(ovr, grp==='FW'?10:grp==='MF'?1:-12, rng),
-        defending: attr(ovr, grp==='DF'?10:grp==='MF'?2:-14, rng),
-        physical:  attr(ovr, grp==='DF'?6:2, rng),
-        keeping:   grp==='GK' ? attr(ovr, 10, rng) : 20,
-        composure: attr(ovr, 0, rng),
-        aggression: Math.round(35 + rng()*55),
-        stamina:   Math.round(62 + rng()*32)
-      };
-      if(team.style==='flair'){ p.dribble = Math.min(99, p.dribble+4); }
-      if(team.style==='possession'){ p.passing = Math.min(99, p.passing+4); }
-      if(team.style==='defensive'){ p.defending = Math.min(99, p.defending+3); }
-      if(team.style==='press'){ p.stamina = Math.min(99, p.stamina+6); p.aggression=Math.min(99,p.aggression+8); }
-      if(team.style==='counter'){ p.pace = Math.min(99, p.pace+4); }
-      players.push(p);
-    }
+  const raw = ROSTERS[team.id];
+  if(!raw) return [];
+  const rng = mulberry(hashStr(team.id + '\u00b7squad'));
+  const rows = raw.split(';').map(r=>{
+    const [num, role, name] = r.split('|');
+    return { num:+num, role, name, group: ROLE_GROUP[role] };
   });
-  players.forEach((p,i)=> p.id = team.id + '-' + i);
-  return players;
+  // depth: shirts 1-11 are the recognised first choice, then by number
+  const depthOf = {};
+  ['GK','DF','MF','FW'].forEach(g=>{
+    rows.filter(r=>r.group===g)
+        .sort((a,b)=> (a.num>11) - (b.num>11) || a.num - b.num)
+        .forEach((r,i)=> depthOf[r.num] = i);
+  });
+  return rows.map(r=>{
+    const grp = r.group;
+    const base = grp==='GK' ? (team.def*0.55 + team.mid*0.45)
+               : grp==='DF' ? team.def
+               : grp==='MF' ? team.mid
+               : team.att;
+    const depth = depthOf[r.num] * (grp==='GK' ? 6.5 : 3.4);
+    let star = 0;
+    if(grp!=='GK' && (r.num===9 || r.num===10)) star += 3;
+    if(grp!=='GK' && (r.num===7 || r.num===11)) star += 2;
+    if(grp==='GK' && r.num===1) star += 2;
+    const ovr = Math.round(clampN(base - depth + star + (rng()*6 - 3), 47, 96));
+    const p = {
+      name: r.name, role: r.role, group: grp, num: r.num, ovr,
+      age: 20 + Math.floor(rng()*15),
+      pace:      attr(ovr, grp==='DF'?0:grp==='FW'?6:2, rng),
+      dribble:   attr(ovr, grp==='FW'?7:grp==='MF'?4:-6, rng),
+      passing:   attr(ovr, grp==='MF'?7:grp==='DF'?0:-2, rng),
+      shooting:  attr(ovr, grp==='FW'?10:grp==='MF'?1:-12, rng),
+      defending: attr(ovr, grp==='DF'?10:grp==='MF'?2:-14, rng),
+      physical:  attr(ovr, grp==='DF'?6:2, rng),
+      keeping:   grp==='GK' ? attr(ovr, 10, rng) : 20,
+      composure: attr(ovr, 0, rng),
+      aggression: Math.round(35 + rng()*55),
+      stamina:   Math.round(62 + rng()*32)
+    };
+    if(team.style==='flair') p.dribble = Math.min(99, p.dribble+4);
+    if(team.style==='possession') p.passing = Math.min(99, p.passing+4);
+    if(team.style==='defensive') p.defending = Math.min(99, p.defending+3);
+    if(team.style==='press'){ p.stamina = Math.min(99, p.stamina+6); p.aggression = Math.min(99, p.aggression+8); }
+    if(team.style==='counter') p.pace = Math.min(99, p.pace+4);
+    p.id = team.id + '-' + p.num;
+    return p;
+  }).map((p, i, all) => { p.short = shortName(p, all); return p; });
 }
-function attr(ovr, bias, rng){ return Math.round(clampN(ovr + bias + (rng()*12 - 6), 35, 99)); }
-function clampN(v,a,b){ return v<a?a:v>b?b:v; }
+
+/* Broadcast-style short name: surname, or initial + surname when a squad
+   already has that surname twice. */
+const INITIAL = /^(?:[A-ZÀ-Þ]\.)+$/;
+function baseName(n){
+  const parts = n.split(' ');
+  let out = INITIAL.test(parts[0]) ? parts.slice(1).join(' ') : n;
+  if(out && out[0] === out[0].toLowerCase()) out = out[0].toUpperCase() + out.slice(1);
+  return out;
+}
+function shortName(p, squad){
+  const short = baseName(p.name);
+  if(!squad) return short;
+  const clash = squad.filter(q => baseName(q.name) === short).length > 1;
+  return clash ? p.name : short;
+}
 
 /* Pick the best XI available for a formation */
 function autoLineup(squad, formationKey, unavailable){
@@ -669,10 +698,11 @@ function autoLineup(squad, formationKey, unavailable){
     pool.forEach(p=>{
       if(taken.has(p.id)) return;
       let s = p.ovr;
-      if(p.role===slot.r) s += 14;
-      else if(ROLE_GROUP[p.role]===ROLE_GROUP[slot.r]) s += 6;
-      else if(slot.r==='GK' || p.role==='GK') s -= 60;
-      else s -= 4;
+      if(slot.r==='GK' || p.role==='GK') s -= (p.role===slot.r ? -26 : 95);
+      else if(p.role===slot.r) s += 24;
+      else if(ROLE_GROUP[p.role]===ROLE_GROUP[slot.r]) s += 12;
+      else if(NEAR_ROLE[slot.r] && NEAR_ROLE[slot.r].indexOf(p.role)>=0) s += 2;
+      else s -= 30;
       if(s>bestScore){ bestScore=s; best=p; }
     });
     if(best){ taken.add(best.id); xi.push({ slot, player: best }); }
@@ -684,11 +714,11 @@ function autoLineup(squad, formationKey, unavailable){
 function teamOverall(t){ return Math.round((t.att + t.mid*1.1 + t.def)/3.1); }
 
 if (typeof module !== 'undefined') {
-  module.exports = { TEAMS, FORMATIONS, ROLE_GROUP, MENTALITY, PRESSING, buildSquad, autoLineup, teamOverall };
+  module.exports = { TEAMS, ROSTERS, FORMATIONS, ROLE_GROUP, MENTALITY, PRESSING, buildSquad, autoLineup, teamOverall, shortName };
 }
 </script>
 <script>/* ============================================================
-   PITCH LEGENDS — match engine
+   SOCCER LEGENDS — match engine
    A continuous 2D simulation of 22 players, one ball and a
    referee with a short temper.
    All engine units: metres and simulation-seconds.
@@ -718,7 +748,7 @@ const Engine = (function () {
     const hx = team.side === 1 ? slot.x * PW : PW - slot.x * PW;
     const hy = team.side === 1 ? slot.y * PH : PH - slot.y * PH;
     return {
-      ref: p, team, name: p.name, num: p.num, role: slot.r, group: ROLE_GROUP[slot.r],
+      ref: p, team, name: p.name, short: p.short || p.name, num: p.num, role: slot.r, group: ROLE_GROUP[slot.r],
       pace: p.pace, dribble: p.dribble, passing: p.passing, shooting: p.shooting,
       defending: p.defending, physical: p.physical, keeping: p.keeping,
       composure: p.composure, aggression: p.aggression, ovr: p.ovr,
@@ -737,7 +767,8 @@ const Engine = (function () {
       tactics: Object.assign({ mentality: 2, pressing: 1, tempo: 1, offside: true }, cfg.tactics || {}),
       control: cfg.control || 'ai',           // 'ai' | 'manager' | 'arcade' | 'spectator'
       skill: cfg.skill == null ? 1 : cfg.skill,
-      score: 0, subsUsed: 0, subsLeft: 5,
+      score: 0, subsUsed: 0, subsLeft: (cfg.maxSubs == null ? 5 : cfg.maxSubs),
+      autoSubs: !!cfg.autoSubs,
       players: [], bench: (cfg.bench || []).slice(),
       stats: { shots: 0, onTarget: 0, blocked: 0, poss: 0, passes: 0, passOk: 0, tackles: 0, fouls: 0, corners: 0, offsides: 0, yellow: 0, red: 0, saves: 0, xg: 0, throwins: 0 },
       shootout: []
@@ -1655,7 +1686,7 @@ const Engine = (function () {
 
   /* ---------------- substitutions ---------------- */
   function substitute(m, team, outP, inRef) {
-    if (team.subsLeft <= 0 || !outP || !outP.onPitch) return false;
+    if (team.subsLeft <= 0 || !outP || !outP.onPitch || !inRef) return false;
     const slot = { r: outP.role, x: 0, y: 0 };
     const np = makeMatchPlayer(inRef, slot, team);
     np.hx = outP.hx; np.hy = outP.hy; np.x = outP.x; np.y = outP.y; np.role = outP.role; np.group = outP.group;
@@ -1669,17 +1700,27 @@ const Engine = (function () {
     return true;
   }
 
+  /* Bench management. Injuries are dealt with at once; otherwise changes come
+     at sensible moments in the second half, as a manager would make them. */
   function autoSubs(m, team) {
-    if (team.control === 'manager' || team.control === 'arcade') return;
-    if (team.subsLeft <= 0) return;
+    const human = team.control === 'manager' || team.control === 'arcade';
+    if (human && !team.autoSubs) return;
+    if (team.subsLeft <= 0 || !team.bench.length) return;
     const mins = m.clock / 60;
-    if (mins < 55) return;
-    const tired = onPitch(team).filter(p => p.group !== 'GK' && (p.stam < 46 || p.injured))
-      .sort((a, b) => a.stam - b.stam)[0];
+    if (team.nextSubAt == null) team.nextSubAt = 57 + rnd() * 9;
+    const hurt = onPitch(team).find(p => p.injured);
+    if (!hurt && mins < team.nextSubAt) return;
+    const pool = onPitch(team).filter(p => p.group !== 'GK');
+    const tired = hurt || pool.slice().sort((a, b) => a.stam - b.stam)[0];
     if (!tired) return;
-    const repl = team.bench.filter(b => ROLE_GROUP[b.role] === tired.group).sort((a, b) => b.ovr - a.ovr)[0]
-      || team.bench.sort((a, b) => b.ovr - a.ovr)[0];
-    if (repl && (rnd() < 0.02 || tired.injured)) substitute(m, team, tired, repl);
+    const pick = list => list.slice().sort((a, b) => b.ovr - a.ovr)[0];
+    const repl = pick(team.bench.filter(b => b.role === tired.role))
+      || pick(team.bench.filter(b => ROLE_GROUP[b.role] === tired.group))
+      || pick(team.bench.filter(b => b.role !== 'GK'));
+    if (!repl) return;
+    if (!hurt && repl.ovr < tired.ovr - 12 && tired.stam > 62) { team.nextSubAt = mins + 6; return; }
+    substitute(m, team, tired, repl);
+    team.nextSubAt = mins + 7 + rnd() * 9;
   }
 
   /* ---------------- human arcade control ---------------- */
@@ -1878,7 +1919,7 @@ const Engine = (function () {
 
 </script>
 <script>/* ============================================================
-   PITCH LEGENDS — broadcast renderer
+   SOCCER LEGENDS — broadcast renderer
    Top-down pitch on a canvas. Portrait plays vertically,
    landscape plays horizontally, camera eases after the ball.
    ============================================================ */
@@ -1889,6 +1930,7 @@ const Renderer = (function () {
   let cam = { x: 52.5, y: 34, s: 7 }, target = { x: 52.5, y: 34 };
   let portrait = true, zoomPref = 1, shake = 0, trail = [], radarTop = 210, radarOn = true;
   let insT = 0, insB = 0;                      // screen space taken by the HUD
+  let namesOn = true;
   const WIDTHS = [42, 54, 70, 0];   // metres of pitch width visible; 0 = fit the whole pitch
   const ZOOM_LABELS = ['Close', 'Mid', 'Wide', 'Full'];
 
@@ -1915,6 +1957,7 @@ const Renderer = (function () {
   function setInsets(top, bottom) { insT = top || 0; insB = bottom || 0; }
   function setRadarTop(y) { radarTop = y; }
   function setRadar(on) { radarOn = on; }
+  function setNames(on) { namesOn = on; }
   function getZoom() { return zoomPref; }
 
   /* In landscape the HUD sits on the same axis that shows the width of the
@@ -2062,6 +2105,15 @@ const Renderer = (function () {
       g.stroke();
     }
     if (p.yellow === 1) { g.fillStyle = '#f5c518'; g.fillRect(X + r * 0.9, Y - r * 1.6, r * 0.5, r * 0.75); }
+    if (namesOn && r > 8.4 && p.short) {          // broadcast name tag
+      g.font = '700 ' + Math.round(r * 0.72) + 'px system-ui, -apple-system, sans-serif';
+      g.textAlign = 'center'; g.textBaseline = 'top';
+      const tw = g.measureText(p.short).width;
+      g.fillStyle = 'rgba(6,16,10,0.62)';
+      roundRect(X - tw / 2 - 3, Y + r * 1.25, tw + 6, r * 0.95, 3); g.fill();
+      g.fillStyle = '#eafff2';
+      g.fillText(p.short, X, Y + r * 1.35);
+    }
     if (opts.carrier) {
       g.beginPath(); g.arc(X, Y, r * 1.75, 0, Math.PI * 2);
       g.lineWidth = Math.max(1.5, r * 0.2); g.strokeStyle = 'rgba(255,255,255,0.85)'; g.stroke();
@@ -2242,11 +2294,11 @@ const Renderer = (function () {
   }
   function isPortrait() { return portrait; }
 
-  return { init, draw, resize, setZoom, getZoom, pitchPointFromScreen, isPortrait, setRadarTop, setRadar, setInsets, zoomLabel, zoomCount };
+  return { init, draw, resize, setZoom, getZoom, pitchPointFromScreen, isPortrait, setRadarTop, setRadar, setInsets, zoomLabel, zoomCount, setNames };
 })();
 </script>
 <script>/* ============================================================
-   PITCH LEGENDS — screens, tournament and controls
+   SOCCER LEGENDS — screens, tournament and controls
    ============================================================ */
 
 const UI = (function () {
@@ -2255,7 +2307,9 @@ const UI = (function () {
 
   const S = {
     mode: 'wc', control: 'manager', length: 180, difficulty: 1,
-    myId: null, squad: [], formation: '4-2-3-1',
+    maxSubs: 5, autoSubs: false, replays: 'goals', showNames: true,
+    myId: null, oppId: null, pickStage: 'mine', penOnly: false,
+    squad: [], formation: '4-2-3-1',
     tactics: { mentality: 2, pressing: 1, offside: true },
     xi: [], bench: [], unavailable: {}, tourn: null,
     match: null, raf: null, last: 0, pickedSlot: null, speed: 1,
@@ -2302,12 +2356,23 @@ const UI = (function () {
       <div class="seg" id="lenSeg"></div>
       <p class="hint">Every match plays out over a full 90 minutes on the clock. A 3 minute match is a fast highlight reel; 8 minutes runs close to real-time pace. The same number of chances, fouls and cards happen either way.</p>
       <h2>Difficulty</h2>
-      <div class="seg" id="diffSeg"></div>`;
+      <div class="seg" id="diffSeg"></div>
+      <h2>Match rules</h2>
+      <div class="rowlab"><b>Substitutions</b></div>
+      <div class="seg" id="subSeg"></div>
+      <div class="rowlab"><b>Automatic substitutions</b></div>
+      <div class="seg" id="autoSeg"></div>
+      <p class="hint">With automatic substitutions on, your bench is managed for you: tired legs and injuries are replaced without you having to open the menu. You can still make your own changes at any time.</p>
+      <div class="rowlab"><b>Replays</b></div>
+      <div class="seg" id="repSeg"></div>
+      <div class="rowlab"><b>Names on the pitch</b></div>
+      <div class="seg" id="nameSeg"></div>`;
 
     const modes = [
-      ['wc', 'World Cup', '32 nations, eight groups, then knockout to the final. Seven matches if you go all the way.'],
-      ['cup', 'Champions Cup', '16 nations, straight knockout. Four matches, no second chances.'],
-      ['friendly', 'Friendly', 'One match against an opponent you choose.']
+      ['wc', 'World Cup', 'All 48 nations, twelve groups, then knockout from the round of 32. Eight matches if you go all the way.'],
+      ['cup', 'Champions Cup', 'The 16 strongest nations, straight knockout. Four matches, no second chances.'],
+      ['friendly', 'Friendly', 'One match against an opponent you choose.'],
+      ['shootout', 'Penalty shootout', 'Straight to the spot. Five kicks each, then sudden death, against any nation you like.']
     ];
     const ml = $('#modeList');
     modes.forEach(([k, n, d]) => {
@@ -2348,13 +2413,32 @@ const UI = (function () {
       btn.onclick = () => { S.difficulty = v; renderSetup(); };
       ds.appendChild(btn);
     });
+    const seg = (id, opts, get, set) => {
+      const wrap = $(id); if (!wrap) return;
+      opts.forEach(([v, n]) => {
+        const btn = el('button', get() === v ? 'on' : '', n);
+        btn.onclick = () => { set(v); renderSetup(); };
+        wrap.appendChild(btn);
+      });
+    };
+    seg('#subSeg', [[3, '3'], [5, '5'], [99, 'Unlimited']], () => S.maxSubs, v => S.maxSubs = v);
+    seg('#autoSeg', [[false, 'Off'], [true, 'On']], () => S.autoSubs, v => S.autoSubs = v);
+    seg('#repSeg', [['off', 'Off'], ['goals', 'Goals'], ['all', 'Goals + cards']], () => S.replays, v => S.replays = v);
+    seg('#nameSeg', [[false, 'Numbers only'], [true, 'Show names']], () => S.showNames, v => S.showNames = v);
   }
 
   /* ---------------------------------------------------------- team select */
+  function needsOpponent() { return S.mode === 'friendly' || S.mode === 'shootout'; }
+
   function renderTeams() {
+    const opp = S.pickStage === 'opp';
+    const sel = opp ? S.oppId : S.myId;
+    document.querySelector('#teams .topbar h1').textContent = opp ? 'Choose the opposition' : 'Choose your nation';
+    document.querySelector('#teams .topbar .sub').textContent = opp
+      ? 'Who are you up against?' : 'All 48 nations, sorted by strength';
     const g = $('#teamGrid'); g.innerHTML = '';
-    TEAMS.slice().sort((a, b) => teamOverall(b) - teamOverall(a)).forEach(t => {
-      const c = el('div', 'team' + (S.myId === t.id ? ' sel' : ''), `
+    TEAMS.slice().sort((a, b) => teamOverall(b) - teamOverall(a)).filter(t => !(opp && t.id === S.myId)).forEach(t => {
+      const c = el('div', 'team' + (sel === t.id ? ' sel' : ''), `
         ${kit(t)}
         <div class="nm">${t.name}</div>
         <div style="display:flex;align-items:center;gap:8px">
@@ -2365,10 +2449,15 @@ const UI = (function () {
           <div><span>MID</span><div class="bar"><i style="width:${t.mid}%"></i></div></div>
           <div><span>DEF</span><div class="bar"><i style="width:${t.def}%"></i></div></div>
         </div>`);
-      c.onclick = () => { S.myId = t.id; renderTeams(); $('#teamGo').disabled = false; };
+      c.onclick = () => {
+        if (opp) S.oppId = t.id; else { S.myId = t.id; if (S.oppId === t.id) S.oppId = null; }
+        renderTeams();
+      };
       g.appendChild(c);
     });
-    $('#teamGo').disabled = !S.myId;
+    $('#teamGo').disabled = !(opp ? S.oppId : S.myId);
+    $('#teamGo').textContent = (!opp && needsOpponent()) ? 'Choose the opposition'
+      : (S.mode === 'shootout' && opp) ? 'To the spot' : 'Continue';
   }
 
   /* ---------------------------------------------------------- squad + formation */
@@ -2401,16 +2490,14 @@ const UI = (function () {
     // pitch
     const p = $('#formPitch');
     p.innerHTML = '<div class="pline half"></div><div class="pline box top"></div><div class="pline box bot"></div><div class="pline circ"></div>';
-    const surCount = {};
-    S.xi.forEach(x => { const sn = x.player.name.split(' ').slice(-1)[0]; surCount[sn] = (surCount[sn] || 0) + 1; });
+
     S.xi.forEach((s, i) => {
       const sp = el('div', 'spot' + (S.pickedSlot === i ? ' picked' : ''));
       sp.style.left = (8 + s.slot.y * 84) + '%';
       sp.style.top = (100 - (7 + s.slot.x / 0.78 * 80)) + '%';
       const light = ['#ffffff', '#f7d417', '#e8e8e8'].includes(t.c1);
       sp.innerHTML = `<div class="disc" style="background:${s.slot.r === 'GK' ? t.c3 : t.c1};color:${light ? '#0b1a10' : '#fff'}">${s.player.num}</div>
-        <div class="lbl">${(() => { const parts = s.player.name.split(' '); const sn = parts.slice(-1)[0];
-          return surCount[sn] > 1 ? parts[0][0] + '. ' + sn : sn; })()}</div>`;
+        <div class="lbl">${s.player.short || shortName(s.player, S.squad)}</div>`;
       sp.onclick = () => { S.pickedSlot = S.pickedSlot === i ? null : i; renderSquad(); };
       p.appendChild(sp);
     });
@@ -2465,11 +2552,10 @@ const UI = (function () {
   function buildTournament() {
     const ids = TEAMS.map(t => t.id);
     if (S.mode === 'wc') {
-      const pots = seedPots(ids).map(p => shuffle(p.slice()));
+      const pots = seedPots(ids).map(p => shuffle(p.slice()));      // four pots of twelve
       const groups = [];
-      for (let g = 0; g < 8; g++) groups.push({ name: 'Group ' + 'ABCDEFGH'[g], teams: [], table: {} });
-      pots.forEach(pot => pot.forEach((id, i) => groups[i].teams.push(id)));
-      // make sure the player's team sits in a group (it always does) and note it
+      for (let g = 0; g < 12; g++) groups.push({ name: 'Group ' + 'ABCDEFGHIJKL'[g], teams: [], table: {} });
+      pots.forEach(pot => pot.forEach((id, i) => groups[i % 12].teams.push(id)));
       groups.forEach(g => g.teams.forEach(id => g.table[id] = { p: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 }));
       const rounds = [];
       const pat = [[0, 1, 2, 3], [0, 2, 1, 3], [0, 3, 1, 2]];
@@ -2482,19 +2568,36 @@ const UI = (function () {
         });
         rounds.push({ name: 'Group stage · Matchday ' + (r + 1), stage: 'group', fx });
       }
-      S.tourn = { type: 'wc', groups, rounds, idx: 0, ko: null, champion: null };
+      S.tourn = { type: 'wc', groups, rounds, idx: 0, champion: null };
     } else if (S.mode === 'cup') {
       let pool = ids.slice().sort((a, b) => teamOverall(team(b)) - teamOverall(team(a))).slice(0, 16);
-      if (pool.indexOf(S.myId) < 0) { pool[15] = S.myId; }
+      if (pool.indexOf(S.myId) < 0) pool[15] = S.myId;
       pool = shuffle(pool);
       const fx = [];
       for (let i = 0; i < 16; i += 2) fx.push({ h: pool[i], a: pool[i + 1], res: null, ko: true });
       S.tourn = { type: 'cup', groups: null, rounds: [{ name: 'Round of 16', stage: 'ko', fx }], idx: 0, champion: null };
+    } else if (S.mode === 'shootout') {
+      S.tourn = { type: 'shootout', groups: null, champion: null, idx: 0,
+        rounds: [{ name: 'Penalty shootout', stage: 'shootout', fx: [{ h: S.myId, a: S.oppId, res: null, ko: true }] }] };
     } else {
-      const opp = shuffle(ids.filter(i => i !== S.myId))[0];
-      S.tourn = { type: 'friendly', groups: null, rounds: [{ name: 'Friendly', stage: 'friendly', fx: [{ h: S.myId, a: opp, res: null }] }], idx: 0, champion: null };
+      const opp = S.oppId || shuffle(ids.filter(i => i !== S.myId))[0];
+      S.tourn = { type: 'friendly', groups: null, champion: null, idx: 0,
+        rounds: [{ name: 'Friendly', stage: 'friendly', fx: [{ h: S.myId, a: opp, res: null }] }] };
     }
   }
+
+  /* standard bracket seeding: 1v32, 16v17, 8v25 ... so seeds meet late */
+  function bracketOrder(n) {
+    let o = [1, 2];
+    while (o.length < n) {
+      const m = o.length * 2 + 1;
+      const next = [];
+      o.forEach(x => { next.push(x, m - x); });
+      o = next;
+    }
+    return o;
+  }
+  const cmpRec = (A, B) => B.pts - A.pts || (B.gf - B.ga) - (A.gf - A.ga) || B.gf - A.gf;
 
   function myFixture() {
     const r = S.tourn.rounds[S.tourn.idx];
@@ -2534,13 +2637,18 @@ const UI = (function () {
   function advance() {
     const T = S.tourn;
     const cur = T.rounds[T.idx];
-    if (cur.stage === 'friendly') { show('hub'); renderHub(); return; }
+    if (cur.stage === 'friendly' || cur.stage === 'shootout') { return; }
     if (cur.stage === 'group' && T.idx === 2) {
-      // build the knockout bracket
+      const tbl = (gi, id) => T.groups[gi].table[id];
       const q = T.groups.map(g => standings(g));
-      const order = [[0, 1], [2, 3], [4, 5], [6, 7], [1, 0], [3, 2], [5, 4], [7, 6]];
-      const fx = order.map(([x, y]) => ({ h: q[x][0], a: q[y][1], res: null, ko: true }));
-      T.rounds.push({ name: 'Round of 16', stage: 'ko', fx });
+      const firsts = q.map((st, gi) => ({ id: st[0], gi })).sort((a, b) => cmpRec(tbl(a.gi, a.id), tbl(b.gi, b.id)));
+      const seconds = q.map((st, gi) => ({ id: st[1], gi })).sort((a, b) => cmpRec(tbl(a.gi, a.id), tbl(b.gi, b.id)));
+      const thirds = q.map((st, gi) => ({ id: st[2], gi })).sort((a, b) => cmpRec(tbl(a.gi, a.id), tbl(b.gi, b.id))).slice(0, 8);
+      const seeded = firsts.concat(seconds, thirds).map(x => x.id);   // 32 qualifiers, best first
+      const order = bracketOrder(32);
+      const fx = [];
+      for (let i = 0; i < 32; i += 2) fx.push({ h: seeded[order[i] - 1], a: seeded[order[i + 1] - 1], res: null, ko: true });
+      T.rounds.push({ name: 'Round of 32', stage: 'ko', fx });
       T.idx++;
       return;
     }
@@ -2548,10 +2656,10 @@ const UI = (function () {
       const winners = cur.fx.map(f => {
         if (!f.res) return f.h;
         if (f.res.pens) return f.res.pens[0] > f.res.pens[1] ? f.h : f.a;
-        return f.res.home >= f.res.away ? (f.res.home === f.res.away ? f.h : f.h) : f.a;
+        return f.res.home >= f.res.away ? f.h : f.a;
       });
       if (winners.length === 1) { T.champion = winners[0]; return; }
-      const names = { 8: 'Quarter-finals', 4: 'Semi-finals', 2: 'Final' };
+      const names = { 16: 'Round of 16', 8: 'Quarter-finals', 4: 'Semi-finals', 2: 'Final' };
       const fx = [];
       for (let i = 0; i < winners.length; i += 2) fx.push({ h: winners[i], a: winners[i + 1], res: null, ko: true });
       T.rounds.push({ name: names[winners.length] || 'Next round', stage: 'ko', fx });
@@ -2564,12 +2672,14 @@ const UI = (function () {
   /* ---------------------------------------------------------- hub */
   function renderHub() {
     const T = S.tourn, b = $('#hubBody');
-    $('#hubTitle').textContent = T.type === 'wc' ? 'World Cup' : T.type === 'cup' ? 'Champions Cup' : 'Friendly';
+    $('#hubTitle').textContent = T.type === 'wc' ? 'World Cup' : T.type === 'cup' ? 'Champions Cup'
+      : T.type === 'shootout' ? 'Penalty shootout' : 'Friendly';
     b.innerHTML = '';
     if (T.champion) { renderChampion(); return; }
     const round = T.rounds[T.idx];
     const fx = myFixture();
-    $('#hubSub').textContent = T.type === 'friendly' ? 'One-off match' : round.name;
+    $('#hubSub').textContent = T.type === 'friendly' ? 'One-off match'
+      : T.type === 'shootout' ? 'Five kicks each, then sudden death' : round.name;
 
     if (fx) {
       const h = team(fx.h), a = team(fx.a);
@@ -2582,11 +2692,12 @@ const UI = (function () {
           <div class="t"><div class="ftkit"><i style="background:${a.c1}"></i><i style="background:${a.c2}"></i></div><div class="nm">${a.name}</div></div>
         </div>`;
       b.appendChild(card);
-      const go = el('button', 'btn primary', 'Kick off');
+      const pen = T.type === 'shootout';
+      const go = el('button', 'btn primary', pen ? 'Take the first kick' : 'Kick off');
       go.style.marginTop = '12px';
-      go.onclick = () => { S.fixture = fx; startMatch(); };
+      go.onclick = () => { S.fixture = fx; if (pen) startShootoutOnly(); else startMatch(); };
       b.appendChild(go);
-      const ln = el('button', 'btn ghost', 'Lineup and tactics');
+      const ln = el('button', 'btn ghost', pen ? 'Choose your takers' : 'Lineup and tactics');
       ln.style.marginTop = '8px';
       ln.onclick = () => { show('squad'); renderSquad(); $('#squadGo').textContent = 'Save and go back'; };
       b.appendChild(ln);
@@ -2739,12 +2850,12 @@ const UI = (function () {
     const mine = {
       team: team(S.myId), squad: S.squad, xi: S.xi, bench: S.bench,
       formation: S.formation, tactics: Object.assign({}, S.tactics),
-      control: S.control, skill: 1
+      control: S.control, skill: 1, maxSubs: S.maxSubs, autoSubs: S.autoSubs
     };
     const theirs = {
       team: oppT, squad: oppSquad, xi: oppL.xi, bench: oppL.bench,
       formation: oppForm, tactics: { mentality: 1 + Math.floor(Math.random() * 3), pressing: Math.floor(Math.random() * 3) },
-      control: 'ai', skill
+      control: 'ai', skill, maxSubs: S.maxSubs
     };
     const homeIsMine = fx.h === S.myId;
     const m = Engine.createMatch({
@@ -2758,6 +2869,7 @@ const UI = (function () {
     m.theirs = homeIsMine ? m.away : m.home;
     S.match = m; S.seenEvents = 0; S.newsQ = []; S.newsUntil = 0; S.newsGap = 0; S.speed = 1; m.speed = 1;
     $('#newsBar').className = 'news';
+    Renderer.setNames(S.showNames);
     show('match');
     Renderer.resize();
     setTimeout(placeRadar, 30); setTimeout(placeRadar, 400);
@@ -2779,7 +2891,7 @@ const UI = (function () {
     drawHUD(m);
     if (m.replayReady) {
       m.replayReady = false;
-      setTimeout(() => { if (S.match === m && !m.finished) Engine.startReplay(m); }, 900);
+      if (S.replays !== 'off') setTimeout(() => { if (S.match === m && !m.finished) Engine.startReplay(m); }, 900);
     }
     if (m.state === 'half' && !m.halfShown) { m.halfShown = true; halfTime(m); }
     if (m.finished && !m.endShown) { m.endShown = true; endMatch(m); }
@@ -2815,6 +2927,9 @@ const UI = (function () {
       if (['throw', 'corner', 'block', 'save', 'miss', 'freekick'].indexOf(e.type) >= 0 && Math.random() < 0.55) continue;
       S.newsQ.push(e);
       if (S.newsQ.length > 4) S.newsQ.splice(0, S.newsQ.length - 4);
+      if (S.replays === 'all' && e.type === 'red') {
+        setTimeout(() => { if (S.match === m && !m.finished && !m.replay) Engine.startReplay(m); }, 700);
+      }
     }
     pumpNews();
   }
@@ -2942,6 +3057,8 @@ const UI = (function () {
         <p class="hint">Pushes the whole shape up or down the pitch and changes how much risk your players take on the ball.</p>
         <div class="rowlab"><b>Pressing</b></div><div class="seg" id="pSeg"></div>
         <p class="hint">A higher press wins the ball back sooner and tires your players faster. It also draws more fouls.</p>
+        <div class="rowlab"><b>Automatic substitutions</b></div><div class="seg" id="aSeg"></div>
+        <p class="hint">Leave this on and tired or injured players are replaced for you.</p>
         <div class="divider"></div>
         <div class="rowlab"><b>Formation</b><span>${t.formationKey}</span></div>
         <p class="hint">The shape is fixed once a match kicks off. Change it from the lineup screen before the next game.</p>`;
@@ -2957,6 +3074,12 @@ const UI = (function () {
           b.onclick = () => { t.tactics.pressing = i; S.tactics.pressing = i; refreshSheet(); };
           ps.appendChild(b);
         });
+        const as = $('#aSeg');
+        [[false, 'Off'], [true, 'On']].forEach(([v, n]) => {
+          const b = el('button', !!t.autoSubs === v ? 'on' : '', n);
+          b.onclick = () => { t.autoSubs = v; S.autoSubs = v; refreshSheet(); };
+          as.appendChild(b);
+        });
       }, 0);
       return w;
     });
@@ -2964,9 +3087,11 @@ const UI = (function () {
 
   function subsSheet(nested) {
     const m = S.match, t = m.mine;
-    (nested ? pushSheet : openSheet)('Substitutions · ' + t.subsLeft + ' left', () => {
+    const left = t.subsLeft >= 90 ? 'unlimited' : t.subsLeft + ' left';
+    (nested ? pushSheet : openSheet)('Substitutions · ' + left, () => {
       const w = el('div');
-      if (!t.subsLeft) { w.appendChild(el('p', 'hint', 'You have used all five substitutions.')); return w; }
+      if (!t.subsLeft) { w.appendChild(el('p', 'hint', 'You have used all of your substitutions.')); return w; }
+      if (t.autoSubs) w.appendChild(el('p', 'hint', 'Automatic substitutions are on — tired and injured players are replaced for you. Anything you do here takes priority.'));
       w.appendChild(el('p', 'hint', 'Tap a player on the pitch, then a replacement from the bench.'));
       const on = el('div', 'plist');
       Engine.onPitch(t).forEach(p => {
@@ -3124,6 +3249,22 @@ const UI = (function () {
   }
 
   /* ---------------------------------------------------------- shootout */
+  function startShootoutOnly() {
+    ensureSquad();
+    const oppT = team(S.oppId || TEAMS[0].id);
+    const oppSquad = buildSquad(oppT);
+    const oppL = autoLineup(oppSquad, '4-3-3', []);
+    const skill = [0.82, 1, 1.16][S.difficulty];
+    const m = Engine.createMatch({
+      realSeconds: S.length, knockout: true, label: 'Penalty shootout',
+      home: { team: team(S.myId), squad: S.squad, xi: S.xi, bench: S.bench, formation: S.formation, control: S.control },
+      away: { team: oppT, squad: oppSquad, xi: oppL.xi, bench: oppL.bench, formation: '4-3-3', control: 'ai', skill }
+    });
+    m.mine = m.home; m.theirs = m.away; m.penOnly = true;
+    S.match = m; S.penOnly = true;
+    startShootout(m);
+  }
+
   function startShootout(m) {
     S.lastKick = null;
     const s = Engine.beginShootout(m);
@@ -3134,7 +3275,8 @@ const UI = (function () {
     const s = m.shootout, b = $('#penBody'); b.innerHTML = '';
     b.appendChild(el('div', 'center', `<div style="font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-weight:700">Penalties</div>
       <div style="font-size:34px;font-weight:900;margin-top:6px">${m.home.data.id} ${m.home.shootout.reduce((x, y) => x + y, 0)} – ${m.away.shootout.reduce((x, y) => x + y, 0)} ${m.away.data.id}</div>
-      <div class="hint">${m.home.data.name} ${m.home.score}–${m.away.score} ${m.away.data.name} after 90 minutes</div>`));
+      <div class="hint">${m.penOnly ? m.home.data.name + ' v ' + m.away.data.name
+        : m.home.data.name + ' ' + m.home.score + '–' + m.away.score + ' ' + m.away.data.name + ' after 90 minutes'}</div>`));
     const pens = el('div', 'pens');
     [m.home, m.away].forEach(t => {
       const row = el('div', 'penrow');
@@ -3149,7 +3291,32 @@ const UI = (function () {
 
     if (s.done) {
       const win = s.winner === 'home' ? m.home : m.away;
-      b.appendChild(el('div', 'center', `<div style="font-size:18px;font-weight:800;margin:8px 0 4px">${win.data.name} go through</div>`));
+      const mineWon = win === m.mine;
+      b.appendChild(el('div', 'center', `<div style="font-size:18px;font-weight:800;margin:10px 0 4px">${win.data.name} ${m.penOnly ? 'win it' : 'go through'}</div>
+        ${m.penOnly ? '<p class="hint">' + (mineWon ? 'Nerve held.' : 'That is how it goes from twelve yards.') + '</p>' : ''}`));
+      if (m.penOnly) {
+        const again = el('button', 'btn primary', 'Go again');
+        again.style.marginTop = '12px';
+        again.onclick = () => startShootoutOnly();
+        b.appendChild(again);
+        const other = el('button', 'btn ghost', 'Different opponent');
+        other.style.marginTop = '8px';
+        other.onclick = () => { S.pickStage = 'opp'; show('teams'); renderTeams(); };
+        b.appendChild(other);
+        const home = el('button', 'btn ghost', 'Back to the menu');
+        home.style.marginTop = '8px';
+        home.onclick = () => { S.match = null; S.penOnly = false; S.tourn = null; show('home'); };
+        b.appendChild(home);
+        b.appendChild(el('h2', null, 'Every kick'));
+        const log = el('div', 'stack');
+        ['home', 'away'].forEach(k => {
+          const t = k === 'home' ? m.home : m.away;
+          s[k].res.forEach((r, i) => log.appendChild(el('div', 'tick',
+            `<b>${t.data.id}</b> ${r.taker.short || r.taker.name} — ${r.scored ? 'scored' : 'missed'}`)));
+        });
+        b.appendChild(log);
+        return;
+      }
       const go = el('button', 'btn primary', 'Continue');
       go.style.marginTop = '12px';
       go.onclick = () => {
@@ -3271,10 +3438,17 @@ const UI = (function () {
     Renderer.init($('#canvas'));
     window.addEventListener('resize', () => setTimeout(placeRadar, 120));
     bindControls();
-    $('#btnPlay').onclick = () => { S.tourn = null; S.unavailable = {}; show('setup'); renderSetup(); };
+    $('#btnPlay').onclick = () => { S.tourn = null; S.unavailable = {}; S.penOnly = false; S.pickStage = 'mine'; show('setup'); renderSetup(); };
     $('#btnHow').onclick = howSheet;
-    $('#setupGo').onclick = () => { show('teams'); renderTeams(); };
-    $('#teamGo').onclick = () => { S.squad = []; S.pickedSlot = null; ensureSquad(); show('squad'); renderSquad(); $('#squadGo').textContent = 'Start competition'; };
+    $('#setupGo').onclick = () => { S.pickStage = 'mine'; show('teams'); renderTeams(); };
+    $('#teamGo').onclick = () => {
+      if (S.pickStage === 'mine' && needsOpponent()) { S.pickStage = 'opp'; renderTeams(); return; }
+      S.pickStage = 'mine';
+      S.squad = []; S.pickedSlot = null; ensureSquad();
+      if (S.mode === 'shootout') { S.tourn = null; buildTournament(); show('hub'); renderHub(); return; }
+      show('squad'); renderSquad();
+      $('#squadGo').textContent = 'Start competition';
+    };
     $('#squadGo').onclick = () => {
       if (!S.tourn) { buildTournament(); }
       show('hub'); renderHub();
@@ -3312,12 +3486,16 @@ const UI = (function () {
       const w = el('div');
       w.innerHTML = `
         <p class="hint">Every match is a live simulation. Twenty-two players make their own decisions — where to stand, when to press, whether to shoot or square it — and the referee watches all of it. Nothing is scripted, including the result.</p>
+        <h2>The squads</h2>
+        <p class="hint">All 48 nations from the 2026 World Cup are here with their real squad lists: the shirt numbers and the names that were registered for the tournament. Ability is not published anywhere, so each player's rating is modelled from his nation's strength, his position and where his shirt number puts him in the pecking order. Treat it as a good approximation rather than a scouting report.</p>
         <h2>Manager mode</h2>
-        <p class="hint">You shape the game rather than kick the ball. Drop the mentality to protect a lead, raise the press when you need it back, and use your five substitutions before your legs go. The stamina ring under a tiring player is your cue.</p>
+        <p class="hint">You shape the game rather than kick the ball. Drop the mentality to protect a lead, raise the press when you need it back, and use your substitutions before your legs go. The stamina ring under a tiring player is your cue — or turn automatic substitutions on and let the bench look after itself.</p>
         <h2>On the pitch</h2>
         <p class="hint">Drag anywhere on the left of the screen for the thumbstick. <b>A</b> passes, <b>B</b> shoots, <b>THRU</b> plays it in behind, and <b>SPRINT</b> is held down. Without the ball, A presses and B slides in — a mistimed slide is how you pick up cards.</p>
         <h2>Cards and suspensions</h2>
         <p class="hint">Fouls are judged on where and how they happen. A cynical trip on a player through on goal is treated far more seriously than a nudge in midfield. Two yellows is a red, and a sending off keeps that player out of your next match.</p>
+        <h2>The competitions</h2>
+        <p class="hint">The World Cup runs the real format: twelve groups of four, the top two from each plus the eight best third-placed teams into a round of 32, then knockout to the final. The Champions Cup is a straight knockout between the sixteen strongest nations. A friendly is one match against anyone you pick, and the shootout takes you straight to the spot.</p>
         <h2>Reading the numbers</h2>
         <p class="hint">Expected goals tells you how good the chances were, not how many went in. A team can lose 2-0 having created the better game — and the ratings will show it.</p>`;
       return w;
