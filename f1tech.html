@@ -438,6 +438,106 @@ table.cmp tr:hover td{background:var(--surf2)}
 .gterm dd{font-family:var(--prose);font-size:calc(var(--fs) * .96);line-height:1.6;color:var(--ink)}
 .gterm dd a{cursor:pointer;text-decoration:none;border-bottom:1px solid var(--rule2)}
 
+/* ============================================================ FRESHNESS */
+.fresh{display:flex;align-items:center;gap:7px;border:1px solid var(--rule);border-radius:9px;
+  padding:5px 11px 5px 9px;flex:none;transition:.15s;white-space:nowrap;max-width:230px}
+.fresh:hover{border-color:var(--rule2);background:var(--surf3)}
+.fresh .dot{width:8px;height:8px;border-radius:50%;background:var(--ink4);flex:none;position:relative}
+.fresh.live .dot{background:var(--good)}
+.fresh.live .dot:after{content:'';position:absolute;inset:-4px;border-radius:50%;
+  border:1px solid var(--good);opacity:.5;animation:ping 2.6s ease-out infinite}
+@keyframes ping{0%{transform:scale(.6);opacity:.6}100%{transform:scale(1.5);opacity:0}}
+.fresh.warn .dot{background:var(--warn)}
+.fresh.load .dot{background:var(--info);animation:blink 1s ease-in-out infinite}
+@keyframes blink{50%{opacity:.25}}
+.fresh span{font-size:calc(var(--fs-ui) * .92);font-weight:600;color:var(--ink2);
+  overflow:hidden;text-overflow:ellipsis}
+.fresh span u{display:block;text-decoration:none;font-weight:400;color:var(--ink3);
+  font-size:calc(var(--fs-ui) * .82)}
+
+/* content-age notice inside the reading column */
+.stalebar{display:flex;gap:11px;align-items:flex-start;border:1px solid var(--rule2);
+  border-left:4px solid var(--warn);background:var(--warnbg);border-radius:0 9px 9px 0;
+  padding:12px 14px;margin:16px 0 0}
+.stalebar svg{width:17px;height:17px;stroke:var(--warn);fill:none;stroke-width:2;flex:none;margin-top:1px}
+.stalebar b{display:block;font-weight:650;margin-bottom:3px}
+.stalebar p{font-size:calc(var(--fs-ui) * .96);line-height:1.55;color:var(--ink2);margin:0}
+.stalebar.ok{border-left-color:var(--good);background:var(--goodbg)}
+.stalebar.ok svg{stroke:var(--good)}
+
+/* ============================================================ SEASON */
+#season{flex-direction:column;overflow:hidden}
+.seahead{padding:16px 24px 14px;border-bottom:1px solid var(--rule);background:var(--surf);
+  display:flex;align-items:flex-end;gap:20px;flex-wrap:wrap}
+.seahead h2{font-size:calc(var(--fs) * 1.2);font-weight:650;letter-spacing:-.015em}
+.seahead p{color:var(--ink3);margin-top:4px;max-width:68ch;line-height:1.5}
+.btn{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--rule2);border-radius:8px;
+  padding:8px 14px;font-weight:600;transition:.15s;background:var(--surf);white-space:nowrap}
+.btn:hover{border-color:var(--team);color:var(--team);background:var(--team-soft)}
+.btn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2}
+.btn.busy svg{animation:spin360 .9s linear infinite}
+@keyframes spin360{to{transform:rotate(360deg)}}
+.seabody{flex:1;overflow-y:auto;padding:20px 24px 70px}
+.seagrid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:24px;align-items:start}
+@media(max-width:1120px){.seagrid{grid-template-columns:1fr}}
+.card{border:1px solid var(--rule);border-radius:12px;background:var(--surf);overflow:hidden;margin-bottom:20px}
+.card>h3{padding:13px 18px;border-bottom:1px solid var(--rule);font-size:calc(var(--fs-ui) * .86);
+  text-transform:uppercase;letter-spacing:.1em;font-weight:700;color:var(--ink3);
+  display:flex;align-items:center;gap:9px}
+.card>h3 em{font-style:normal;margin-left:auto;text-transform:none;letter-spacing:0;
+  font-weight:500;color:var(--ink4)}
+.cardb{padding:6px 18px 16px}
+
+/* standings rows — bar is identity reinforcement; every row is directly labelled */
+.srow{display:grid;grid-template-columns:26px minmax(96px,auto) 1fr auto;gap:12px;align-items:center;
+  padding:7px 0;border-bottom:1px solid var(--rule);cursor:pointer;transition:.13s}
+.srow:last-child{border-bottom:none}
+.srow:hover{background:var(--surf2)}
+.srow .pos{font-family:var(--mono);font-size:calc(var(--fs-ui) * .92);color:var(--ink4);text-align:right}
+.srow .who b{font-weight:650;font-size:calc(var(--fs-ui) * 1.02)}
+.srow .who i{font-style:normal;color:var(--ink3);font-size:calc(var(--fs-ui) * .84);margin-left:6px}
+.srow .track{display:block;height:10px;background:var(--surf3);border-radius:0 5px 5px 0;
+  overflow:hidden;min-width:40px}
+.srow .fillb{display:block;height:100%;border-radius:0 4px 4px 0;
+  background:var(--c);transition:width .55s cubic-bezier(.4,0,.2,1)}
+.srow .val{font-family:var(--mono);font-weight:650;font-size:calc(var(--fs-ui) * 1.02);
+  text-align:right;min-width:44px;font-variant-numeric:tabular-nums}
+.srow.me{background:var(--team-soft)}
+.srow .swatch{display:inline-block;width:9px;height:9px;border-radius:2px;background:var(--c);
+  margin-right:7px;vertical-align:baseline}
+
+/* race cards */
+.race{display:flex;gap:14px;padding:13px 0;border-bottom:1px solid var(--rule);align-items:center}
+.race:last-child{border-bottom:none}
+.race .rd{font-family:var(--mono);font-size:calc(var(--fs-ui) * .86);color:var(--ink4);
+  width:26px;flex:none;text-align:right}
+.race .rn{flex:1;min-width:0}
+.race .rn b{display:block;font-weight:600;line-height:1.3}
+.race .rn i{font-style:normal;color:var(--ink3);font-size:calc(var(--fs-ui) * .86)}
+.race .rt{font-size:calc(var(--fs-ui) * .88);color:var(--ink3);text-align:right;flex:none;white-space:nowrap}
+.race.done{opacity:.55}
+.race.next{background:var(--team-soft);margin:0 -18px;padding-left:18px;padding-right:18px;
+  border-radius:8px;border-bottom-color:transparent}
+.race.next .rt{color:var(--team);font-weight:650}
+.pod{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--rule)}
+.pod:last-child{border-bottom:none}
+.pod .pn{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;flex:none;
+  font-weight:700;font-size:calc(var(--fs-ui) * .88);background:var(--surf3);color:var(--ink2)}
+.pod:first-child .pn{background:var(--warn);color:#fff}
+.pod .pd{flex:1;font-weight:600}
+.pod .pt{width:4px;height:20px;border-radius:2px;background:var(--c);flex:none}
+.hero{padding:16px 18px 4px}
+.hero .hn{font-size:calc(var(--fs) * 1.5);font-weight:650;letter-spacing:-.02em;line-height:1.15}
+.hero .hs{color:var(--ink3);margin-top:5px}
+.hero .hc{display:inline-flex;align-items:baseline;gap:8px;margin-top:12px}
+.hero .hc b{font-size:calc(var(--fs) * 2.1);font-weight:650;letter-spacing:-.03em;
+  color:var(--team);font-variant-numeric:tabular-nums;line-height:1}
+.hero .hc span{color:var(--ink3)}
+.srcgrid{display:grid;grid-template-columns:1fr auto;gap:8px 14px;font-size:calc(var(--fs-ui) * .94)}
+.srcgrid b{font-weight:600}
+.srcgrid .st{font-weight:650;white-space:nowrap}
+.srcgrid .st.ok{color:var(--good)} .srcgrid .st.no{color:var(--bad)} .srcgrid .st.wa{color:var(--warn)}
+
 /* ============================================================ MODAL */
 .modal{position:fixed;inset:0;z-index:1400;background:rgba(15,18,22,.5);backdrop-filter:blur(3px);
   display:grid;place-items:center;padding:22px;opacity:0;visibility:hidden;transition:.22s}
@@ -523,11 +623,15 @@ kbd{font-family:var(--mono);font-size:calc(var(--fs-ui) * .88);background:var(--
 
   <div class="modes" id="modes">
     <button data-v="explore" class="on"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6M11 8v6M8 11h6"/></svg><span>Explore</span></button>
+    <button data-v="season"><svg viewBox="0 0 24 24"><path d="M3 10h18M7 3v3M17 3v3"/><rect x="3" y="5" width="18" height="16" rx="2"/></svg><span>Season</span></button>
     <button data-v="compare"><svg viewBox="0 0 24 24"><path d="M4 4h7v16H4zM13 4h7v16h-7z"/></svg><span>Compare</span></button>
     <button data-v="gloss"><svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v18H6.5A2.5 2.5 0 0 1 4 18.5z"/><path d="M8 8h8M8 12h6"/></svg><span>Glossary</span></button>
   </div>
 
   <div class="spacer"></div>
+
+  <button class="fresh load" id="fresh" title="Where this data came from and how old it is">
+    <i class="dot"></i><span id="freshTxt">Checking for updates<u>season data</u></span></button>
 
   <div class="hgroup" id="themes" role="group" aria-label="Theme">
     <button data-th="light" class="on" title="Light theme"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.4"/><path d="M12 2v2.6M12 19.4V22M2 12h2.6M19.4 12H22M4.9 4.9l1.9 1.9M17.2 17.2l1.9 1.9M19.1 4.9l-1.9 1.9M6.8 17.2l-1.9 1.9"/></svg></button>
@@ -599,6 +703,18 @@ kbd{font-family:var(--mono);font-size:calc(var(--fs-ui) * .88);background:var(--
       <div class="tierrule"></div>
       <div class="rbody" id="rBody"></div>
     </aside>
+  </div>
+
+  <!-- ============ SEASON ============ -->
+  <div class="view" id="season">
+    <div class="seahead">
+      <div style="flex:1;min-width:260px">
+        <h2 id="seaTitle">Season 2026</h2>
+        <p id="seaSub">Standings, results and calendar are fetched fresh every time this page loads.</p>
+      </div>
+      <button class="btn" id="btnRefresh"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5"/></svg>Refresh now</button>
+    </div>
+    <div class="seabody" id="seaBody"></div>
   </div>
 
   <!-- ============ COMPARE ============ -->
@@ -2142,7 +2258,7 @@ const CMP_ROWS = [
   {k:'chassis', label:'Chassis',       get:(p,t)=>t.chassis},
   {k:'pu',      label:'Power unit',    get:(p,t)=>t.pu},
   {k:'weak',    label:'Season weakness',get:(p,t)=>t.weak},
-  {k:'pts',     label:'Standing',      get:(p,t)=>t.pts},
+  {k:'pts',     label:'Standing',      get:(p,t)=>standingText(t.id)},
   {k:'depth',   label:'Public detail', get:(p,t)=>['Very thin','Thin','Moderate','Good','Extensive'][t.depth-1]+' — '+t.depth+' of 5'}
 ];
 
@@ -2209,6 +2325,237 @@ const GLOSSARY = [
 ['Widmanstätten','Materials','A basket-weave microstructure of interleaved alpha plates in a beta matrix, formed when titanium cools from above the beta transus. It resists crack growth well because a crack must repeatedly change direction.',[]],
 ['Zylon','Materials','A rigid-rod polymer fibre with exceptional penetration resistance, bonded into the flanks of the survival cell and around the cockpit specifically to stop a wheel or barrier post entering.',[]]
 ];
+
+/* =====================================================================
+   LIVE DATA LAYER
+   ---------------------------------------------------------------------
+   Two classes of content live in this app, and they age very differently:
+
+   VOLATILE — standings, results, calendar, driver line-ups. These change
+     every fortnight and are fetched fresh on every load.
+   EVERGREEN — regulations, engineering principles, materials science, and
+     each team's design concept. No API publishes these; they are compiled
+     by hand. They carry a verification date and warn when they get old.
+
+   Nothing here ever presents a stale number as if it were current.
+   ===================================================================== */
+
+const CONTENT_VERIFIED = '2026-07-30';   // when the technical content was last checked
+const STALE_AFTER_DAYS = 21;             // when to start warning about it
+
+/* ---------------------------------------------------------------- SNAPSHOT
+   The floor. Used when the network is unavailable, and always labelled
+   as a snapshot with its age in days — never dressed up as live. */
+const SNAPSHOT = {
+  asOf:'2026-07-30', season:2026, round:11, totalRounds:22,
+  constructors:[
+    ['mercedes',1,379,8],['ferrari',2,307,2],['mclaren',3,220,1],['redbull',4,177,0],
+    ['rbulls',5,66,0],['alpine',6,61,0],['haas',7,21,0],['audi',8,12,0],
+    ['williams',9,11,0],['aston',10,1,0],['cadillac',11,0,0]
+  ].map(r=>({teamId:r[0],pos:r[1],pts:r[2],wins:r[3]})),
+  drivers:[
+    [1,'Antonelli',219,'mercedes',12],[2,'Hamilton',169,'ferrari',44],[3,'Russell',160,'mercedes',63],
+    [4,'Leclerc',138,'ferrari',16],[5,'Norris',128,'mclaren',1]
+  ].map(r=>({pos:r[0],family:r[1],pts:r[2],teamId:r[3],num:r[4]})),
+  lastRace:{round:11,name:'Hungarian Grand Prix',date:'2026-07-26',
+            podium:[{pos:1,driver:'Norris',teamId:'mclaren'},{pos:2,driver:'Verstappen',teamId:'redbull'},
+                    {pos:3,driver:'Antonelli',teamId:'mercedes'}]},
+  nextRace:null,
+  schedule:null
+};
+
+/* ---------------------------------------------------------------- STATE */
+const LIVE = {
+  status:'idle',        // idle · loading · live · partial · snapshot
+  source:null,          // which API answered
+  fetchedAt:null,
+  errors:[],
+  data:null,            // normalised, or null while using the snapshot
+  get standings(){ return (this.data&&this.data.constructors) || SNAPSHOT.constructors; },
+  get drivers(){   return (this.data&&this.data.drivers)      || SNAPSHOT.drivers; },
+  get round(){     return (this.data&&this.data.round)        || SNAPSHOT.round; },
+  get rounds(){    return (this.data&&this.data.totalRounds)  || SNAPSHOT.totalRounds; },
+  get isLive(){    return this.status==='live'||this.status==='partial'; }
+};
+
+/* ---------------------------------------------------------------- HELPERS */
+const norm = s => String(s||'').toLowerCase().replace(/[^a-z0-9]/g,'');
+const TEAM_ALIAS = {
+  mercedes:['mercedes','mercedesamg','mercedesamgpetronas'],
+  ferrari :['ferrari','scuderiaferrari','scuderiaferrarihp'],
+  mclaren :['mclaren','mclarenf1team'],
+  redbull :['redbull','redbullracing','oracleredbullracing'],
+  aston   :['astonmartin','astonmartinaramco','aston'],
+  rbulls  :['rb','rbf1team','racingbulls','visacashapprb','alphatauri','vcarb'],
+  alpine  :['alpine','alpinef1team','bwtalpinef1team'],
+  haas    :['haas','haasf1team','tgrhaasf1team','moneygramhaasf1team'],
+  audi    :['audi','audif1team','sauber','kicksauber','stakef1team'],
+  williams:['williams','williamsracing','atlassianwilliamsracing'],
+  cadillac:['cadillac','cadillacf1team','andretti','andretticadillac']
+};
+function matchTeam(x){
+  const s=norm(x); if(!s) return null;
+  for(const [id,al] of Object.entries(TEAM_ALIAS)) if(al.includes(s)) return id;
+  // longer aliases may appear inside a longer sponsor name; short ones never substring-match
+  for(const [id,al] of Object.entries(TEAM_ALIAS))
+    for(const a of al) if(a.length>=6 && s.includes(a)) return id;
+  return null;
+}
+function daysSince(iso){
+  const d=new Date(iso+'T00:00:00Z');
+  return Math.max(0,Math.floor((Date.now()-d.getTime())/86400000));
+}
+function timeAgo(ts){
+  const s=Math.floor((Date.now()-ts)/1000);
+  if(s<60) return 'just now';
+  if(s<3600) return Math.floor(s/60)+' min ago';
+  if(s<86400) return Math.floor(s/3600)+' h ago';
+  return Math.floor(s/86400)+' d ago';
+}
+function getJSON(url,ms){
+  const ac=new AbortController();
+  const to=setTimeout(()=>ac.abort(),ms||9000);
+  // plain GET, no custom headers — anything else triggers a CORS preflight
+  return fetch(url,{signal:ac.signal,cache:'no-store',mode:'cors',credentials:'omit'})
+    .then(r=>{ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+    .finally(()=>clearTimeout(to));
+}
+const wait = ms => new Promise(r=>setTimeout(r,ms));
+
+/* ---------------------------------------------------------------- SOURCE A · JOLPICA
+   Ergast-compatible. Confirmed to send Access-Control-Allow-Origin: *,
+   so it works even from a double-clicked local file (Origin: null).
+   Rate limit is 4 req/s, so the calls are staggered rather than parallel. */
+const JOL='https://api.jolpi.ca/ergast/f1/';
+async function fromJolpica(){
+  const out={};
+  const cs=await getJSON(JOL+'current/constructorstandings/?format=json&limit=100');
+  const cl=cs?.MRData?.StandingsTable?.StandingsLists?.[0];
+  if(!cl) throw new Error('no constructor standings');
+  out.season=+cl.season; out.round=+cl.round;
+  out.constructors=cl.ConstructorStandings.map(c=>({
+    teamId:matchTeam(c.Constructor.constructorId)||matchTeam(c.Constructor.name),
+    name:c.Constructor.name, pos:+c.position, pts:+c.points, wins:+c.wins
+  })).filter(c=>c.teamId);
+  if(out.constructors.length<8) throw new Error('constructor mapping failed');
+
+  await wait(300);
+  try{
+    const ds=await getJSON(JOL+'current/driverstandings/?format=json&limit=100');
+    const dl=ds?.MRData?.StandingsTable?.StandingsLists?.[0];
+    out.drivers=(dl?.DriverStandings||[]).map(d=>({
+      pos:+d.position, pts:+d.points, wins:+d.wins,
+      given:d.Driver.givenName, family:d.Driver.familyName,
+      code:d.Driver.code, num:d.Driver.permanentNumber,
+      teamId:matchTeam(d.Constructors?.[0]?.constructorId)||matchTeam(d.Constructors?.[0]?.name)
+    }));
+  }catch(e){ LIVE.errors.push('drivers: '+e.message); }
+
+  await wait(300);
+  try{
+    const sc=await getJSON(JOL+'current/races/?format=json&limit=100');
+    const races=sc?.MRData?.RaceTable?.Races||[];
+    const declared=parseInt(sc?.MRData?.total,10);
+    const maxRound=races.length?Math.max(...races.map(r=>+r.round)):0;
+    out.totalRounds=Math.max(declared||0,races.length,maxRound)||null;
+    out.schedule=races.map(r=>({
+      round:+r.round, name:r.raceName, date:r.date,
+      circuit:r.Circuit?.circuitName, locality:r.Circuit?.Location?.locality,
+      country:r.Circuit?.Location?.country,
+      done:new Date(r.date+'T23:59:59Z')<new Date()
+    }));
+    out.nextRace=out.schedule.find(r=>!r.done)||null;
+  }catch(e){ LIVE.errors.push('schedule: '+e.message); }
+
+  await wait(300);
+  try{
+    const lr=await getJSON(JOL+'current/last/results/?format=json&limit=100');
+    const R=lr?.MRData?.RaceTable?.Races?.[0];
+    if(R) out.lastRace={
+      round:+R.round, name:R.raceName, date:R.date,
+      podium:(R.Results||[]).slice(0,3).map(x=>({
+        pos:+x.position, driver:x.Driver.familyName,
+        teamId:matchTeam(x.Constructor.constructorId)||matchTeam(x.Constructor.name)
+      })),
+      results:(R.Results||[]).map(x=>({
+        pos:+x.position, driver:x.Driver.familyName, code:x.Driver.code,
+        teamId:matchTeam(x.Constructor.constructorId)||matchTeam(x.Constructor.name),
+        status:x.status, pts:+x.points
+      }))
+    };
+  }catch(e){ LIVE.errors.push('last race: '+e.message); }
+
+  return out;
+}
+
+/* ---------------------------------------------------------------- SOURCE B · F1API.DEV
+   Different JSON shape, and one this app has not been able to test against
+   a live response. So the parser is deliberately shape-agnostic: it hunts
+   for any array that looks like a standings table, and the result is only
+   accepted if it maps cleanly to at least eight known teams with numeric
+   points. If the shape is not what we guessed, this returns nothing rather
+   than returning something wrong. */
+function deepFindArray(obj,minLen){
+  let best=null;
+  (function walk(o,d){
+    if(d>4||!o||typeof o!=='object') return;
+    if(Array.isArray(o)){
+      if(o.length>=minLen && typeof o[0]==='object' && !Array.isArray(o[0]))
+        if(!best||o.length>best.length) best=o;
+      return;
+    }
+    for(const k in o) walk(o[k],d+1);
+  })(obj,0);
+  return best;
+}
+function pickNum(o,names){
+  for(const k in o){ if(names.some(n=>k.toLowerCase().includes(n))){
+    const v=parseFloat(o[k]); if(!isNaN(v)) return v; } }
+  return null;
+}
+function pickTeam(o){
+  const direct=matchTeam(o.teamId||o.constructorId||o.team||o.constructor||o.name);
+  if(direct) return direct;
+  for(const k in o){
+    const v=o[k];
+    if(typeof v==='string'){ const m=matchTeam(v); if(m) return m; }
+    else if(v&&typeof v==='object'){
+      const m=matchTeam(v.teamId||v.id||v.name||v.teamName); if(m) return m;
+    }
+  }
+  return null;
+}
+async function fromF1ApiDev(){
+  const j=await getJSON('https://f1api.dev/api/current/constructors-championship',9000);
+  const arr=deepFindArray(j,8);
+  if(!arr) throw new Error('unrecognised shape');
+  const cons=arr.map((o,i)=>({
+    teamId:pickTeam(o), pos:pickNum(o,['position','pos'])??i+1,
+    pts:pickNum(o,['point','score']), wins:pickNum(o,['win'])||0
+  })).filter(c=>c.teamId&&c.pts!==null);
+  if(cons.length<8) throw new Error('mapped only '+cons.length+' teams');
+  cons.sort((a,b)=>b.pts-a.pts).forEach((c,i)=>c.pos=i+1);
+  return {constructors:cons, season:2026, round:null, partial:true};
+}
+
+/* ---------------------------------------------------------------- ORCHESTRATOR */
+async function loadLive(){
+  LIVE.status='loading'; LIVE.errors=[]; onLiveChange();
+  try{
+    const d=await fromJolpica();
+    LIVE.data=d; LIVE.source='Jolpica-F1'; LIVE.fetchedAt=Date.now();
+    LIVE.status = LIVE.errors.length ? 'partial' : 'live';
+    onLiveChange(); return;
+  }catch(e){ LIVE.errors.push('Jolpica: '+e.message); }
+
+  try{
+    const d=await fromF1ApiDev();
+    LIVE.data=d; LIVE.source='f1api.dev'; LIVE.fetchedAt=Date.now();
+    LIVE.status='partial'; onLiveChange(); return;
+  }catch(e){ LIVE.errors.push('f1api.dev: '+e.message); }
+
+  LIVE.data=null; LIVE.source=null; LIVE.status='snapshot'; onLiveChange();
+}
 
 /* =====================================================================
    SCENE RENDERERS — every diagram is drawn as vector geometry so that it
@@ -3556,6 +3903,49 @@ function init(){
   bindChrome(); bindStage(); bindRail(); bindKeys(); bindMobile();
   setTeam(TEAMS[0],true); setPart(PARTS[0],true); setMag(1);
   renderRead();
+  loadLive();                       // volatile data refreshes on every load
+  setInterval(()=>{ if(LIVE.isLive) paintFresh(); }, 60000);
+}
+
+/* ================================================================ LIVE WIRING */
+function standingOf(teamId){
+  const r=LIVE.standings.find(c=>c.teamId===teamId);
+  return r ? {pos:r.pos,pts:r.pts,wins:r.wins,live:LIVE.isLive} : null;
+}
+function standingText(teamId){
+  const s=standingOf(teamId);
+  if(!s) return TEAMS.find(t=>t.id===teamId)?.pts || '—';
+  return `${s.pts} pts · P${s.pos} constructors`;
+}
+function lineupOf(teamId){
+  const ds=(LIVE.data&&LIVE.data.drivers)||null;
+  if(!ds) return TEAMS.find(t=>t.id===teamId)?.drivers || '—';
+  const mine=ds.filter(d=>d.teamId===teamId);
+  if(!mine.length) return TEAMS.find(t=>t.id===teamId)?.drivers || '—';
+  return mine.map(d=>`${d.given?d.given[0]+'. ':''}${d.family}${d.num?' #'+d.num:''}`).join(' · ');
+}
+function roundLabel(){
+  const r=LIVE.round, n=LIVE.rounds;
+  return (n && n>=r) ? `round ${r} of ${n}` : `round ${r}`;
+}
+function paintFresh(){
+  const el=$('#fresh'), tx=$('#freshTxt');
+  el.classList.remove('live','warn','load');
+  if(LIVE.status==='loading'){ el.classList.add('load');
+    tx.innerHTML='Checking for updates<u>season data</u>'; }
+  else if(LIVE.status==='live'){ el.classList.add('live');
+    tx.innerHTML=`Live · ${roundLabel()}<u>${LIVE.source} · ${timeAgo(LIVE.fetchedAt)}</u>`; }
+  else if(LIVE.status==='partial'){ el.classList.add('live');
+    tx.innerHTML=`Live · partial<u>${LIVE.source} · ${timeAgo(LIVE.fetchedAt)}</u>`; }
+  else { el.classList.add('warn');
+    const d=daysSince(SNAPSHOT.asOf);
+    tx.innerHTML=`Offline · snapshot<u>${d} day${d===1?'':'s'} old — tap to retry</u>`; }
+}
+function onLiveChange(){
+  paintFresh();
+  if(typeof S!=='undefined' && S.part){ renderRead(); if(S.view==='compare') renderCompare(); }
+  if(typeof S!=='undefined' && S.view==='season') renderSeason();
+  const b=$('#btnRefresh'); if(b) b.classList.toggle('busy',LIVE.status==='loading');
 }
 
 /* ================================================================ CHROME */
@@ -3577,6 +3967,9 @@ function bindChrome(){
   $$('#modes button').forEach(b=>b.onclick=()=>setView(b.dataset.v));
   $('#rexp').onclick=()=>{ $('#read').classList.toggle('wide');
     $('#rexp').style.transform=$('#read').classList.contains('wide')?'rotate(180deg)':''; };
+  $('#fresh').onclick=()=>{ if(LIVE.status==='loading') return;
+    if(LIVE.status==='snapshot') loadLive(); else $('#mData').classList.add('on'); };
+  $('#btnRefresh').onclick=()=>{ if(LIVE.status!=='loading') loadLive(); };
   $('#btnGuide').onclick=()=>$('#mGuide').classList.add('on');
   $('#btnData').onclick=()=>$('#mData').classList.add('on');
   $$('[data-close]').forEach(b=>b.onclick=()=>b.closest('.modal').classList.remove('on'));
@@ -3587,6 +3980,7 @@ function setView(v){
   $$('#modes button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
   $$('.view').forEach(el=>el.classList.toggle('on',el.id===(v==='gloss'?'gloss':v)));
   if(v==='compare') renderCompare();
+  if(v==='season') renderSeason();
 }
 
 /* ================================================================ CAR BAR */
@@ -3736,15 +4130,19 @@ function renderRead(){
       <tr><td class="k">Power unit</td><td class="v">${t.pu}</td></tr>
       <tr><td class="k">Team principal</td><td class="v">${t.tp}</td></tr>
       <tr><td class="k">Technical</td><td class="v">${t.td}</td></tr>
-      <tr><td class="k">Drivers</td><td class="v">${t.drivers}</td></tr>
-      <tr><td class="k">Standing</td><td class="v">${t.pts}</td></tr>
+      <tr><td class="k">Drivers</td><td class="v">${lineupOf(t.id)}<small>${
+        LIVE.isLive?'<span class="bd c">Live</span>':'<span class="bd r">Snapshot</span>'}</small></td></tr>
+      <tr><td class="k">Standing</td><td class="v">${standingText(t.id)}<small>${
+        LIVE.isLive?'<span class="bd c">Live · round '+LIVE.round+'</span>'
+                   :'<span class="bd r">'+daysSince(SNAPSHOT.asOf)+' days old</span>'}</small></td></tr>
     </table>
     <div class="call cy"><h4>${t.line}</h4><p>${t.blurb}</p></div>
     <ul class="b">${t.quirks.map(q=>`<li><b>${q[0]}</b> — ${q[1]}</li>`).join('')}</ul>
     <div class="call rd"><h4>Known weakness</h4><p>${t.weak}</p></div></sec>`;
 
   h+=`<sec><h3>Sources</h3><div class="srclist">${
-    p.src.map(s=>`<a href="${s[1]}" target="_blank" rel="noopener">${s[0]}</a>`).join('')}</div></sec>`;
+    p.src.map(s=>`<a href="${s[1]}" target="_blank" rel="noopener">${s[0]}</a>`).join('')}</div>
+    ${contentAgeNotice()}</sec>`;
 
   const nx=nextTierOrPart();
   if(nx) h+=`<button class="nextcard" id="nxBtn"><span><i>Continue</i><b>${nx.label}</b></span>
@@ -3766,6 +4164,109 @@ function nextTierOrPart(){
   return null;
 }
 function goTier(l){ animMag(TIERS[l].mag*1.02); }
+
+function contentAgeNotice(){
+  const d=daysSince(CONTENT_VERIFIED);
+  const warn=d>STALE_AFTER_DAYS;
+  return `<div class="stalebar ${warn?'':'ok'}">
+    <svg viewBox="0 0 24 24">${warn
+      ? '<circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/>'
+      : '<circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/>'}</svg>
+    <div><b>Engineering content verified ${d} day${d===1?'':'s'} ago</b>
+    <p>${warn
+      ? 'Regulations and car concepts change during a season. Standings and results above this line update automatically; this technical description does not — check the FIA documents linked here before relying on a specific figure.'
+      : 'Standings, results and calendar refresh automatically on every load. This technical description was compiled by hand on ' + CONTENT_VERIFIED + ' and is still recent.'}</p></div></div>`;
+}
+
+/* ================================================================ SEASON */
+function renderSeason(){
+  const live=LIVE.isLive, cons=LIVE.standings, drv=LIVE.drivers, D=LIVE.data;
+  const hex=t=>{const x=TEAMS.find(y=>y.id===t); return x?((S.theme==='dark')?x.c:(x.cl||x.c)):'var(--ink4)';};
+  const nm =t=>TEAMS.find(y=>y.id===t)||{short:'—',chassis:'',name:''};
+
+  $('#seaTitle').textContent=`Season ${(D&&D.season)||SNAPSHOT.season}`;
+  $('#seaSub').textContent = live
+    ? `${roundLabel().charAt(0).toUpperCase()+roundLabel().slice(1)}. Standings, results and calendar came from ${LIVE.source} ${timeAgo(LIVE.fetchedAt)}.`
+    : `Live data could not be reached, so this is the snapshot built into the file on ${SNAPSHOT.asOf} — ${daysSince(SNAPSHOT.asOf)} days ago. Every figure below is that old.`;
+
+  const maxC=Math.max(1,...cons.map(c=>c.pts));
+  const consRows=cons.map(c=>{const t=nm(c.teamId);
+    return `<div class="srow ${c.teamId===S.team.id?'me':''}" style="--c:${hex(c.teamId)}"
+        data-team="${c.teamId}" data-pts="${c.pts}" data-wins="${c.wins||0}" data-gap="${maxC-c.pts}">
+      <span class="pos">${c.pos}</span>
+      <span class="who"><span class="swatch" style="--c:${hex(c.teamId)}"></span><b>${t.short}</b><i>${t.chassis}</i></span>
+      <span class="track"><span class="fillb" style="width:${Math.max(2,c.pts/maxC*100)}%"></span></span>
+      <span class="val">${c.pts}</span></div>`;}).join('');
+
+  const maxD=Math.max(1,...drv.map(d=>d.pts));
+  const drvRows=drv.slice(0,12).map(d=>{const t=nm(d.teamId);
+    return `<div class="srow" style="--c:${hex(d.teamId)}">
+      <span class="pos">${d.pos}</span>
+      <span class="who"><span class="swatch" style="--c:${hex(d.teamId)}"></span><b>${d.family}</b><i>${t.short||''}</i></span>
+      <span class="track"><span class="fillb" style="width:${Math.max(2,d.pts/maxD*100)}%"></span></span>
+      <span class="val">${d.pts}</span></div>`;}).join('');
+
+  const LR=(D&&D.lastRace)||SNAPSHOT.lastRace;
+  const lastCard=LR?`<div class="card"><h3>Last race<em>Round ${LR.round} · ${LR.date}</em></h3>
+    <div class="hero"><div class="hn">${LR.name}</div></div>
+    <div class="cardb">${(LR.podium||[]).map(p=>`<div class="pod" style="--c:${hex(p.teamId)}">
+      <span class="pn">${p.pos}</span><span class="pd">${p.driver}</span>
+      <span style="color:var(--ink3);font-size:calc(var(--fs-ui) * .88)">${nm(p.teamId).short||''}</span>
+      <span class="pt"></span></div>`).join('')}</div></div>`:'';
+
+  const NR=D&&D.nextRace;
+  const days=NR?Math.ceil((new Date(NR.date+'T00:00:00Z')-Date.now())/86400000):null;
+  const nextCard=NR?`<div class="card"><h3>Next race<em>Round ${NR.round}</em></h3>
+    <div class="hero"><div class="hn">${NR.name}</div>
+      <div class="hs">${[NR.circuit,NR.locality,NR.country].filter(Boolean).join(' · ')}</div>
+      <div class="hc"><b>${days>0?days:0}</b><span>day${days===1?'':'s'} away · ${NR.date}</span></div></div>
+    <div class="cardb"></div></div>`
+    : `<div class="card"><h3>Next race</h3><div class="cardb"
+        style="color:var(--ink3);padding-top:14px">The calendar could not be fetched, so the next race is unknown.
+        The snapshot in this file does not include one.</div></div>`;
+
+  const sched=(D&&D.schedule)||null;
+  const calCard=sched?`<div class="card"><h3>Calendar<em>${sched.filter(r=>r.done).length} of ${sched.length} run</em></h3>
+    <div class="cardb">${sched.map(r=>`<div class="race ${r.done?'done':''} ${NR&&r.round===NR.round?'next':''}">
+      <span class="rd">${r.round}</span>
+      <span class="rn"><b>${r.name}</b><i>${[r.locality,r.country].filter(Boolean).join(', ')}</i></span>
+      <span class="rt">${r.done?'✓ '+r.date:r.date}</span></div>`).join('')}</div></div>`:'';
+
+  const st=(ok,label)=>`<span class="st ${ok}">${label}</span>`;
+  const srcCard=`<div class="card"><h3>Where this came from</h3><div class="cardb">
+    <div class="srcgrid" style="padding-top:10px">
+      <b>Constructor standings</b>${live?st('ok','Live'):st('no','Snapshot')}
+      <b>Driver standings</b>${(D&&D.drivers)?st('ok','Live'):st('no','Snapshot')}
+      <b>Race calendar</b>${sched?st('ok','Live'):st('no','Unavailable')}
+      <b>Last race result</b>${(D&&D.lastRace)?st('ok','Live'):st('no','Snapshot')}
+      <b>Engineering content</b>${st(daysSince(CONTENT_VERIFIED)>STALE_AFTER_DAYS?'wa':'ok',
+        daysSince(CONTENT_VERIFIED)+' days old')}
+    </div>
+    ${LIVE.errors.length?`<p style="margin-top:14px;color:var(--ink3);font-size:calc(var(--fs-ui) * .92);line-height:1.55">
+      <b style="color:var(--bad)">Fetch notes:</b> ${LIVE.errors.join(' · ')}</p>`:''}
+    <p style="margin-top:14px;color:var(--ink3);font-size:calc(var(--fs-ui) * .92);line-height:1.6">
+      Season data comes from <a href="https://api.jolpi.ca/ergast/f1/current/constructorstandings/?format=json" target="_blank" rel="noopener">Jolpica-F1</a>,
+      the community successor to Ergast, with <a href="https://f1api.dev" target="_blank" rel="noopener">f1api.dev</a> as a
+      second source. Both are free and need no key. If neither answers — no connection, or a blocked network —
+      the app falls back to a snapshot and says so rather than showing you old numbers as if they were current.</p>
+  </div></div>`;
+
+  $('#seaBody').innerHTML=`<div class="seagrid">
+    <div>
+      <div class="card"><h3>Constructors<em>${live?'live · round '+LIVE.round:'snapshot · '+daysSince(SNAPSHOT.asOf)+' days old'}</em></h3>
+        <div class="cardb">${consRows}</div></div>
+      <div class="card"><h3>Drivers<em>${live?'top 12 · live':'top 5 · snapshot'}</em></h3><div class="cardb">${drvRows}</div></div>
+    </div>
+    <div>${nextCard}${lastCard}${calCard}${srcCard}</div>
+  </div>`;
+
+  $$('#seaBody .srow[data-team]').forEach(r=>{
+    r.onclick=()=>{ const t=TEAMS.find(x=>x.id===r.dataset.team); if(t){ setTeam(t); setView('explore'); } };
+    r.onmouseenter=()=>showTip(r,`<b>${nm(r.dataset.team).name}</b>${r.dataset.pts} points · ${r.dataset.wins} win${r.dataset.wins==='1'?'':'s'}${
+      +r.dataset.gap ? '<u>'+r.dataset.gap+' behind the leader</u>' : '<u>championship leader</u>'}`);
+    r.onmouseleave=hideTip;
+  });
+}
 
 /* ================================================================ GLOSSARY LINKING */
 const GKEY={}, GLIST=[];
@@ -3791,8 +4292,17 @@ function linkGlossary(root){
   });
 }
 /* tooltip */
+let showTip,hideTip;
 (function(){
   const tip=$('#tip'); let cur=null;
+  const place=(el,html)=>{
+    tip.innerHTML=html; tip.classList.add('on');
+    const r=el.getBoundingClientRect(), tr=tip.getBoundingClientRect();
+    tip.style.left=clamp(r.left+r.width/2-tr.width/2,10,innerWidth-tr.width-10)+'px';
+    let y=r.top-tr.height-9; if(y<10) y=r.bottom+9;
+    tip.style.top=y+'px';
+  };
+  showTip=place; hideTip=()=>{tip.classList.remove('on');cur=null;};
   const show=(el)=>{
     const g=GKEY[el.dataset.g.toLowerCase()]; if(!g) return;
     tip.innerHTML=`<b>${g[0]}</b>${g[2]}<u>${g[1]} · tap Glossary for the full list</u>`;
@@ -4008,12 +4518,40 @@ function buildModals(){
     <div class="krow"><div>markers</div><div>On the vehicle view, click any numbered marker to jump to that system</div></div>
     <h4>Reading comfort</h4>
     <p>Three themes and three text sizes sit in the top right, and they apply to the diagrams as well as the text. The diagonal arrow above the reading column widens it when you want to read rather than look.</p>
+    <h4>Staying current</h4>
+    <p>The <b>Season</b> tab holds live standings, the calendar and the latest result, refetched every time you open this file. The dot in the header is green when that worked and amber when it did not — and when it is amber, every affected number is labelled with how old it is.</p>
+    <p>The engineering content cannot refresh itself, because nobody publishes an API for how Ferrari built its floor. It carries a verification date instead, and warns you once it is more than three weeks old.</p>
     <h4>Learning features</h4>
     <p><b>Dotted terms</b> are defined — hover, or tap once for the definition and again to open the full glossary.</p>
     <p><b>Compare</b> puts up to four cars side by side on the same system, with all eleven summarised beneath. This is where the interesting differences live: the regulations are identical for everyone, so every difference you see is a choice somebody made.</p>
     <p><b>Progress</b> tracks which of the 75 pages you have opened, and the suggested-next button walks you through in a sensible order — front of the car to the back, system by system, shallow to deep.</p>`;
 
   $('#dataBody').innerHTML=`
+    <h4>What refreshes itself, and what cannot</h4>
+    <p>This file contains two kinds of information, and they age at completely different rates. Being clear about which is which is the only honest way to keep an offline document current.</p>
+    <div class="krow"><div><span class="bd c">Refreshes</span></div><div>
+      <b>Constructor and driver standings, race calendar, last race result, driver line-ups.</b>
+      Fetched on every page load from <a href="https://api.jolpi.ca" target="_blank" rel="noopener">Jolpica-F1</a>,
+      the community successor to the retired Ergast API, with <a href="https://f1api.dev" target="_blank" rel="noopener">f1api.dev</a>
+      as a second source. Both are free, need no key, and send permissive CORS headers — so this works even
+      from a file you have downloaded and double-clicked, not just from a web address.</div></div>
+    <div class="krow"><div><span class="bd r">Hand-compiled</span></div><div>
+      <b>Regulations, engineering principles, materials science, and each team's design concept.</b>
+      No API publishes any of this. It was researched and written by hand, and it carries a verification date
+      shown at the foot of every page. Past three weeks old, the app starts saying so instead of quietly
+      letting you assume it is current.</div></div>
+    <div class="krow"><div><span class="bd i">Never guessed</span></div><div>
+      If both data sources fail, the app falls back to a snapshot taken on ${SNAPSHOT.asOf} and labels every
+      figure with its age in days. It does not present old numbers as current ones. The freshness chip in the
+      header always tells you which state you are in — tap it to retry.</div></div>
+    <p style="margin-top:14px"><b>Current state:</b> ${LIVE.status==='live'||LIVE.status==='partial'
+      ? 'live from '+LIVE.source+', round '+LIVE.round+', fetched '+timeAgo(LIVE.fetchedAt)+'.'
+      : LIVE.status==='loading' ? 'still checking.'
+      : 'snapshot from '+SNAPSHOT.asOf+', '+daysSince(SNAPSHOT.asOf)+' days old. '+(LIVE.errors.join('; ')||'')}
+      Engineering content verified ${daysSince(CONTENT_VERIFIED)} days ago.</p>
+    <p><button class="btn" onclick="loadLive()" style="margin-top:6px">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5"/></svg>Refresh season data now</button></p>
+
     <h4>Every figure carries a badge</h4>
     <p>Formula 1 in 2026 is a moving target, and a great deal of what circulates as fact is inference. The badges make the difference visible.</p>
     <div class="krow"><div>${bd('C')}</div><div>FIA regulation text, an official FIA or Formula 1 announcement, or an official result. Regulation articles are quoted verbatim where they are quoted at all.</div></div>
