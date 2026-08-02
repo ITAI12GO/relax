@@ -1,4 +1,6 @@
-<html lang="en"><head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#10161a">
@@ -188,12 +190,54 @@ body.hastouch #pads{display:flex}
   border-color:#d3684c;font-size:var(--fsSm);letter-spacing:.05em}
 #padF:active{background:rgba(224,161,60,.85)}
 
-#tools{display:flex;gap:4px;flex:none}
-.tbtn{background:#161f25;border:1px solid var(--line);border-radius:8px;
-  width:34px;height:34px;display:grid;place-items:center;font-size:14px;padding:0}
-.tbtn:hover{background:#1f2b33}
-.tbtn.off{opacity:.38}
-.tbtn.wide{width:auto;padding:0 11px;font-size:var(--fsSm)}
+/* trajectory guide toggle — deliberately on the opposite side to FIRE */
+#btnGuide{
+  flex:none;display:flex;align-items:center;gap:5px;
+  background:#161f25;border:1px solid var(--line);border-radius:8px;
+  padding:0 10px;height:34px;font-size:var(--fsXs);color:var(--muted);
+  letter-spacing:.04em;text-transform:uppercase;font-weight:600;
+}
+#btnGuide .ic{font-size:14px;line-height:1}
+#btnGuide.on{border-color:var(--teal);color:#9fd6d2;background:#16292c}
+#btnGuide:hover{border-color:#5c7482}
+
+/* match menu button lives in the top bar, far from the firing controls */
+#btnMenu{
+  flex:none;align-self:flex-start;width:34px;height:34px;
+  background:rgba(16,22,26,.86);border:1px solid rgba(112,136,150,.35);
+  border-radius:var(--radius);color:var(--muted);font-size:17px;line-height:1;
+  display:grid;place-items:center;backdrop-filter:blur(6px);padding:0 0 4px;
+}
+#btnMenu:hover{color:var(--paper);border-color:#5c7482}
+body.ov #btnMenu{pointer-events:auto}
+#gmenu{
+  position:absolute;top:calc(var(--gap) + 40px);right:var(--gap);z-index:30;
+  width:230px;display:none;flex-direction:column;
+  background:rgba(14,20,24,.97);border:1px solid var(--line);border-radius:12px;
+  box-shadow:0 18px 46px rgba(0,0,0,.55);padding:6px;backdrop-filter:blur(8px);
+}
+#gmenu.on{display:flex}
+.ghead{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--sand-dk);
+  padding:6px 8px 7px}
+.gitem{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  background:transparent;border:none;border-radius:8px;padding:9px 8px;
+  font-size:13px;text-align:left;width:100%;min-height:38px;
+}
+.gitem:hover{background:rgba(255,255,255,.06)}
+.gitem .st{color:var(--muted);font-size:11.5px;font-weight:600}
+.gitem.danger{color:#e79180}
+.gitem.danger:hover{background:rgba(207,75,56,.14)}
+.gitem.close{color:var(--muted);font-size:12.5px}
+.gsep{height:1px;background:rgba(255,255,255,.08);margin:5px 4px}
+#quitConfirm{display:none;padding:4px 8px 8px}
+#quitConfirm.on{display:block}
+#quitConfirm p{margin:0 0 8px;font-size:12px;color:var(--muted);line-height:1.4}
+.qrow{display:flex;gap:6px}
+.qrow .btn{flex:1;padding:8px 6px;font-size:12.5px}
+.btn.sm{padding:8px 12px;font-size:12.5px;border-radius:8px}
+.btn.dangerbtn{background:var(--danger);border-color:var(--danger);color:#fff}
+.btn.dangerbtn:hover{background:#dd5a46;border-color:#dd5a46}
 
 /* ============================================================
    FLOATING MESSAGES
@@ -293,7 +337,7 @@ kbd{background:#0f1519;border:1px solid var(--line);border-bottom-width:2px;bord
 @media (max-height:560px){
   :root{--gap:6px;--pboxW:210px;--fsBase:13px;--fsSm:11px;--fsXs:9.5px;
         --hpH:11px;--wepH:38px;--padSz:42px;}
-  .tbtn{width:30px;height:30px;font-size:12px}
+  #btnMenu{width:30px;height:30px;font-size:15px}
   #banner{top:32%}
 }
 @media (max-height:430px){
@@ -331,9 +375,9 @@ kbd{background:#0f1519;border:1px solid var(--line);border-bottom-width:2px;bord
   .gauge .vv{min-width:26px}
   .tcard canvas{height:52px}
   #deckrow{flex-wrap:wrap}
-  body.hastouch #gauges{flex-basis:100%;order:1}
-  body.hastouch #pads{order:2}
-  body.hastouch #tools{order:3}
+  body.hastouch #btnGuide{order:1}
+  body.hastouch #gauges{order:2}
+  body.hastouch #pads{order:3;flex-basis:100%}
   .screen{padding:14px}
   .row{margin-top:16px}
   .sub{margin-bottom:16px}
@@ -344,14 +388,14 @@ kbd{background:#0f1519;border:1px solid var(--line);border-bottom-width:2px;bord
   .pbox .tk{display:none}
   .tanks{grid-template-columns:repeat(2,1fr);gap:8px}
   .bar .lb{width:42px}
-  .tbtn{width:30px;height:30px;font-size:12px}
+  #btnGuide{padding:0 8px;height:30px}
+  #btnGuide .lbl{display:none}
   #padF{min-width:74px}
   #pads{gap:4px}
   .pad.sp{margin-right:4px}
 }
 @media (max-width:340px){
   .gauge .lb{display:none}
-  #tools .tbtn.hideSm{display:none}
 }
 /* stacked layout keeps the deck readable on wide-but-short tablets */
 body:not(.ov) #deck{background:rgba(16,22,26,.55);border-radius:12px;
@@ -361,32 +405,33 @@ body:not(.ov) #deck{background:rgba(16,22,26,.55);border-radius:12px;
 }
 </style>
 </head>
-<body class="hastouch">
+<body>
 
 <div id="app">
   <div id="stage">
 
     <div id="topbar">
-      <div class="pbox" id="pboxL" style="border-color: rgba(224, 161, 60, 0.85);">
-        <div class="nm"><span class="dotc" style="background:var(--p1)"></span><span id="nmL">Alpha</span><span class="who" id="whoL">CPU</span></div>
-        <div class="tk" id="tkL">Vanguard · All-round</div>
-        <div class="hp"><i class="ghost" id="ghL" style="transform: scaleX(1);"></i><i class="real" id="hpL" style="transform: scaleX(1);"></i><b id="hvL">100 / 100</b></div>
-        <div class="sh" id="shL" style="display: none;"><i style="transform: scaleX(0);"></i></div>
+      <div class="pbox" id="pboxL">
+        <div class="nm"><span class="dotc" style="background:var(--p1)"></span><span id="nmL">Player 1</span><span class="who" id="whoL">Human</span></div>
+        <div class="tk" id="tkL">Vanguard</div>
+        <div class="hp"><i class="ghost" id="ghL"></i><i class="real" id="hpL"></i><b id="hvL">100 / 100</b></div>
+        <div class="sh" id="shL"><i></i></div>
         <div class="buffs" id="bfL"></div>
       </div>
-      <div class="pbox" id="pboxR" style="border-color: rgba(112, 136, 150, 0.35);">
-        <div class="nm"><span class="dotc" style="background:var(--p2)"></span><span id="nmR">Bravo</span><span class="who" id="whoR">CPU</span></div>
-        <div class="tk" id="tkR">Havoc · Assault</div>
-        <div class="hp"><i class="ghost" id="ghR" style="transform: scaleX(1);"></i><i class="real" id="hpR" style="transform: scaleX(1);"></i><b id="hvR">92 / 92</b></div>
-        <div class="sh" id="shR" style="display: none;"><i style="transform: scaleX(0);"></i></div>
+      <div class="pbox" id="pboxR">
+        <div class="nm"><span class="dotc" style="background:var(--p2)"></span><span id="nmR">Player 2</span><span class="who" id="whoR">AI</span></div>
+        <div class="tk" id="tkR">Havoc</div>
+        <div class="hp"><i class="ghost" id="ghR"></i><i class="real" id="hpR"></i><b id="hvR">100 / 100</b></div>
+        <div class="sh" id="shR"><i></i></div>
         <div class="buffs" id="bfR"></div>
       </div>
+      <button id="btnMenu" title="Match menu" aria-label="Match menu">⋯</button>
     </div>
 
     <div id="board">
-      <canvas id="cv" width="760" height="883" style="width: 428px; height: 497px;"></canvas>
+      <canvas id="cv" width="1280" height="760"></canvas>
       <div id="center">
-        <span id="turnPill"><span class="dotc" id="turnDot" style="background: var(--p1);"></span><span id="turnTxt">Alpha</span></span>
+        <span id="turnPill"><span class="dotc" id="turnDot" style="background:var(--p1)"></span><span id="turnTxt">Player 1</span></span>
         <span id="clock">T<b id="turnNo">1</b> · <b id="turnClock">30</b>s</span>
       </div>
       <div id="banner"></div>
@@ -394,22 +439,25 @@ body:not(.ov) #deck{background:rgba(16,22,26,.55);border-radius:12px;
     </div>
 
     <div id="deck">
-      <div id="weps"><button class="wep sel" data-i="0" title="AP Shell — 24 dmg · no cooldown"><span class="kb">1</span><span class="wn"><span class="lg">AP Shell</span><span class="sm">AP</span></span><span class="wd">24 dmg · no cooldown</span><span class="cdfill" style="transform: scaleY(0);"></span><span class="cdtxt"></span></button><button class="wep cool" data-i="1" title="Twin Rocket — 2 × 15 dmg · 14s"><span class="kb">2</span><span class="wn"><span class="lg">Twin Rocket</span><span class="sm">Twin</span></span><span class="wd">2 × 15 dmg · 14s</span><span class="cdfill" style="transform: scaleY(0.55);"></span><span class="cdtxt">8s</span></button><button class="wep cool" data-i="2" title="Heavy Mortar — 40 dmg · wide · 28s"><span class="kb">3</span><span class="wn"><span class="lg">Heavy Mortar</span><span class="sm">Mortar</span></span><span class="wd">40 dmg · wide · 28s</span><span class="cdfill" style="transform: scaleY(0.55);"></span><span class="cdtxt">16s</span></button><button class="wep cool" data-i="3" title="Cluster Pod — 5 × 12 dmg · 44s"><span class="kb">4</span><span class="wn"><span class="lg">Cluster Pod</span><span class="sm">Cluster</span></span><span class="wd">5 × 12 dmg · 44s</span><span class="cdfill" style="transform: scaleY(0.55);"></span><span class="cdtxt">25s</span></button><button class="wep cool" data-i="4" title="Thunderstrike — 52 dmg · flat · 72s"><span class="kb">5</span><span class="wn"><span class="lg">Thunderstrike</span><span class="sm">Rail</span></span><span class="wd">52 dmg · flat · 72s</span><span class="cdfill" style="transform: scaleY(0.55);"></span><span class="cdtxt">40s</span></button></div>
+      <div id="weps"></div>
       <div id="deckrow">
+        <button id="btnGuide" class="on" title="Trajectory guide (G)">
+          <span class="ic">⊕</span><span class="lbl">Guide</span>
+        </button>
         <div id="gauges">
           <div class="gauge">
             <span class="lb">Pwr</span>
-            <span class="tr"><i class="fl" id="pwFill" style="transform: scaleX(0);"></i><span id="pwTicks"></span></span>
+            <span class="tr"><i class="fl" id="pwFill"></i><span id="pwTicks"></span></span>
             <span class="vv mono" id="pwVal">0</span>
           </div>
           <div class="gauge">
             <span class="lb">Ang</span>
-            <span class="tr"><i class="fl" id="agFill" style="transform: scaleX(0.266667);"></i></span>
-            <span class="vv mono" id="agVal">48°</span>
+            <span class="tr"><i class="fl" id="agFill"></i></span>
+            <span class="vv mono" id="agVal">45°</span>
           </div>
           <div class="gauge">
             <span class="lb">Mov</span>
-            <span class="tr"><i class="fl" id="mvFill" style="transform: scaleX(1);"></i></span>
+            <span class="tr"><i class="fl" id="mvFill"></i></span>
             <span class="vv mono" id="mvVal">100%</span>
           </div>
         </div>
@@ -420,13 +468,25 @@ body:not(.ov) #deck{background:rgba(16,22,26,.55);border-radius:12px;
           <button class="pad sp" id="padD">▼</button>
           <button class="pad" id="padF">FIRE</button>
         </div>
-        <div id="tools">
-          <button class="tbtn" id="btnMusic" title="Music">♪</button>
-          <button class="tbtn" id="btnSfx" title="Sound effects">♫</button>
-          <button class="tbtn hideSm" id="btnFull" title="Fullscreen">⤢</button>
-          <button class="tbtn" id="btnQuit" title="Quit to menu">✕</button>
+      </div>
+    </div>
+
+    <div id="gmenu">
+      <div class="ghead">Match menu</div>
+      <button class="gitem" id="miMusic"><span>Music</span><b class="st">On</b></button>
+      <button class="gitem" id="miSfx"><span>Sound effects</span><b class="st">On</b></button>
+      <button class="gitem" id="miGuide"><span>Trajectory guide</span><b class="st">On</b></button>
+      <button class="gitem" id="miFull"><span>Fullscreen</span><b class="st">Off</b></button>
+      <div class="gsep"></div>
+      <button class="gitem danger" id="miQuit"><span>Quit match</span><b class="st">→</b></button>
+      <div id="quitConfirm">
+        <p>Leave this match? Progress is lost.</p>
+        <div class="qrow">
+          <button class="btn sm" id="miQuitNo">Keep playing</button>
+          <button class="btn sm dangerbtn" id="miQuitYes">Quit</button>
         </div>
       </div>
+      <button class="gitem close" id="miClose"><span>Close</span><b class="st">Esc</b></button>
     </div>
 
   </div>
@@ -448,7 +508,8 @@ body:not(.ov) #deck{background:rgba(16,22,26,.55);border-radius:12px;
       <div class="keyrow"><kbd>Space</kbd> hold to charge, release to fire</div>
       <div class="keyrow"><kbd>1</kbd>–<kbd>5</kbd> switch weapon</div>
       <div class="keyrow"><kbd>Q</kbd> / <kbd>E</kbd> cycle weapons</div>
-      <div class="keyrow"><kbd>Esc</kbd> quit to menu</div>
+      <div class="keyrow"><kbd>G</kbd> trajectory guide on / off</div>
+      <div class="keyrow"><kbd>Esc</kbd> match menu (quit lives in there)</div>
       <div class="keyrow">On a touchscreen, use the pads under the battlefield — hold FIRE to charge.</div>
     </div>
   </div>
@@ -493,7 +554,7 @@ body:not(.ov) #deck{background:rgba(16,22,26,.55);border-radius:12px;
     <div class="whoTurn"><span class="dotc" id="selDot" style="background:var(--p1)"></span><span id="selWho">Player 1 selecting</span></div>
     <div class="tanks" id="tankGrid"></div>
     <div class="row">
-      <button class="btn pri" id="tankGo" disabled="">Confirm</button>
+      <button class="btn pri" id="tankGo" disabled>Confirm</button>
       <button class="btn ghost" data-back="scMode">← Back</button>
       <span id="selHint" style="color:var(--muted);font-size:12px"></span>
     </div>
@@ -549,7 +610,19 @@ var HULLS = [
     body:'#a8623c', trim:'#74412a', note:'Hits like nothing else and dies like nothing else.' },
   { id:'sentinel', name:'Sentinel', tag:'Support',
     hp:112, power:0.94, armor:1.12, speed:0.86, reload:0.66,
-    body:'#4d7a86', trim:'#32545e', note:'Cooldowns run a third faster. The heavy guns come back early.' }
+    body:'#4d7a86', trim:'#32545e', note:'Cooldowns run a third faster. The heavy guns come back early.' },
+  { id:'ironclad', name:'Ironclad', tag:'Siege',
+    hp:124, power:1.22, armor:1.08, speed:0.45, reload:1.32,
+    body:'#7b6a4e', trim:'#53472f', note:'Hits nearly as hard as Havoc from behind real armour. Barely moves, reloads slowest.' },
+  { id:'wraith', name:'Wraith', tag:'Raider',
+    hp:76,  power:1.02, armor:0.68, speed:1.85, reload:0.76,
+    body:'#5a5f7a', trim:'#3b3f55', note:'Crosses the map in a turn and reloads fast. One clean mortar ends it.' },
+  { id:'bulwark', name:'Bulwark', tag:'Breacher',
+    hp:118, power:0.78, armor:1.24, speed:0.98, reload:0.88,
+    body:'#4f7a52', trim:'#345236', note:'Tough and still mobile, but the gun struggles to finish anything.' },
+  { id:'titan', name:'Titan', tag:'Superheavy',
+    hp:158, power:0.84, armor:1.14, speed:0.38, reload:1.18,
+    body:'#6b5560', trim:'#463641', note:'The largest hull in the yard. Pick your hill early, because you are staying on it.' }
 ];
 
 /* ---------------- weapons ----------------
@@ -576,10 +649,14 @@ var CRATES = [
   { id:'shield',  label:'Reactive Plate',col:'#4f9c98',icon:'◈', txt:'+35 shield' }
 ];
 
+/* Accuracy is expressed as the share of shots the gunner intends to land, not
+   as raw angle slop — see aimWithSkill(). `spread` is how far a deliberate
+   miss falls, measured in tank half-widths, so a miss reads as a near miss
+   rather than a shell into the next county. */
 var DIFF = {
-  easy:   { name:'Recruit',  angErr:4.5,  powErr:8.5,  smart:0.25, reposition:0.12, think:900 },
-  normal: { name:'Gunner',   angErr:1.8,  powErr:3.6,  smart:0.65, reposition:0.40, think:750 },
-  hard:   { name:'Marksman', angErr:0.35, powErr:0.6,  smart:1.00, reposition:0.70, think:600 }
+  easy:   { name:'Recruit',  hit:0.28, jitter:1.7, spread:[3.2,7.4], smart:0.25, reposition:0.12, think:900 },
+  normal: { name:'Gunner',   hit:0.56, jitter:0.9, spread:[2.7,5.8], smart:0.65, reposition:0.40, think:750 },
+  hard:   { name:'Marksman', hit:0.875,jitter:0.35,spread:[2.4,4.7], smart:1.00, reposition:0.70, think:600 }
 };
 
 /* physics — PSCALE is solved so a 45° shot at full power just out-ranges the
@@ -978,7 +1055,8 @@ var G = {
   shake:0, flash:0, timeLeft:30, settleWait:0,
   charging:false, charge:0, chargeDir:1, lastFireBy:-1,
   acc:0, lastT:0, aiSpeed:1,
-  stats:null, hitPause:0
+  stats:null, hitPause:0,
+  guide:true, menuOpen:false
 };
 
 var STEP = 1/60;
@@ -999,7 +1077,7 @@ function makeTank(idx, hull, isAI, name){
     /* the heavy rounds start half-warm so the opening exchange isn't decisive */
     move: moveBudget()*hull.speed, moveMax: moveBudget()*hull.speed,
     tilt:0, recoil:0, dir:(idx===0?1:-1), flashT:0, hurtT:0,
-    over:false, engine:false, ai:null, lastDmg:0
+    over:false, engine:false, ai:null, lastDmg:0, lastPow:60
   };
   for(var i=0;i<WEPS.length;i++) t.cds[i] = weaponCd(t, i) * 0.55;
   t.y = Terr.colTop(t.x);
@@ -1110,6 +1188,7 @@ function fireShot(t, power){
   }
   t.cds[t.wep] = weaponCd(t, t.wep);
   t.over = false;
+  t.lastPow = power;
   t.recoil = 9;
   G.stats.shots[t.idx]++;
   G.lastFireBy = t.idx;
@@ -1209,11 +1288,6 @@ function suddenDeath(){
 /* blast radii are a fixed share of the battlefield, so a near miss on a phone
    is as forgiving as the same near miss on a desktop */
 function blastScale(){ return clamp(W/1280, 0.72, 1.25); }
-
-/* Aiming error is specified in degrees and power units, which translate into a
-   miss distance proportional to range. Tanks are the same size on every map, so
-   on a smaller map that error has to grow or the AI becomes literally perfect. */
-function aiErrScale(){ return clamp(1280/W, 0.8, 2.0); }
 
 function detonate(x, y, w, owner, boost, small, directIdx){
   if(directIdx === undefined) directIdx = -1;
@@ -1465,6 +1539,40 @@ function simShot(sx, sy, aimDeg, power, w, shooterIdx){
   return {kind:'out', x:x, y:y};
 }
 
+/* Same integration as a live shell, but it records the path so the guide can
+   draw exactly where this round would land at the power currently on the bar.
+   Nothing is committed — the player still chooses when to let go. */
+function previewShot(t, power){
+  var w = WEPS[t.wep], a = t.aim*D2R, m = muzzle(t);
+  var v = clamp(power,4,100)*PSCALE*w.spd;
+  var x=m.x, y=m.y, vx=Math.cos(a)*v, vy=-Math.sin(a)*v;
+  var g = GRAV*w.grav, h = 1/3, life = 0;
+  var pts = [m.x, m.y], hit = null;
+  var foe = G.tanks[1-t.idx];
+  for(var it=0; it<2400 && !hit; it++){
+    life++;
+    vy += g*h;
+    var nx = x+vx*h, ny = y+vy*h;
+    var dx = nx-x, dy = ny-y, dist = Math.sqrt(dx*dx+dy*dy);
+    var n = Math.max(1, Math.ceil(dist/3));
+    for(var i=1;i<=n;i++){
+      var px = x+dx*i/n, py = y+dy*i/n;
+      if(px < -40 || px > W+40 || py > H+30){ hit={x:px,y:py,kind:'out'}; break; }
+      if(py > -600 && Terr.solid(px,py)){ hit={x:px,y:py,kind:'terrain'}; break; }
+      if(life > 6 && foe.alive && Math.abs(px-foe.x) < 26 && py > foe.y-30 && py < foe.y+4){
+        hit={x:px,y:py,kind:'tank'}; break;
+      }
+      if(life > 8 && Math.abs(px-t.x) < 24 && py > t.y-28 && py < t.y+4){
+        hit={x:px,y:py,kind:'self'}; break;
+      }
+    }
+    x = nx; y = ny;
+    if(it % 3 === 0){ pts.push(x,y); }
+  }
+  if(hit){ pts.push(hit.x, hit.y); }
+  return { pts:pts, hit:hit, w:w };
+}
+
 function scoreImpact(res, foe){
   if(res.kind === 'self') return 4000;
   if(res.kind === 'out')  return 3000;
@@ -1472,6 +1580,29 @@ function scoreImpact(res, foe){
   var d = Math.sqrt(dx*dx + dy*dy);
   if(res.kind === 'tank') d = 0;
   return d;
+}
+
+/* Turn a perfect firing solution into a human-plausible one.
+   Range for a ballistic shot goes as v², so d(range)/d(power) = 2·range/power.
+   Invert that and a wanted miss distance in pixels becomes a power offset —
+   which lets each difficulty hold a real hit rate on any map size, instead of
+   angle slop that happens to be lethal on small maps and wild on large ones. */
+var TANK_HW = 24;
+function aimWithSkill(t, sol, cfg){
+  var foe = G.tanks[1-t.idx];
+  var range = Math.max(70, Math.abs(foe.x - t.x));
+  var off;
+  if(Math.random() < cfg.hit){
+    off = rnd(-0.55, 0.55) * TANK_HW;                 /* on the hull */
+  } else {
+    off = (Math.random() < 0.5 ? -1 : 1) *
+          rnd(cfg.spread[0], cfg.spread[1]) * TANK_HW; /* short or long */
+  }
+  var dPow = off * sol.pow / (2*range);
+  return {
+    aim: clamp(sol.aim + rnd(-cfg.jitter, cfg.jitter), 4, 176),
+    pow: clamp(sol.pow + dPow, 8, 100)
+  };
 }
 
 /* what a round would actually do to the other hull if it lands clean */
@@ -1536,11 +1667,9 @@ function planAI(t){
       self.ai.moveDir = dir;
       self.ai.moveTicks = rint(20, 60);
     }
-    var es = aiErrScale();
-    var errA = rnd(-cfg.angErr, cfg.angErr) * es;
-    var errP = rnd(-cfg.powErr, cfg.powErr) * es;
-    self.ai.aim = clamp(sol.aim + errA, 4, 176);
-    self.ai.pow = clamp(sol.pow + errP, 10, 100);
+    var shot = aimWithSkill(self, sol, cfg);
+    self.ai.aim = shot.aim;
+    self.ai.pow = shot.pow;
     self.ai.wi  = wi;
     self.ai.stage = self.ai.moveTicks > 0 ? 'move' : 'turn';
     syncHud();
@@ -1557,9 +1686,8 @@ function stepAI(t){
       if(t.engine){ t.engine=false; Snd.engineOff(); }
       /* re-solve from the new spot */
       var sol = solveShot(t, ai.wi);
-      var cfg = DIFF[G.diff], es2 = aiErrScale();
-      ai.aim = clamp(sol.aim + rnd(-cfg.angErr,cfg.angErr)*es2, 4, 176);
-      ai.pow = clamp(sol.pow + rnd(-cfg.powErr,cfg.powErr)*es2, 10, 100);
+      var shot2 = aimWithSkill(t, sol, DIFF[G.diff]);
+      ai.aim = shot2.aim; ai.pow = shot2.pow;
       ai.stage = 'turn';
     }
     return;
@@ -1717,25 +1845,74 @@ function drawCrate(g,c){
   g.restore();
 }
 
-function drawAimGuide(g, t){
+/* barrel direction only — always drawn */
+function drawBarrelLine(g, t){
   var a = t.aim*D2R;
   var mx = t.x + Math.cos(a)*38, my = (t.y-26) - Math.sin(a)*38;
-  var len = 26 + G.charge*0.62;
+  var len = 22 + G.charge*0.5;
   g.save();
-  g.strokeStyle = 'rgba(255,255,255,.55)';
+  g.strokeStyle = 'rgba(255,255,255,.5)';
   g.setLineDash([5,5]); g.lineWidth = 1.6;
   g.beginPath(); g.moveTo(mx,my);
   g.lineTo(mx+Math.cos(a)*len, my-Math.sin(a)*len);
   g.stroke();
+  g.restore();
+}
+
+/* full predicted flight path + impact reticle, only when the guide is on */
+function drawTrajectoryGuide(g, t){
+  var pw = G.charging ? G.charge : (t.lastPow || 60);
+  if(pw < 4) pw = 4;
+  var pr = previewShot(t, pw);
+  var hit = pr.hit, pts = pr.pts;
+  var onTarget = hit && hit.kind === 'tank';
+  var selfHit  = hit && hit.kind === 'self';
+  var col = selfHit ? '#e0563c' : (onTarget ? '#7fd39a' : pr.w.col);
+  g.save();
+  /* the arc */
+  g.strokeStyle = col;
+  g.globalAlpha = G.charging ? 0.85 : 0.45;
+  g.lineWidth = 1.6;
+  g.setLineDash([6,6]);
+  g.beginPath();
+  for(var i=0;i<pts.length;i+=2){
+    if(i===0) g.moveTo(pts[0],pts[1]); else g.lineTo(pts[i],pts[i+1]);
+  }
+  g.stroke();
   g.setLineDash([]);
-  /* short trajectory hint */
-  var w = WEPS[t.wep], v = Math.max(G.charge,18)*PSCALE*w.spd;
-  var px = mx, py = my, pvx = Math.cos(a)*v, pvy = -Math.sin(a)*v;
-  g.fillStyle = 'rgba(255,255,255,.38)';
-  for(var i=0;i<11;i++){
-    for(var s=0;s<4;s++){ pvy += GRAV*w.grav/3; px += pvx/3; py += pvy/3; }
-    if(py > H) break;
-    g.beginPath(); g.arc(px,py, 2.4 - i*0.14, 0, TAU); g.fill();
+  if(hit && hit.kind !== 'out'){
+    var r = pr.w.blast * blastScale();
+    /* blast footprint */
+    g.globalAlpha = G.charging ? 0.34 : 0.20;
+    g.fillStyle = col;
+    g.beginPath(); g.arc(hit.x, hit.y, r, 0, TAU); g.fill();
+    g.globalAlpha = G.charging ? 0.95 : 0.6;
+    g.strokeStyle = col; g.lineWidth = 1.6;
+    g.beginPath(); g.arc(hit.x, hit.y, r, 0, TAU); g.stroke();
+    /* reticle */
+    g.beginPath();
+    g.moveTo(hit.x-11, hit.y); g.lineTo(hit.x-4, hit.y);
+    g.moveTo(hit.x+4, hit.y);  g.lineTo(hit.x+11, hit.y);
+    g.moveTo(hit.x, hit.y-11); g.lineTo(hit.x, hit.y-4);
+    g.moveTo(hit.x, hit.y+4);  g.lineTo(hit.x, hit.y+11);
+    g.stroke();
+    g.beginPath(); g.arc(hit.x, hit.y, 3.4, 0, TAU); g.fill();
+  } else if(hit){
+    /* leaves the map — mark the exit edge */
+    g.globalAlpha = 0.7; g.fillStyle = col;
+    var ex = clamp(hit.x, 12, W-12), ey = clamp(hit.y, 12, H-12);
+    g.beginPath(); g.arc(ex, ey, 5, 0, TAU); g.fill();
+  }
+  /* power read-out follows the reticle */
+  if(hit){
+    g.globalAlpha = 1;
+    g.font = '600 12px system-ui,sans-serif';
+    g.textAlign = 'center'; g.textBaseline = 'alphabetic';
+    var lx = clamp(hit.x, 44, W-44), ly = clamp(hit.y - (pr.w.blast*blastScale()) - 9, 16, H-8);
+    var label = Math.round(pw) + '%' + (selfHit ? ' · YOUR OWN HULL' : (onTarget ? ' · ON TARGET' : ''));
+    g.lineWidth = 3; g.strokeStyle = 'rgba(8,12,15,.8)';
+    g.strokeText(label, lx, ly);
+    g.fillStyle = col; g.fillText(label, lx, ly);
   }
   g.restore();
 }
@@ -1803,8 +1980,10 @@ function render(){
 
   /* aim guide for the tank whose turn it is */
   var cur = G.tanks[G.turn];
-  if(G.running && !G.over && cur.alive && (G.phase==='aim'))
-    drawAimGuide(ctx, cur);
+  if(G.running && !G.over && cur.alive && G.phase==='aim'){
+    drawBarrelLine(ctx, cur);
+    if(G.guide && !cur.isAI) drawTrajectoryGuide(ctx, cur);
+  }
 
   /* damage numbers */
   ctx.textAlign = 'center';
@@ -1858,7 +2037,7 @@ function step(){
       if(tk.cds[c] > 0) tk.cds[c] = Math.max(0, tk.cds[c] - STEP);
   }
   var cur = G.tanks[G.turn];
-  if(!G.over && G.phase === 'aim'){
+  if(!G.over && G.phase === 'aim' && !G.menuOpen){
     G.timeLeft -= STEP;
     if(cur.isAI) stepAI(cur); else humanControls();
     if(G.timeLeft <= 0){
@@ -2301,26 +2480,70 @@ function quitToMenu(){
   Snd.engineOff(); Snd.chargeOff(); Snd.musicStop();
   showScreen('scTitle');
 }
-$('btnQuit').onclick = function(){ Snd.click(); quitToMenu(); };
-$('btnFull').onclick = function(){ Snd.click(); toggleFullscreen(); };
-$('btnMusic').onclick = function(){
+/* ---- match menu: quit lives in here, two taps deep, nowhere near FIRE ---- */
+function menuSync(){
+  $('miMusic').querySelector('.st').textContent = Snd.musOn ? 'On' : 'Off';
+  $('miSfx').querySelector('.st').textContent   = Snd.sfxOn ? 'On' : 'Off';
+  $('miGuide').querySelector('.st').textContent = G.guide ? 'On' : 'Off';
+  $('miFull').querySelector('.st').textContent  =
+    (document.fullscreenElement || document.webkitFullscreenElement) ? 'On' : 'Off';
+}
+function openMenu(){
+  G.menuOpen = true;
+  $('gmenu').classList.add('on');
+  $('quitConfirm').classList.remove('on');
+  cancelCharge();
+  keys.left=keys.right=keys.up=keys.down=false;
+  menuSync();
+}
+function closeMenu(){
+  G.menuOpen = false;
+  $('gmenu').classList.remove('on');
+  $('quitConfirm').classList.remove('on');
+}
+function toggleMenu(){ Snd.resume(); Snd.click(); G.menuOpen ? closeMenu() : openMenu(); }
+$('btnMenu').onclick = toggleMenu;
+$('miClose').onclick = function(){ Snd.click(); closeMenu(); };
+$('miQuit').onclick  = function(){ Snd.click(); $('quitConfirm').classList.toggle('on'); };
+$('miQuitNo').onclick  = function(){ Snd.click(); $('quitConfirm').classList.remove('on'); };
+$('miQuitYes').onclick = function(){ Snd.click(); closeMenu(); quitToMenu(); };
+$('miFull').onclick = function(){ Snd.click(); toggleFullscreen(); setTimeout(menuSync, 250); };
+$('miMusic').onclick = function(){
   Snd.resume(); Snd.musOn = !Snd.musOn;
   if(Snd.ac) Snd.mus.gain.setTargetAtTime(Snd.musOn?0.30:0.0, Snd.t(), 0.15);
-  $('btnMusic').classList.toggle('off', !Snd.musOn);
-  toast(Snd.musOn ? 'Music on' : 'Music off');
+  menuSync();
 };
-$('btnSfx').onclick = function(){
+$('miSfx').onclick = function(){
   Snd.resume(); Snd.sfxOn = !Snd.sfxOn;
   if(!Snd.sfxOn){ Snd.chargeOff(); Snd.engineOff(); }
-  $('btnSfx').classList.toggle('off', !Snd.sfxOn);
-  toast(Snd.sfxOn ? 'Sound on' : 'Sound off');
+  menuSync();
 };
+$('miGuide').onclick = function(){ Snd.click(); setGuide(!G.guide); menuSync(); };
+
+function setGuide(on){
+  G.guide = on;
+  $('btnGuide').classList.toggle('on', on);
+  toast(on ? 'Trajectory guide on' : 'Trajectory guide off — barrel line only');
+}
+$('btnGuide').onclick = function(){ Snd.click(); setGuide(!G.guide); menuSync(); };
+
+/* clicking away from the menu closes it */
+document.addEventListener('pointerdown', function(e){
+  if(!G.menuOpen) return;
+  if(e.target.closest && (e.target.closest('#gmenu') || e.target.closest('#btnMenu'))) return;
+  closeMenu();
+});
 
 /* ============================================================
    INPUT
    ============================================================ */
 function humanTurn(){
-  return G.running && !G.over && G.phase==='aim' && G.tanks.length && !G.tanks[G.turn].isAI && G.tanks[G.turn].alive;
+  return G.running && !G.over && !G.menuOpen && G.phase==='aim' &&
+         G.tanks.length && !G.tanks[G.turn].isAI && G.tanks[G.turn].alive;
+}
+function cancelCharge(){
+  if(!G.charging) return;
+  G.charging = false; G.charge = 0; Snd.chargeOff();
 }
 function startCharge(){
   if(!humanTurn() || G.charging) return;
@@ -2355,7 +2578,9 @@ window.addEventListener('keydown', function(e){
       if(t2.cds[idx]<=0){ t2.wep=idx; Snd.click(); syncHud(); break; }
     }
   }
-  if(k==='Escape' && G.running) quitToMenu();
+  if(k==='g'||k==='G'){ setGuide(!G.guide); menuSync(); }
+  /* Esc opens the menu rather than dumping you out of the match */
+  if(k==='Escape' && G.running){ e.preventDefault(); toggleMenu(); }
 }, {passive:false});
 
 window.addEventListener('keyup', function(e){
@@ -2413,6 +2638,5 @@ syncHud();
 requestAnimationFrame(frame);
 
 </script>
-
-
-</body></html>
+</body>
+</html>
