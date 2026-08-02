@@ -4,7 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
 <meta name="theme-color" content="#0b0f14">
-<title>Frontline Protocol — Auto Battle</title>
+<title>Base Defense — Autonomous Battle Sim</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23ffb020'/%3E%3Cpath d='M16 6l8 4.5v7c0 5-3.4 7.6-8 8.5-4.6-.9-8-3.5-8-8.5v-7z' fill='%231a1206'/%3E%3C/svg%3E">
 <style>
 :root{
   --bg:#0a0e13;
@@ -126,8 +127,9 @@ input[type=range]::-moz-range-thumb{
 }
 
 /* ============================== STAGE ============================== */
+.stagewrap{grid-area:stage;display:flex;flex-direction:column;min-height:0;min-width:0}
 .stage{
-  grid-area:stage;position:relative;overflow:hidden;
+  flex:1;position:relative;overflow:hidden;
   background:
     radial-gradient(120% 90% at 50% 0%,#141d27 0%,#0a0e13 62%),
     var(--bg);
@@ -279,7 +281,10 @@ body.tabbed #forcePanel{max-height:none;flex:1}
 }
 .mode:hover{border-color:#33475d;background:#121c27}
 .mode[aria-pressed=true]{border-color:var(--accent);background:#1b1508;box-shadow:0 0 0 1px rgba(255,176,32,.35)}
-.mode .ic{font-size:17px;margin-bottom:5px;display:block}
+.mode .ic{display:grid;place-items:center;width:30px;height:30px;border-radius:8px;margin-bottom:9px;
+  background:#0b131c;border:1px solid var(--line);color:var(--accent)}
+.mode .ic svg{width:17px;height:17px}
+.mode[aria-pressed=true] .ic{background:#2a1d06;border-color:#6b4a10}
 .mode strong{display:block;font-size:13.5px;margin-bottom:3px}
 .mode span{font-size:11.8px;color:var(--muted);line-height:1.45;display:block}
 .opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:9px}
@@ -352,6 +357,7 @@ body.stacked .stat-strip{order:2;flex:1 1 0;min-width:0;flex-wrap:nowrap;overflo
 body.stacked .stat-strip::-webkit-scrollbar{display:none}
 body.stacked .spacer{display:none}
 body.stacked .tools{order:3;flex:1 1 100%;gap:6px}
+body.tabbed #speedWrap{display:none}
 body.stacked .speed{flex:1 1 auto;min-width:92px;max-width:190px;justify-content:space-between;padding:0 8px;gap:6px}
 body.stacked .speed label{display:none}
 body.stacked .speed input[type=range]{flex:1 1 auto;width:auto;min-width:44px}
@@ -412,6 +418,80 @@ body.rail .tools{flex-wrap:nowrap}
 }
 .hide{display:none !important}
 [hidden]{display:none !important}
+/* ---------- speed preset chips (header) ---------- */
+.spdchips{display:flex;gap:3px;margin-left:2px;padding-left:8px;border-left:1px solid var(--line)}
+.spdchips button{
+  min-width:24px;height:22px;padding:0 5px;border-radius:6px;font-size:11.5px;font-weight:700;
+  color:var(--faint);background:#0f1720;border:1px solid transparent;transition:.13s;line-height:1;
+}
+.spdchips button:hover{color:var(--text);border-color:var(--line)}
+.spdchips button[aria-pressed=true]{background:var(--accent);color:#1a1206;border-color:var(--accent)}
+
+/* ---------- transport bar (compact layouts) ---------- */
+.transport{
+  display:none;align-items:center;gap:8px;padding:7px 10px;
+  background:linear-gradient(180deg,#101822,#0c131b);border-top:1px solid var(--line);
+}
+body.tabbed .transport{display:flex}
+.transport .tsep{width:1px;height:20px;background:var(--line);flex:none}
+.tbtn{
+  height:34px;min-width:38px;padding:0 11px;border-radius:9px;border:1px solid var(--line);
+  background:#151f2b;display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  font-size:13px;font-weight:650;flex:none;transition:.14s;
+}
+.tbtn:active{transform:translateY(1px)}
+.tbtn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.tbtn.xeno{border-color:#4b6b12;background:#1b2510;color:var(--alien)}
+.tspeed{display:flex;gap:4px;flex:1 1 auto;min-width:0}
+.tspeed button{
+  flex:1 1 0;min-width:0;height:34px;border-radius:8px;border:1px solid var(--line);
+  background:#101822;color:var(--muted);font-size:12.5px;font-weight:700;transition:.13s;
+}
+.tspeed button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#1a1206}
+
+/* ---------- log filter ---------- */
+.logfilter{display:flex;gap:5px;padding:0 10px 8px;flex-wrap:wrap}
+.logfilter button{
+  height:24px;padding:0 9px;border-radius:999px;border:1px solid var(--line);
+  background:#101822;color:var(--faint);font-size:11.5px;font-weight:600;transition:.13s;
+}
+.logfilter button:hover{color:var(--text);border-color:#2f4257}
+.logfilter button[aria-pressed=true]{background:#1d2a38;color:var(--text);border-color:#38506a}
+.log[data-filter="k"] .le:not(.k),
+.log[data-filter="base"] .le:not(.base),
+.log[data-filter="flag"] .le:not(.flag),
+.log[data-filter="alien"] .le:not(.alien){display:none}
+
+/* ---------- force composition strip ---------- */
+.comp{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3px;margin-top:7px}
+.comp i{
+  font-style:normal;font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:.01em;
+  padding:2px 3px;border-radius:4px;background:#16202c;color:#4d6076;border:1px solid transparent;
+  line-height:1.35;text-align:center;white-space:nowrap;
+}
+.comp i.on{background:var(--c);color:#0b1017;border-color:var(--c);filter:saturate(.92)}
+.rankbadge{
+  font-family:var(--mono);font-size:10px;font-weight:700;color:var(--faint);
+  width:15px;text-align:center;flex:none;
+}
+.fcard.p1 .rankbadge{color:var(--accent)}
+
+/* ---------- setup arena preview ---------- */
+.preview{
+  border:1px solid var(--line);border-radius:11px;background:#0c131b;padding:12px;
+  display:flex;align-items:center;justify-content:center;min-height:150px;position:relative;
+}
+.preview::after{
+  content:"Arena layout";position:absolute;top:7px;left:10px;font:700 9px/1 var(--mono);
+  letter-spacing:.16em;text-transform:uppercase;color:#33475d;
+}
+.preview svg{width:100%;height:auto;max-height:150px;display:block}
+.previewgrid{display:grid;grid-template-columns:minmax(0,1fr) 248px;gap:14px;align-items:stretch}
+@media (max-width:660px){ .previewgrid{grid-template-columns:1fr} }
+
+/* ---------- accessibility ---------- */
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:8px}
+
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 </style>
 </head>
@@ -422,13 +502,14 @@ body.rail .tools{flex-wrap:nowrap}
   <!-- ============ TOP BAR ============ -->
   <div class="top">
     <div class="brand">
-      <span class="mk">FP</span>
-      <span><span class="full">Frontline Protocol</span><small>Autonomous Combat Sim</small></span>
+      <span class="mk">BD</span>
+      <span><span class="full">Base Defense</span><small>Autonomous Battle Sim</small></span>
     </div>
 
     <div class="stat-strip">
       <span class="pill mode"><span class="k">Mode</span><b id="hudMode">—</b></span>
       <span class="pill"><span class="k">T</span><b id="hudTime">00:00</b></span>
+      <span class="pill" id="hudLeadPill" hidden><span class="k">Lead</span><b id="hudLead">—</b></span>
       <span class="pill"><span class="k">Units</span><b id="hudUnits">0</b></span>
       <span class="pill" id="hudSpdPill" hidden><span class="k">Spd</span><b id="hudSpd">1.00x</b></span>
       <span class="pill" id="hudXenoPill" hidden><span class="k" style="color:#9fef00">Xeno</span><b id="hudXeno">0</b></span>
@@ -442,6 +523,12 @@ body.rail .tools{flex-wrap:nowrap}
         <label for="spd">Speed</label>
         <input id="spd" type="range" min="0.25" max="4" step="0.25" value="1">
         <output id="spdOut">1.00x</output>
+        <span class="spdchips" id="spdSeg">
+          <button data-v="0.5" type="button">½</button>
+          <button data-v="1" type="button" aria-pressed="true">1</button>
+          <button data-v="2" type="button">2</button>
+          <button data-v="4" type="button">4</button>
+        </span>
       </div>
       <button class="btn" id="pauseBtn" title="Pause / Resume (Space)">
         <svg viewBox="0 0 24 24" id="pauseIco"><path d="M9 5v14M15 5v14"/></svg>
@@ -498,6 +585,7 @@ body.rail .tools{flex-wrap:nowrap}
   </div>
 
   <!-- ============ STAGE ============ -->
+  <div class="stagewrap">
   <div class="stage" id="stage">
     <canvas id="cv"></canvas>
     <div class="stage-fx"></div>
@@ -509,6 +597,26 @@ body.rail .tools{flex-wrap:nowrap}
       <div class="own" id="insOwner">—</div>
       <div id="insRows"></div>
     </div>
+  </div>
+
+  <!-- transport controls (compact layouts) -->
+  <div class="transport" id="transport">
+    <button class="tbtn wide" id="tPause">
+      <svg viewBox="0 0 24 24" id="tPauseIco"><path d="M9 5v14M15 5v14"/></svg><span id="tPauseLbl">Pause</span>
+    </button>
+    <span class="tsep"></span>
+    <span class="tspeed" id="tSpeed">
+      <button data-v="0.25" type="button">¼</button>
+      <button data-v="0.5" type="button">½</button>
+      <button data-v="1" type="button" aria-pressed="true">1×</button>
+      <button data-v="2" type="button">2×</button>
+      <button data-v="4" type="button">4×</button>
+    </span>
+    <span class="tsep"></span>
+    <button class="tbtn xeno" id="tXeno" title="Drop a xeno">
+      <svg viewBox="0 0 24 24"><path d="M12 3c4 0 7 3.2 7 7.2 0 3.4-2 5-2 7.3 0 2-1.6 3.5-5 3.5s-5-1.5-5-3.5c0-2.3-2-3.9-2-7.3C5 6.2 8 3 12 3z"/><path d="M9.5 10.5l1.2 1.6M14.5 10.5l-1.2 1.6"/></svg>
+    </button>
+  </div>
   </div>
 
   <!-- ============ SIDEBAR ============ -->
@@ -525,7 +633,14 @@ body.rail .tools{flex-wrap:nowrap}
 
     <div class="panel" id="logPanel">
       <div class="panel-h">Combat log<span class="line"></span><button id="clearLog">Clear</button></div>
-      <div class="log" id="log"></div>
+      <div class="logfilter" id="logFilter">
+        <button data-f="all" aria-pressed="true">All</button>
+        <button data-f="k">Kills</button>
+        <button data-f="base">Bases</button>
+        <button data-f="flag">Flags</button>
+        <button data-f="alien">Xeno</button>
+      </div>
+      <div class="log" id="log" data-filter="all"></div>
     </div>
   </div>
 </div>
@@ -534,16 +649,22 @@ body.rail .tools{flex-wrap:nowrap}
 <div class="veil open" id="setupVeil">
   <div class="sheet">
     <div class="sheet-h">
-      <h2><span class="mk" style="width:30px;height:30px;border-radius:8px;background:linear-gradient(140deg,#ffb020,#ff7a18);display:grid;place-items:center;color:#1a1206;font-size:14px;font-weight:800">FP</span> Frontline Protocol</h2>
+      <h2><span class="mk" style="width:30px;height:30px;border-radius:8px;background:linear-gradient(140deg,#ffb020,#ff7a18);display:grid;place-items:center;color:#1a1206;font-size:14px;font-weight:800">BD</span> Base Defense</h2>
       <p>Set the parameters, then stand back. Every soldier fights on its own — you run the war, not the trigger.</p>
     </div>
     <div class="sheet-b">
       <div class="grp">
         <h5>Combatant forces</h5>
-        <div class="seg" id="pcSeg">
-          <button data-v="2">2</button><button data-v="3">3</button>
-          <button data-v="4" aria-pressed="true">4</button><button data-v="5">5</button>
-          <button data-v="6">6</button>
+        <div class="previewgrid">
+          <div>
+            <div class="seg" id="pcSeg">
+              <button data-v="2">2</button><button data-v="3">3</button>
+              <button data-v="4" aria-pressed="true">4</button><button data-v="5">5</button>
+              <button data-v="6">6</button>
+            </div>
+            <p class="note" id="pcNote">Each force holds one command post and feeds reinforcements onto the field from it. Unit types rotate evenly — every side works through all eight roles in a shuffled order before any role repeats.</p>
+          </div>
+          <div class="preview"><svg id="arenaPrev" viewBox="0 0 200 132" aria-label="Arena layout preview"></svg></div>
         </div>
       </div>
 
@@ -551,17 +672,17 @@ body.rail .tools{flex-wrap:nowrap}
         <h5>Victory condition</h5>
         <div class="modes" id="modeSeg">
           <button class="mode" data-v="base" aria-pressed="true">
-            <span class="ic">🎯</span>
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><path d="M12 1.5v4M12 18.5v4M1.5 12h4M18.5 12h4"/></svg></span>
             <strong>Destroy Base</strong>
             <span>Command posts are targets. Reinforcements keep coming while a base stands. Last base wins.</span>
           </button>
           <button class="mode" data-v="lms">
-            <span class="ic">💀</span>
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5c4.7 0 8 3.4 8 7.8 0 2.7-1.3 4.3-2.6 5.3-.6.5-.9 1-.9 1.8v1.4c0 1.5-1.6 2.7-4.5 2.7s-4.5-1.2-4.5-2.7v-1.4c0-.8-.3-1.3-.9-1.8C5.3 14.6 4 13 4 10.3 4 5.9 7.3 2.5 12 2.5z"/><circle cx="9" cy="11" r="1.6"/><circle cx="15" cy="11" r="1.6"/></svg></span>
             <strong>Last Man Standing</strong>
             <span>Bases are off-limits. Each force gets a fixed pool of reinforcements — run dry and you're out.</span>
           </button>
           <button class="mode" data-v="ctf">
-            <span class="ic">🚩</span>
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 21V3.5"/><path d="M6 4.5h11l-2.4 3.6L17 11.7H6z"/></svg></span>
             <strong>Capture the Flag</strong>
             <span>Runners break for enemy colours and haul them home. Your own flag has to be on its pole to score. Target scales with the number of forces.</span>
           </button>
@@ -592,14 +713,15 @@ body.rail .tools{flex-wrap:nowrap}
         </div>
         <div class="slider-row">
           <label for="sPool" id="sPoolLbl">Reinforcement pool</label>
-          <input id="sPool" type="range" min="8" max="44" step="2" value="28">
-          <output id="sPoolOut">28</output>
+          <input id="sPool" type="range" min="8" max="48" step="2" value="34">
+          <output id="sPoolOut">34</output>
         </div>
         <p class="note" id="poolNote">Pool size only applies to Last Man Standing. In the other modes reinforcements are unlimited while the base holds.</p>
       </div>
     </div>
     <div class="sheet-f">
       <button class="btn left" id="setupIntel">Unit intel</button>
+      <span class="note" style="align-self:center;margin:0 auto 0 0;padding-left:14px">Space pauses · 1–4 sets speed · X drops a xeno</span>
       <button class="btn primary" id="startBtn">Start battle</button>
     </div>
   </div>
@@ -610,7 +732,7 @@ body.rail .tools{flex-wrap:nowrap}
   <div class="sheet">
     <div class="sheet-h">
       <h2>Unit intel</h2>
-      <p>Eight infantry roles, randomised per side each time reinforcements land. Three xeno strains.</p>
+      <p>Eight infantry roles and three xeno strains. Reinforcements rotate through a shuffled bag holding one of every role, so each side ends up with an even spread rather than a lucky streak of snipers.</p>
     </div>
     <div class="sheet-b">
       <div class="tblwrap">
@@ -625,6 +747,13 @@ body.rail .tools{flex-wrap:nowrap}
         <b>Armour</b> is flat damage reduction on every hit (minimum 1 gets through).
         <b>Rate</b> is seconds between shots. <b>vs Base</b> is the damage multiplier against command posts.
         <b>Value</b> is the points awarded to whoever kills it — xeno kills pay a bonus on top.
+      </p>
+      <p class="note">
+        <b>Target selection.</b> A soldier scans roughly 540 units around itself and picks a target at random from
+        everything it can see. Closer targets, wounded targets, medics and flag carriers come up more often, but nothing
+        is guaranteed — fire spreads across a firefight instead of every rifle locking onto the same neighbour.
+        Targets are held for a couple of seconds before the next roll, and about four in ten troops deploy with
+        assault orders that pull them toward an enemy command post instead.
       </p>
     </div>
     <div class="sheet-f"><button class="btn primary" data-close>Close</button></div>
@@ -685,7 +814,6 @@ var UNITS = [
     note:"Rockets. The fastest way to put a command post down." }
 ];
 var UBY = {}; UNITS.forEach(function(u){ UBY[u.id]=u; });
-var TOTAL_W = UNITS.reduce(function(s,u){ return s+u.weight; },0);
 
 var XENOS = [
   { id:"stalker", name:"Xeno Stalker", abbr:"XST", shape:"claw",  hp:160, armor:2, dmg:24, range:46,  rof:0.7, speed:118, value:14, baseMult:0.9, splash:0,  proj:"melee", bonus:26, xeno:true,
@@ -714,7 +842,7 @@ var CTF_TARGET = 3;   // recalculated per match: max(3, player count)
 /* =====================================================================
    2 · STATE
    ===================================================================== */
-var CFG = { players:4, mode:"base", speed:1, cap:8, pool:28, regen:false, regenRate:6, xeno:"off", labels:1 };
+var CFG = { players:4, mode:"base", speed:1, cap:8, pool:34, regen:false, regenRate:6, xeno:"off", labels:1 };
 
 var G = null;                 // live match
 var view = { w:0,h:0,scale:1,ox:0,oy:0,dpr:1 };
@@ -750,11 +878,11 @@ function newMatch(){
   G = {
     mode: CFG.mode, t:0, units:[], shots:[], fx:[], texts:[],
     factions:[], aliens:0, xenoTimer: CFG.xeno==="off"?1e9:(CFG.xeno==="fast"?14:30),
-    over:false, winner:null, uid:1, checkT:0, logN:0, pressure:1, tier:0
+    over:false, winner:null, uid:1, checkT:0, logN:0, pressure:1, tier:0, mvp:null
   };
   for(i=0;i<CFG.players;i++){
     var f = FACTION_POOL[i];
-    var baseHp = (CFG.mode==="ctf") ? 3600 : 2600;
+    var baseHp = (CFG.mode==="ctf") ? 2900 : 2000;
     // colours are planted behind the compound — raiders have to get past the base to reach them
     var toC = Math.atan2(world.h/2-pos[i].y, world.w/2-pos[i].x);
     var fx = clamp(pos[i].x - Math.cos(toC)*118, 46, world.w-46);
@@ -762,6 +890,7 @@ function newMatch(){
     G.factions.push({
       i:i, name:f.name, short:f.short, color:f.color,
       score:0, kills:0, losses:0, captures:0, alive:true,
+      bag:null, lastType:null, made:{}, best:null,
       pool: CFG.mode==="lms" ? CFG.pool : Infinity,
       spawnT: 0,
       base:{ x:pos[i].x, y:pos[i].y, hp:baseHp, max:baseHp, r:50, alive:true,
@@ -773,7 +902,7 @@ function newMatch(){
   }
   // opening wave
   G.factions.forEach(function(f){
-    var n = Math.min(4, CFG.cap);
+    var n = Math.min(5, CFG.cap);
     for(var k=0;k<n;k++) spawnUnit(f, true);
   });
   selected=null; $("inspect").classList.remove("on");
@@ -788,15 +917,29 @@ function newMatch(){
   syncPop();
 }
 
-function rollType(){
-  var r = Math.random()*TOTAL_W, i;
-  for(i=0;i<UNITS.length;i++){ r -= UNITS[i].weight; if(r<=0) return UNITS[i]; }
-  return UNITS[0];
+/* Reinforcements are drawn from a shuffled bag holding one of every role.
+   The bag has to empty before it refills, so every side ends up with an even
+   spread of all eight roles — the order is random, the mix is not. */
+function refillBag(f){
+  var bag = UNITS.slice(), i, k, t;
+  for(i=bag.length-1;i>0;i--){ k=Math.floor(Math.random()*(i+1)); t=bag[i]; bag[i]=bag[k]; bag[k]=t; }
+  // avoid the same role landing back-to-back across a bag boundary
+  if(f.lastType && bag[bag.length-1].id===f.lastType && bag.length>1){
+    t=bag[bag.length-1]; bag[bag.length-1]=bag[0]; bag[0]=t;
+  }
+  f.bag = bag;
+}
+function rollType(f){
+  if(!f.bag || !f.bag.length) refillBag(f);
+  var d = f.bag.pop();
+  f.lastType = d.id;
+  f.made[d.id] = (f.made[d.id]||0) + 1;
+  return d;
 }
 
 function spawnUnit(f, instant){
   if(f.pool<=0) return null;
-  var d = rollType();
+  var d = rollType(f);
   var a = rnd(0,TAU), rr = rnd(58,96);
   var u = {
     id:G.uid++, faction:f.i, def:d, type:d.id, xeno:false,
@@ -808,7 +951,7 @@ function spawnUnit(f, instant){
     r: d.role==="heavy"?15:(d.role==="fast"?11.5:13),
     born:G.t, spawnFx:1, hitT:0,
     runner: (d.id==="scout"||d.id==="brc"||(d.id==="rifle"&&Math.random()<0.45)),
-    assault: (d.baseMult>=1.4 || Math.random()<0.3)
+    assault: (d.baseMult>=1.4 || Math.random()<0.4)
   };
   if(f.pool!==Infinity) f.pool--;
   G.units.push(u);
@@ -853,37 +996,66 @@ function hostile(a,b){
   return a.faction !== b.faction;
 }
 
-function nearestTarget(u){
-  var best=null, bd=Infinity, i, o, d, w;
+var SIGHT = 540;              // how far a soldier looks for something to shoot
+
+/* Soldiers pick a target at random from everything they can see, with closer,
+   softer and more valuable targets simply more likely — not guaranteed. That
+   spreads fire across a firefight instead of everyone dogpiling one neighbour. */
+function chooseTarget(u){
+  var cands=[], i, o, f, b, d, w;
+  var sight = Math.max(SIGHT, u.def.range*1.7);
+  var near=null, nd=Infinity;
+
   for(i=0;i<G.units.length;i++){
     o=G.units[i];
     if(o.hp<=0 || !hostile(u,o)) continue;
-    d = (o.x-u.x)*(o.x-u.x)+(o.y-u.y)*(o.y-u.y);
-    w = 1;
-    if(o.carry!==null && o.carry!==undefined) w = 0.35;     // hunt the flag carrier
-    if(o.def.heal) w = 0.65;                                 // medics are priority
-    if(o.xeno && !u.xeno) w = 0.8;
-    if(u.assault && !u.xeno) w *= 2.6;                       // assault troops push past skirmishes
-    d *= w;
-    if(d<bd){ bd=d; best=o; }
+    d = Math.hypot(o.x-u.x, o.y-u.y);
+    if(d<nd){ nd=d; near=o; }
+    if(d>sight) continue;
+    w = 1/(1 + d/170);                                  // soft falloff with distance
+    if(o.def.heal) w *= 1.8;                            // medics keep the enemy alive
+    if(o.carry!==null && o.carry!==undefined) w *= 3.4; // stop the flag runner
+    if(o.xeno && !u.xeno) w *= 1.4;
+    if(o.hp/o.max < 0.35) w *= 1.6;                     // finish the wounded
+    if(u.assault) w *= 0.55;                            // assault troops would rather push
+    cands.push([o,w]);
   }
-  // bases
+
   if(G.mode!=="lms"){
-    var bw = (u.assault||u.xeno) ? 0.2 : 1.9;
-    bw *= G.pressure;                                        // the longer it runs, the harder they push
+    var bpull = (u.assault||u.xeno ? 3.2 : 0.6) * (2 - G.pressure);
     for(i=0;i<G.factions.length;i++){
-      var f=G.factions[i];
-      if(!f.base.alive || f.base.invuln) continue;
+      f=G.factions[i]; b=f.base;
+      if(!b.alive || b.invuln) continue;
       if(!u.xeno && f.i===u.faction) continue;
-      d = (f.base.x-u.x)*(f.base.x-u.x)+(f.base.y-u.y)*(f.base.y-u.y);
-      d *= bw;
-      if(d<bd){ bd=d; best=f.base; }
+      d = Math.hypot(b.x-u.x, b.y-u.y);
+      if(d < sight*2.4) cands.push([b, (1/(1 + d/260))*bpull]);
     }
   }
-  return best;
+
+  if(cands.length){
+    var tot=0;
+    for(i=0;i<cands.length;i++) tot += cands[i][1];
+    var r = Math.random()*tot;
+    for(i=0;i<cands.length;i++){ r -= cands[i][1]; if(r<=0) return cands[i][0]; }
+    return cands[cands.length-1][0];
+  }
+
+  if(near) return near;                                  // nothing in sight — advance on the closest
+  if(G.mode!=="lms"){
+    var bb=null, bd=Infinity;
+    for(i=0;i<G.factions.length;i++){
+      f=G.factions[i];
+      if(!f.base.alive || f.base.invuln) continue;
+      if(!u.xeno && f.i===u.faction) continue;
+      d=Math.hypot(f.base.x-u.x, f.base.y-u.y);
+      if(d<bd){ bd=d; bb=f.base; }
+    }
+    return bb;
+  }
+  return null;
 }
 
-/* nearest hostile unit inside weapon range — used for opportunity fire */
+/* hostiles inside weapon range — random pick for opportunity fire, nearest for turrets */
 function closestInRange(u, rng){
   var best=null, bd=rng*rng, o, d, i;
   for(i=0;i<G.units.length;i++){
@@ -893,6 +1065,15 @@ function closestInRange(u, rng){
     if(d<bd){ bd=d; best=o; }
   }
   return best;
+}
+function randomInRange(u, rng){
+  var hits=[], o, i, r2=rng*rng;
+  for(i=0;i<G.units.length;i++){
+    o=G.units[i];
+    if(o.hp<=0 || o===u || !hostile(u,o)) continue;
+    if((o.x-u.x)*(o.x-u.x)+(o.y-u.y)*(o.y-u.y) <= r2) hits.push(o);
+  }
+  return hits.length ? hits[Math.floor(Math.random()*hits.length)] : null;
 }
 
 function ctfGoal(u){
@@ -929,14 +1110,14 @@ function medicGoal(u){
 function simulate(dt){
   var i,j,u,o,d,f;
   G.t += dt;
-  G.pressure = clamp(1 - Math.max(0,G.t-75)/210, 0.3, 1);
+  G.pressure = clamp(1 - Math.max(0,G.t-60)/180, 0.25, 1);
 
   /* ---- escalation: stalemates don't get to run forever ---- */
-  var nt = (G.mode==="lms" || G.t < 150) ? 0 : Math.min(5, 1 + Math.floor((G.t-150)/60));
+  var nt = (G.mode==="lms" || G.t < 120) ? 0 : Math.min(5, 1 + Math.floor((G.t-120)/45));
   if(nt !== G.tier){
     G.tier = nt;
-    logRow("base", "<b>Escalation "+nt+"</b> — supply lines cut, command posts are losing integrity", "");
-    banner("Escalation "+nt+" — command posts degrading", false);
+    logRow("base", "<b>Escalation "+nt+"</b> — heavier ordnance released, every weapon on the field hits harder", "");
+    banner("Escalation "+nt+" — all weapons hit harder", false);
   }
 
   /* ---- bases: repair, turret, reinforcements ---- */
@@ -949,8 +1130,7 @@ function simulate(dt){
       f.base.hp = Math.min(f.base.max, f.base.hp + CFG.regenRate*dt);
     }
     if(G.tier>0 && f.base.alive && !f.base.invuln){
-      f.base.hp -= f.base.max * 0.009 * G.tier * dt;
-      f.base.hitT = 0.12;
+      f.base.hp -= f.base.max * 0.0022 * G.tier * dt;   // slow attrition backstop
       if(f.base.hp<=0){ f.base.hp=0; f.base.alive=false; baseDown(f.base, null); }
     }
 
@@ -971,11 +1151,14 @@ function simulate(dt){
     if(G.mode!=="lms" && !f.base.alive) continue;
     if(f.pool<=0) continue;
     var alive = countUnits(f.i);
-    if(alive>=CFG.cap) continue;
+    // a compound under fire pushes fewer troops out, and pushes them out slower
+    var integ = f.base.invuln ? 1 : clamp(f.base.hp/f.base.max, 0, 1);
+    var cap = Math.max(2, Math.round(CFG.cap * (0.42 + 0.58*integ)));
+    if(alive>=cap) continue;
     f.spawnT -= dt;
     if(f.spawnT<=0){
       spawnUnit(f,false);
-      f.spawnT = 2.4 + Math.random()*1.6 + alive*0.24;
+      f.spawnT = (1.8 + Math.random()*1.3 + alive*0.22) * (1 + (1-integ)*1.5);
     }
   }
 
@@ -997,8 +1180,8 @@ function simulate(dt){
 
     u.reT -= dt;
     if(u.reT<=0 || !u.tgt || u.tgt.hp<=0 || (u.tgt.isBase && !u.tgt.alive)){
-      u.tgt = nearestTarget(u);
-      u.reT = 0.35 + Math.random()*0.3;
+      u.tgt = chooseTarget(u);
+      u.reT = 2.0 + Math.random()*2.6;   // commit to a target for a while
       u.goal = null;
       if(G.mode==="ctf" && !u.xeno) u.goal = ctfGoal(u);
       if(!u.goal && u.def.heal) u.goal = medicGoal(u);
@@ -1041,7 +1224,7 @@ function simulate(dt){
       var shootAt = u.tgt;
       // troops pushing a base still return fire on anything that steps in front of them
       if(shootAt.isBase){
-        var opp = closestInRange(u, u.def.range);
+        var opp = randomInRange(u, u.def.range);
         if(opp) shootAt = opp;
       }
       var tx=shootAt.x, ty=shootAt.y;
@@ -1217,6 +1400,7 @@ function hit(u,t){
 
 function damage(t, amt, src){
   if(t.hp<=0) return;
+  amt *= (1 + (t.isBase ? 0.55 : 0.3)*G.tier);
   if(t.isBase){
     if(t.invuln) return;
     t.hp -= amt; t.hitT=0.25;
@@ -1234,6 +1418,8 @@ function killUnit(v, src){
     kf=G.factions[src.faction];
     pts = v.xeno ? (v.def.value + v.def.bonus) : v.def.value;
     kf.score += pts; kf.kills++; src.kills++;
+    if(!kf.best || src.kills > kf.best.kills) kf.best = { abbr:src.def.abbr, name:src.def.name, kills:src.kills };
+    if(!G.mvp || src.kills > G.mvp.kills) G.mvp = { abbr:src.def.abbr, name:src.def.name, kills:src.kills, faction:kf.i };
     G.texts.push({x:v.x,y:v.y-14,txt:"+"+pts,c: v.xeno?XENO_COLOR:kf.color,life:1.0,t:0});
   }
   if(!v.xeno && G.factions[v.faction]) G.factions[v.faction].losses++;
@@ -1302,14 +1488,16 @@ function endMatch(winner, why){
   G.winner=winner;
   var rank = G.factions.slice().sort(function(a,b){ return b.score-a.score; });
   $("endTitle").textContent = winner ? (winner.name + " wins") : "No survivors";
-  $("endSub").textContent = why + "  ·  " + fmtTime(G.t) + " elapsed.";
+  $("endSub").textContent = why + "  ·  " + fmtTime(G.t) + " elapsed." +
+    (G.mvp ? ("  Top operator: a " + G.factions[G.mvp.faction].short + " " + G.mvp.name + " with " + G.mvp.kills + " kills.") : "");
   var html="";
   rank.forEach(function(f,i){
     html += '<div class="prow'+(winner&&f===winner?" win":"")+'">'+
       '<span class="rk">'+(i+1)+'</span>'+
       '<span class="dot" style="background:'+f.color+'"></span>'+
       '<span><span class="nm">'+esc(f.name)+'</span><br><span class="sub">'+f.kills+' kills · '+f.losses+' lost'+
-      (G.mode==="ctf"?(' · '+f.captures+' caps'):'')+'</span></span>'+
+      (G.mode==="ctf"?(' · '+f.captures+' caps'):'')+
+      (f.best?(' · top '+f.best.abbr+' ×'+f.best.kills):'')+'</span></span>'+
       '<span class="sc">'+f.score+'</span></div>';
   });
   $("podium").innerHTML=html;
@@ -1687,6 +1875,14 @@ function logRow(kind, html, pts){
 function sysLog(t){ logRow("sys",esc(t),""); }
 function clearLog(){ logEl.innerHTML=""; }
 $("clearLog").onclick=function(){ clearLog(); };
+$("logFilter").addEventListener("click",function(e){
+  var b=e.target.closest("button[data-f]"); if(!b) return;
+  logEl.dataset.filter=b.dataset.f;
+  Array.prototype.forEach.call(this.querySelectorAll("button"),function(x){
+    x.setAttribute("aria-pressed", String(x===b));
+  });
+  logEl.scrollTop=logEl.scrollHeight;
+});
 
 var bnT=null;
 function banner(txt, alien){
@@ -1704,7 +1900,8 @@ function buildScores(){
     var d=document.createElement("div");
     d.className="fcard"; d.style.setProperty("--c",f.color);
     d.innerHTML=
-      '<div class="r1"><span class="dot" style="background:'+f.color+'"></span>'+
+      '<div class="r1"><span class="rankbadge" data-rank>—</span>'+
+      '<span class="dot" style="background:'+f.color+'"></span>'+
       '<span class="nm">'+esc(f.name)+'</span><span class="star" data-star hidden>★</span>'+
       '<span class="pts" data-pts>0</span></div>'+
       '<div class="r2"><span><i>FIELD</i> <b data-alive>0</b></span>'+
@@ -1712,9 +1909,12 @@ function buildScores(){
       '<span><i>LOST</i> <b data-l>0</b></span>'+
       '<span data-poolwrap hidden><i>POOL</i> <b data-pool>0</b></span>'+
       '<span data-capwrap hidden><i>CAPS</i> <b data-cap>0</b></span></div>'+
+      '<div class="comp" data-comp>'+UNITS.map(function(t){
+        return '<i title="'+esc(t.name)+'">'+t.abbr+' 0</i>'; }).join("")+'</div>'+
       '<div class="hpwrap"><i data-hp style="width:100%"></i></div>';
     box.appendChild(d);
     f.el=d;
+    f.compEls=d.querySelectorAll("[data-comp] i");
   });
 }
 
@@ -1728,10 +1928,19 @@ function updateHUD(dt){
   $("hudUnits").textContent=G.units.filter(function(u){return !u.xeno;}).length;
   $("hudXeno").textContent=G.aliens;
   $("hudSpd").textContent = CFG.speed.toFixed(2)+"x";
-  $("hudEscPill").hidden = !(G.tier>0);
-  if(G.tier>0) $("hudEsc").textContent=G.tier;
   var lead=null;
   G.factions.forEach(function(f){ if(!lead||f.score>lead.score) lead=f; });
+  $("hudEscPill").hidden = !(G.tier>0);
+  if(lead && lead.score>0){
+    $("hudLeadPill").hidden=false;
+    $("hudLead").textContent=lead.short+" "+lead.score;
+    $("hudLead").style.color=lead.color;
+  } else $("hudLeadPill").hidden=true;
+  if(G.tier>0) $("hudEsc").textContent=G.tier;
+  var ranked = G.factions.slice().sort(function(a,b){ return b.score-a.score; });
+  var counts = {};
+  G.factions.forEach(function(f){ counts[f.i]={}; });
+  G.units.forEach(function(u){ if(!u.xeno && counts[u.faction]) counts[u.faction][u.type]=(counts[u.faction][u.type]||0)+1; });
   G.factions.forEach(function(f){
     var e=f.el; if(!e) return;
     e.querySelector("[data-pts]").textContent=f.score;
@@ -1748,6 +1957,18 @@ function updateHUD(dt){
     e.classList.toggle("dead",!f.alive);
     e.querySelector("[data-star]").hidden = !(lead===f && f.score>0);
     e.classList.toggle("lead", lead===f && f.score>0);
+    var rk = ranked.indexOf(f)+1;
+    e.style.order = rk;
+    e.classList.toggle("p1", rk===1);
+    e.querySelector("[data-rank]").textContent = rk;
+    if(f.compEls){
+      for(var ci=0; ci<UNITS.length; ci++){
+        var n = counts[f.i][UNITS[ci].id]||0;
+        var ce = f.compEls[ci];
+        ce.textContent = UNITS[ci].abbr+" "+n;
+        ce.classList.toggle("on", n>0);
+      }
+    }
   });
   if(selected && selected.hp>0) fillInspect(selected);
 }
@@ -1818,9 +2039,38 @@ function rangeFill(el){
 }
 
 /* -- setup sheet -- */
-segWire($("pcSeg"),function(v){ CFG.players=+v; });
+function drawPreview(){
+  var n=CFG.players, W=200, H=132, cx=W/2, cy=H/2, rx=W*0.335, ry=H*0.315, pts=[], i, a;
+  if(n===2){ pts=[{x:cx-rx,y:cy},{x:cx+rx,y:cy}]; }
+  else{
+    var start=(n===4)?-45:-90;
+    for(i=0;i<n;i++){ a=(start+i*360/n)*Math.PI/180; pts.push({x:cx+Math.cos(a)*rx, y:cy+Math.sin(a)*ry}); }
+  }
+  var s='<rect x="1.5" y="1.5" width="197" height="129" rx="6" fill="#0a1119" stroke="#22303f"/>';
+  for(i=12;i<W;i+=24) s+='<line x1="'+i+'" y1="3" x2="'+i+'" y2="129" stroke="#16212d" stroke-width="1"/>';
+  for(i=12;i<H;i+=24) s+='<line x1="3" y1="'+i+'" x2="197" y2="'+i+'" stroke="#16212d" stroke-width="1"/>';
+  pts.forEach(function(pt,k){
+    var c=FACTION_POOL[k].color;
+    s+='<circle cx="'+pt.x.toFixed(1)+'" cy="'+pt.y.toFixed(1)+'" r="15" fill="none" stroke="'+c+'" stroke-opacity=".3" stroke-dasharray="3 3"/>';
+    s+='<polygon points="'+hexPts(pt.x,pt.y,8.5)+'" fill="'+c+'" fill-opacity=".25" stroke="'+c+'" stroke-width="1.4"/>';
+    s+='<text x="'+pt.x.toFixed(1)+'" y="'+(pt.y+3).toFixed(1)+'" fill="'+c+'" font-size="8" font-weight="700" text-anchor="middle" font-family="ui-monospace,monospace">'+(k+1)+'</text>';
+    if(CFG.mode==="ctf"){
+      var ang=Math.atan2(cy-pt.y, cx-pt.x);
+      var fx=pt.x-Math.cos(ang)*15, fy=pt.y-Math.sin(ang)*15;
+      s+='<path d="M'+fx.toFixed(1)+' '+(fy+4).toFixed(1)+' V'+(fy-5).toFixed(1)+' l6 2 -6 2" fill="'+c+'" stroke="'+c+'" stroke-width="1"/>';
+    }
+  });
+  $("arenaPrev").innerHTML=s;
+}
+function hexPts(cx,cy,r){
+  var o=[],i,a;
+  for(i=0;i<6;i++){ a=i*Math.PI/3+Math.PI/6; o.push((cx+Math.cos(a)*r).toFixed(1)+","+(cy+Math.sin(a)*r).toFixed(1)); }
+  return o.join(" ");
+}
+segWire($("pcSeg"),function(v){ CFG.players=+v; drawPreview(); });
 segWire($("modeSeg"),function(v){
   CFG.mode=v;
+  drawPreview();
   $("poolNote").style.opacity = (v==="lms")?"1":".55";
   $("sPoolLbl").style.opacity = (v==="lms")?"1":".55";
 });
@@ -1834,12 +2084,35 @@ function bindRange(id,outId,fmt,cb){
   function up(){ rangeFill(el); out.textContent=fmt(+el.value); cb(+el.value); }
   el.addEventListener("input",up); up();
 }
-bindRange("sSpeed","sSpeedOut",function(v){return v.toFixed(2)+"x";},function(v){ CFG.speed=v; $("spd").value=v; rangeFill($("spd")); $("spdOut").textContent=v.toFixed(2)+"x"; });
+bindRange("sSpeed","sSpeedOut",function(v){return v.toFixed(2)+"x";},function(v){ setSpeed(v,"setup"); });
 bindRange("sCap","sCapOut",function(v){return String(v);},function(v){ CFG.cap=v; $("capSl").value=v; rangeFill($("capSl")); $("capOut").textContent=v; });
 bindRange("sPool","sPoolOut",function(v){return String(v);},function(v){ CFG.pool=v; });
 
-/* -- top bar -- */
-bindRange("spd","spdOut",function(v){return v.toFixed(2)+"x";},function(v){ CFG.speed=v; $("sSpeed").value=v; rangeFill($("sSpeed")); $("sSpeedOut").textContent=v.toFixed(2)+"x"; });
+/* -- speed: slider, header chips and the transport bar all drive one value -- */
+function setSpeed(v, from){
+  CFG.speed = clamp(+v, 0.25, 4);
+  var txt = CFG.speed.toFixed(2)+"x";
+  if(from!=="spd"){ $("spd").value=CFG.speed; rangeFill($("spd")); }
+  if(from!=="setup"){ $("sSpeed").value=CFG.speed; rangeFill($("sSpeed")); }
+  $("spdOut").textContent = txt;
+  $("sSpeedOut").textContent = txt;
+  $("hudSpd").textContent = txt;
+  Array.prototype.forEach.call($("spdSeg").querySelectorAll("button"),function(b){
+    b.setAttribute("aria-pressed", String(+b.dataset.v===CFG.speed));
+  });
+  Array.prototype.forEach.call($("tSpeed").querySelectorAll("button"),function(b){
+    b.setAttribute("aria-pressed", String(+b.dataset.v===CFG.speed));
+  });
+}
+$("spd").addEventListener("input",function(){ setSpeed(this.value,"spd"); });
+$("spdSeg").addEventListener("click",function(e){
+  var b=e.target.closest("button[data-v]"); if(b) setSpeed(b.dataset.v);
+});
+$("tSpeed").addEventListener("click",function(e){
+  var b=e.target.closest("button[data-v]"); if(b) setSpeed(b.dataset.v);
+});
+$("tXeno").onclick=function(){ if(G&&!G.over) spawnXeno(rint(1,2),false); };
+$("tPause").onclick=function(){ togglePause(); };
 bindRange("regenRate","regenOut",function(v){return v+" hp/s";},function(v){ CFG.regenRate=v; });
 bindRange("capSl","capOut",function(v){return String(v);},function(v){ CFG.cap=v; $("sCap").value=v; rangeFill($("sCap")); $("sCapOut").textContent=v; });
 
@@ -1850,10 +2123,16 @@ function togglePause(){
   sysLog(paused?"Simulation paused.":"Simulation resumed.");
 }
 function setPauseUI(){
-  var on = paused || !running;
-  $("pauseLbl").textContent = paused?"Resume":"Pause";
-  $("pauseIco").innerHTML = paused ? '<path d="M7 4l12 8-12 8z"/>' : '<path d="M9 5v14M15 5v14"/>';
-  $("pauseBtn").disabled = !G || G.over;
+  var lbl = paused?"Resume":"Pause";
+  var ico = paused ? '<path d="M7 4l12 8-12 8z"/>' : '<path d="M9 5v14M15 5v14"/>';
+  $("pauseLbl").textContent = lbl;
+  $("tPauseLbl").textContent = lbl;
+  $("pauseIco").innerHTML = ico;
+  $("tPauseIco").innerHTML = ico;
+  var off = !G || G.over;
+  $("pauseBtn").disabled = off;
+  $("tPause").disabled = off;
+  $("tPause").style.opacity = off ? ".45" : "1";
 }
 
 $("alienBtn").onclick=function(){
@@ -1921,8 +2200,9 @@ document.addEventListener("keydown",function(e){
     });
     $("pop").classList.remove("open");
   }
-  else if(e.key==="+"||e.key==="="){ $("spd").value=Math.min(4,+$("spd").value+0.25); $("spd").dispatchEvent(new Event("input")); }
-  else if(e.key==="-"||e.key==="_"){ $("spd").value=Math.max(0.25,+$("spd").value-0.25); $("spd").dispatchEvent(new Event("input")); }
+  else if(e.key==="+"||e.key==="="){ setSpeed(CFG.speed+0.25); }
+  else if(e.key==="-"||e.key==="_"){ setSpeed(CFG.speed-0.25); }
+  else if(e.key>="1"&&e.key<="4"){ setSpeed([1,2,3,4][+e.key-1]); }
 });
 
 /* canvas pick */
@@ -1956,7 +2236,7 @@ function layoutMode(){
   var sp=$("speedWrap"), slot=$("popSpeed"), tools=document.querySelector(".tools");
   if(stacked && sp.parentNode!==slot) slot.appendChild(sp);
   else if(!stacked && sp.parentNode!==tools) tools.insertBefore(sp, tools.firstChild);
-  $("hudSpdPill").hidden = !stacked;
+  $("hudSpdPill").hidden = true;
 }
 var rT=null;
 function onResize(){ layoutMode(); clearTimeout(rT); rT=setTimeout(function(){ layoutMode(); resize(); },80); resize(); }
@@ -2003,6 +2283,8 @@ document.addEventListener("visibilitychange",function(){ last=performance.now();
 })();
 
 /* boot */
+drawPreview();
+setSpeed(1);
 layoutMode();
 resize();
 syncPop();
