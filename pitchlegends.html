@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -335,6 +334,69 @@ tr.qual td:first-child{border-left:2px solid var(--accent);padding-left:8px}
 
 .tielab{font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);font-weight:800;margin:4px 0 -4px}
 .pod .pl{min-width:26px}
+
+/* ---------- live log / stats panel ---------- */
+.logpanel{position:absolute;left:0;right:0;bottom:0;height:62%;z-index:12;
+  background:rgba(6,16,10,.94);backdrop-filter:blur(16px);
+  border-top:1px solid var(--line);border-top-left-radius:18px;border-top-right-radius:18px;
+  display:none;flex-direction:column;padding-bottom:var(--safe-b)}
+.logpanel.open{display:flex;animation:up .22s cubic-bezier(.2,.8,.3,1) both}
+.loghead{display:flex;align-items:center;gap:8px;padding:12px 12px 8px}
+.logtabs{display:flex;gap:5px;flex:1}
+.logtabs button{flex:1;padding:8px 4px;border-radius:9px;border:1px solid var(--line);background:transparent;
+  color:var(--muted);font-size:12px;font-weight:700;font-family:inherit;cursor:pointer}
+.logtabs button.on{background:var(--panel2);color:var(--ink)}
+.logclose{width:32px;height:32px;border-radius:10px;border:1px solid var(--line);background:var(--panel);
+  color:var(--ink);font-size:14px;flex:none;cursor:pointer;font-family:inherit}
+.logbody{flex:1;overflow-y:auto;padding:0 14px 14px}
+.logbody::-webkit-scrollbar{width:0}
+.logline{display:flex;gap:9px;padding:6px 0;border-top:1px solid var(--line2);font-size:12.5px;line-height:1.35}
+.logline:first-child{border-top:0}
+.logline b{color:var(--accent);font-variant-numeric:tabular-nums;flex:none;min-width:26px}
+.logline.goal{color:var(--accent)}
+.logline.red{color:var(--danger)}
+.logline.yellow{color:var(--yellow)}
+.ptab{width:100%;border-collapse:collapse;font-size:12px}
+.ptab th{font-size:9.5px;padding:5px 2px;text-align:right;color:var(--dim)}
+.ptab th:nth-child(2),.ptab td:nth-child(2){text-align:left}
+.ptab td{padding:6px 2px;border-top:1px solid var(--line2);text-align:right;font-variant-numeric:tabular-nums}
+.ptab td.nm{font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:96px}
+.ptab tr.off td{opacity:.45}
+.ptab .yc{display:inline-block;width:7px;height:10px;border-radius:1.5px;background:var(--yellow);margin-left:2px}
+.ptab .rc{display:inline-block;width:7px;height:10px;border-radius:1.5px;background:var(--danger);margin-left:2px}
+.logswitch{display:flex;gap:6px;margin:10px 0 4px}
+.logswitch button{flex:1;padding:7px;border-radius:8px;border:1px solid var(--line);background:transparent;
+  color:var(--muted);font-size:11.5px;font-weight:700;font-family:inherit;cursor:pointer}
+.logswitch button.on{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+
+/* ---------- qualification chart ---------- */
+.qmark{font-size:8.5px;font-weight:800;letter-spacing:.07em;padding:2px 5px;border-radius:5px;margin-left:7px;vertical-align:middle}
+.qmark.q{background:rgba(77,225,160,.16);color:var(--accent)}
+.qmark.t3{background:rgba(255,209,102,.16);color:var(--gold)}
+.qmark.out{background:rgba(255,255,255,.06);color:var(--dim)}
+tr.q td:first-child{border-left:2px solid var(--accent);padding-left:8px}
+tr.t3 td:first-child{border-left:2px solid var(--gold);padding-left:8px}
+tr.out td{color:var(--dim)}
+tr.out.me td{color:var(--muted)}
+td .pos{display:inline-block;min-width:14px;font-size:11px;color:var(--dim);font-weight:800}
+.gletter{font-size:9.5px;font-weight:800;color:var(--dim);margin-left:6px;letter-spacing:.08em}
+/* ---------- road to the final ---------- */
+.path{display:flex;gap:0;overflow-x:auto;padding:2px 0 6px}
+.path::-webkit-scrollbar{height:0}
+.pstep{flex:1;min-width:60px;display:flex;flex-direction:column;align-items:center;gap:3px;position:relative;padding-top:12px}
+.pstep::before{content:'';position:absolute;top:17px;left:-50%;width:100%;height:2px;background:var(--line2)}
+.pstep:first-child::before{display:none}
+.pstep i{width:11px;height:11px;border-radius:50%;background:var(--panel2);border:2px solid var(--line);z-index:1}
+.pstep b{font-size:11px;font-weight:800;color:var(--muted);margin-top:2px}
+.pstep span{font-size:9.5px;color:var(--dim);white-space:nowrap}
+.pstep.done i{background:var(--accent);border-color:transparent}
+.pstep.done b{color:var(--accent)}
+.pstep.done::before{background:var(--accent)}
+.pstep.now i{background:var(--gold);border-color:transparent;box-shadow:0 0 0 4px rgba(255,209,102,.18)}
+.pstep.now b{color:var(--gold)}
+.pstep.out i{background:var(--danger);border-color:transparent}
+.pstep.out b{color:var(--danger)}
+.pstep.miss{opacity:.4}
 </style>
 </head>
 <body>
@@ -422,11 +484,19 @@ tr.qual td:first-child{border-left:2px solid var(--accent);padding-left:8px}
       <div class="tools">
         <button id="zoomBtn" title="View"><i>⤢</i><u id="zoomLab">Mid</u></button>
         <button id="replayBtn" title="Replay"><i>↺</i><u>Replay</u></button>
+        <button id="logBtn" title="Log and stats"><i>≣</i><u>Log</u></button>
         <button id="menuBtn" title="Menu" style="display:none"><i>❙❙</i><u>Menu</u></button>
       </div>
       <div class="newswrap"><div class="news" id="newsBar"><b id="newsMin"></b><span id="newsTxt"></span></div></div>
       <div class="speedpanel" id="speedPanel"></div>
       <div class="dock" id="dock"></div>
+    </div>
+    <div class="logpanel" id="logPanel">
+      <div class="loghead">
+        <div class="logtabs" id="logTabs"></div>
+        <button class="logclose" id="logClose">✕</button>
+      </div>
+      <div class="logbody" id="logBody"></div>
     </div>
     <div class="stickzone" id="stickZone"><div class="stick" id="stick"><i id="knob"></i></div></div>
     <div class="padzone" id="padZone">
@@ -1713,7 +1783,8 @@ const Engine = (function () {
     if (sh && sh.gk && sh.gk.onPitch) sh.gk.st.rating -= 0.18;
     m.flash = { kind: 'goal', team: credited, t: 3.4, scorer: scorer };
     m.whistle = 0.4;
-    m.replayReady = true;
+    m.goalReplay = m.buffer.slice(-58);
+    m.goalReplayAt = m.elapsedReal;
     m.momentum = credited.side * 0.7;
     setKickoff(m, other(m, credited));
   }
@@ -1932,9 +2003,14 @@ const Engine = (function () {
   }
 
   /* ---------------- replay ---------------- */
+  /* Replays only ever happen because someone asked for one. If a goal has
+     just gone in, that is what gets shown; otherwise it is the last few
+     seconds of play. */
   function startReplay(m) {
-    if (m.buffer.length < 20) return false;
-    m.replay = { frames: m.buffer.slice(-58), i: 0, t: 0 };
+    const fresh = m.goalReplay && (m.elapsedReal - m.goalReplayAt) < 12;
+    const frames = fresh ? m.goalReplay : m.buffer.slice(-58);
+    if (!frames || frames.length < 12) return false;
+    m.replay = { frames, i: 0, t: 0, goal: !!fresh };
     return true;
   }
   function stepReplay(m, dtReal) {
@@ -2740,7 +2816,7 @@ const UI = (function () {
 
   const S = {
     mode: 'wc', control: 'manager', length: 180, difficulty: 1,
-    maxSubs: 5, autoSubs: false, replays: 'goals', showNames: true,
+    maxSubs: 5, autoSubs: false, showNames: true,
     myId: null, oppId: null, pickStage: 'mine', penOnly: false,
     squad: [], formation: '4-2-3-1',
     tactics: { mentality: 2, pressing: 1, offside: true },
@@ -2796,8 +2872,6 @@ const UI = (function () {
       <div class="rowlab"><b>Automatic substitutions</b></div>
       <div class="seg" id="autoSeg"></div>
       <p class="hint">With automatic substitutions on, your bench is managed for you: tired legs and injuries are replaced without you having to open the menu. You can still make your own changes at any time.</p>
-      <div class="rowlab"><b>Replays</b></div>
-      <div class="seg" id="repSeg"></div>
       <div class="rowlab"><b>Names on the pitch</b></div>
       <div class="seg" id="nameSeg"></div>`;
 
@@ -2856,7 +2930,6 @@ const UI = (function () {
     };
     seg('#subSeg', [[3, '3'], [5, '5'], [99, 'Unlimited']], () => S.maxSubs, v => S.maxSubs = v);
     seg('#autoSeg', [[false, 'Off'], [true, 'On']], () => S.autoSubs, v => S.autoSubs = v);
-    seg('#repSeg', [['off', 'Off'], ['goals', 'Goals'], ['all', 'Goals + cards']], () => S.replays, v => S.replays = v);
     seg('#nameSeg', [[false, 'Numbers only'], [true, 'Show names']], () => S.showNames, v => S.showNames = v);
   }
 
@@ -3174,22 +3247,32 @@ const UI = (function () {
         b.appendChild(el('p', 'hint', 'One match from the trophy.'));
       }
     }
+    if (T.type === 'wc' || T.type === 'cup') {
+      b.appendChild(el('h2', null, 'Your road to the final'));
+      b.appendChild(pathView());
+    }
     if (T.groups) {
       const myGroup = T.groups.findIndex(g => g.teams.indexOf(S.myId) >= 0);
       b.appendChild(el('h2', null, T.rounds[T.idx].stage === 'group' ? 'Your group' : 'Groups'));
-      b.appendChild(groupTable(T.groups[myGroup]));
-      const more = el('button', 'btn ghost small', 'All groups');
+      b.appendChild(groupTable(T.groups[myGroup], myGroup));
+      b.appendChild(el('p', 'hint', 'The top two of every group go through. The eight best third-placed teams join them in the round of 32.'));
+      const more = el('button', 'btn ghost small', 'All twelve groups');
       more.style.marginTop = '10px';
       more.onclick = () => {
         openSheet('All groups', () => {
           const w = el('div');
-          T.groups.forEach(g => { w.appendChild(el('h2', null, g.name)); w.appendChild(groupTable(g)); });
+          T.groups.forEach((g, gi) => { w.appendChild(el('h2', null, g.name)); w.appendChild(groupTable(g, gi)); });
           return w;
         });
       };
       b.appendChild(more);
+      const anyPlayed = T.groups.some(g => g.teams.some(t => g.table[t].p > 0));
+      if (anyPlayed) {
+        b.appendChild(el('h2', null, 'Race for the last eight places'));
+        b.appendChild(thirdTable(T));
+      }
     }
-    if (T.rounds.some(r => r.stage === 'ko')) {
+    if (T.rounds.some(r => r.stage === 'ko' || r.stage === 'final')) {
       b.appendChild(el('h2', null, 'Knockout bracket'));
       b.appendChild(bracketView());
     }
@@ -3217,21 +3300,102 @@ const UI = (function () {
             <div class="${aw ? 'w' : hw ? 'l' : ''}"><span class="dotc" style="background:${a.c1}"></span>${a.name}<span class="sc">${r ? r.away : '-'}</span>${pen}</div>`;
   }
 
-  function groupTable(g) {
+  function groupDone(g) { return g.teams.every(t => g.table[t].p >= 3); }
+
+  function groupTable(g, gi) {
     const w = el('div', 'card');
+    const done = groupDone(g);
+    const played = g.teams.some(t => g.table[t].p > 0);
     const rows = standings(g).map((id, i) => {
-      const t = team(id), s = g.table[id];
-      return `<tr class="${id === S.myId ? 'me' : ''} ${i < 2 ? 'qual' : ''}">
-        <td><span class="dotc" style="background:${t.c1};display:inline-block;margin-right:7px"></span>${t.name}</td>
-        <td>${s.p}</td><td>${s.w}</td><td>${s.d}</td><td>${s.l}</td><td>${s.gf - s.ga > 0 ? '+' : ''}${s.gf - s.ga}</td><td><b>${s.pts}</b></td></tr>`;
+      const t = team(id), st = g.table[id];
+      const cls = i < 2 ? 'q' : i === 2 ? 't3' : 'out';
+      const mark = !played ? '' : i < 2 ? (done ? 'THROUGH' : 'QUALIFYING') : i === 2 ? (done ? '3RD' : 'PLAY-OFF') : 'OUT';
+      return `<tr class="${id === S.myId ? 'me' : ''} ${cls}">
+        <td><span class="dotc" style="background:${t.c1};display:inline-block;margin-right:7px"></span>${t.name}
+          ${mark ? `<span class="qmark ${cls}">${mark}</span>` : ''}</td>
+        <td>${st.p}</td><td>${st.w}</td><td>${st.d}</td><td>${st.l}</td>
+        <td>${st.gf - st.ga > 0 ? '+' : ''}${st.gf - st.ga}</td><td><b>${st.pts}</b></td></tr>`;
     }).join('');
     w.innerHTML = `<table><thead><tr><th>${g.name}</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GD</th><th>Pts</th></tr></thead><tbody>${rows}</tbody></table>`;
     return w;
   }
 
+  /* The eight best third-placed teams also go through, so the race for them
+     is worth watching from matchday one. */
+  function thirdRace(T) {
+    return T.groups.map((g, gi) => {
+      const st = standings(g);
+      return { id: st[2], gi, rec: g.table[st[2]] };
+    }).sort((a, b) => cmpRec(a.rec, b.rec));
+  }
+
+  function thirdTable(T) {
+    const w = el('div', 'card');
+    const rows = thirdRace(T).map((r, i) => {
+      const t = team(r.id), st = r.rec;
+      const cls = i < 8 ? 'q' : 'out';
+      return `<tr class="${r.id === S.myId ? 'me' : ''} ${cls}">
+        <td><span class="pos">${i + 1}</span><span class="dotc" style="background:${t.c1};display:inline-block;margin:0 7px"></span>${t.name}
+          <span class="gletter">${'ABCDEFGHIJKL'[r.gi]}</span></td>
+        <td>${st.p}</td><td>${st.gf - st.ga > 0 ? '+' : ''}${st.gf - st.ga}</td><td><b>${st.pts}</b></td></tr>`;
+    }).join('');
+    w.innerHTML = `<table><thead><tr><th>Third-placed teams</th><th>P</th><th>GD</th><th>Pts</th></tr></thead><tbody>${rows}</tbody></table>`;
+    return w;
+  }
+
+  const TIE_NAME = { 16: 'Round of 32', 8: 'Round of 16', 4: 'Quarter-finals', 2: 'Semi-finals' };
+  const TIE_SHORT = { 16: 'R32', 8: 'R16', 4: 'QF', 2: 'SF', 1: 'Final' };
+  const POS_SUF = { 1: 'st', 2: 'nd', 3: 'rd', 4: 'th' };
+
+  /* Where your nation stands on the road to the final, at a glance. */
+  function pathView() {
+    const T = S.tourn;
+    const wrap = el('div', 'path');
+    const steps = [];
+    if (T.groups) {
+      const gi = T.groups.findIndex(g => g.teams.indexOf(S.myId) >= 0);
+      const g = T.groups[gi];
+      const rec = g.table[S.myId];
+      const pos = standings(g).indexOf(S.myId) + 1;
+      const done = groupDone(g);
+      const through = T.rounds.some(r => (r.stage === 'ko' || r.stage === 'final') && r.fx.some(f => f.h === S.myId || f.a === S.myId));
+      steps.push({
+        lab: 'Groups',
+        note: rec.p ? pos + (POS_SUF[pos] || 'th') : '—',
+        state: !done ? 'now' : (through ? 'done' : 'out')
+      });
+    }
+    (T.type === 'wc' ? [16, 8, 4, 2, 1] : [8, 4, 2, 1]).forEach(n => {
+      const r = T.rounds.find(rr => n === 1 ? rr.stage === 'final' : (rr.stage === 'ko' && rr.fx.length === n));
+      let state = 'soon', note = '';
+      if (r) {
+        const f = r.fx.find(x => x.h === S.myId || x.a === S.myId);
+        if (!f) { state = 'miss'; note = '—'; }
+        else if (!f.res) { state = 'now'; note = 'v ' + team(f.h === S.myId ? f.a : f.h).id; }
+        else {
+          const won = koWinner(f) === S.myId;
+          state = won ? 'done' : 'out';
+          note = f.res.home + '–' + f.res.away + (f.res.pens ? ' p' : '');
+          if (r.stage === 'final') state = (f.label === 'Final' ? (won ? 'done' : 'out') : (won ? 'done' : 'out'));
+        }
+        if (r.stage === 'final' && f && !f.res) note = f.label === 'Final' ? 'the final' : '3rd place';
+      }
+      steps.push({ lab: TIE_SHORT[n], note, state });
+    });
+    steps.forEach((st, i) => {
+      const d = el('div', 'pstep ' + st.state);
+      d.innerHTML = `<i></i><b>${st.lab}</b><span>${st.note || ''}</span>`;
+      wrap.appendChild(d);
+    });
+    return wrap;
+  }
+
+
   function bracketView() {
+    const T = S.tourn;
     const wrap = el('div', 'bracket');
-    S.tourn.rounds.filter(r => r.stage === 'ko' || r.stage === 'final').forEach(r => {
+    const rounds = T.rounds.filter(r => r.stage === 'ko' || r.stage === 'final');
+    rounds.forEach(r => {
       const col = el('div', 'round');
       col.appendChild(el('h3', null, r.name));
       r.fx.forEach(f => {
@@ -3304,6 +3468,8 @@ const UI = (function () {
     again.style.marginTop = '16px';
     again.onclick = () => { S.unavailable = {}; S.tourn = null; show('setup'); renderSetup(); };
     b.appendChild(again);
+    b.appendChild(el('h2', null, 'Your road'));
+    b.appendChild(pathView());
     b.appendChild(el('h2', null, 'Knockout bracket'));
     b.appendChild(bracketView());
   }
@@ -3383,6 +3549,7 @@ const UI = (function () {
     m.theirs = homeIsMine ? m.away : m.home;
     S.match = m; S.seenEvents = 0; S.newsQ = []; S.newsUntil = 0; S.newsGap = 0; m.speed = S.speed;
     $('#newsBar').className = 'news';
+    $('#logPanel').classList.remove('open'); $('#logBtn').classList.remove('on');
     Renderer.setNames(S.showNames);
     show('match');
     Renderer.resize();
@@ -3404,10 +3571,7 @@ const UI = (function () {
     Engine.step(m, dt);
     Renderer.draw(m, dt);
     drawHUD(m);
-    if (m.replayReady) {
-      m.replayReady = false;
-      if (S.replays !== 'off') setTimeout(() => { if (S.match === m && !m.finished) Engine.startReplay(m); }, 900);
-    }
+    renderLog(false);
     if (m.state === 'half' && !m.halfShown) { m.halfShown = true; halfTime(m); }
     if (m.finished && !m.endShown) { m.endShown = true; endMatch(m); }
   }
@@ -3420,6 +3584,80 @@ const UI = (function () {
     if (!m.controlled || !m.controlled.onPitch) { m.controlled = near; return; }
     const d = Math.hypot(m.controlled.x - b.x, m.controlled.y - b.y);
     if (d > 13 && near) m.controlled = near;
+  }
+
+  /* ------------------------------------------- live log and stats panel
+     Opens over the match without stopping it, so you can watch the game
+     and read the numbers at the same time.                              */
+  const LOG_TABS = [['log', 'Match log'], ['stats', 'Team stats'], ['players', 'Players']];
+
+  function toggleLog() {
+    const panel = $('#logPanel');
+    const open = !panel.classList.contains('open');
+    panel.classList.toggle('open', open);
+    $('#logBtn').classList.toggle('on', open);
+    if (open) { if (!S.logTab) S.logTab = 'log'; buildLogTabs(); renderLog(true); }
+  }
+  function buildLogTabs() {
+    const t = $('#logTabs'); t.innerHTML = '';
+    LOG_TABS.forEach(([k, lab]) => {
+      const b = el('button', S.logTab === k ? 'on' : '', lab);
+      b.onclick = () => { S.logTab = k; buildLogTabs(); renderLog(true); };
+      t.appendChild(b);
+    });
+  }
+  function renderLog(force) {
+    const panel = $('#logPanel');
+    if (!panel.classList.contains('open')) return;
+    const m = S.match; if (!m) return;
+    const now = performance.now();
+    if (!force && S.logAt && now - S.logAt < 600) return;
+    S.logAt = now;
+    const body = $('#logBody');
+    const keep = body.scrollTop;
+    body.innerHTML = '';
+    if (S.logTab === 'log') {
+      const evs = m.events.filter(e => e.type !== 'throw').slice().reverse();
+      if (!evs.length) body.appendChild(el('p', 'hint', 'Nothing has happened yet.'));
+      evs.forEach(e => {
+        const cls = ['goal', 'red', 'yellow'].indexOf(e.type) >= 0 ? e.type : '';
+        body.appendChild(el('div', 'logline ' + cls, `<b>${e.min}'</b><span>${e.text}</span>`));
+      });
+    } else if (S.logTab === 'stats') {
+      body.appendChild(statsView(m));
+    } else {
+      const sw = el('div', 'logswitch');
+      [['mine', m.mine.data.name], ['theirs', m.theirs.data.name]].forEach(([k, nm]) => {
+        const b = el('button', (S.logSide || 'mine') === k ? 'on' : '', nm);
+        b.onclick = () => { S.logSide = k; renderLog(true); };
+        sw.appendChild(b);
+      });
+      body.appendChild(sw);
+      body.appendChild(playerTable(m, (S.logSide || 'mine') === 'mine' ? m.mine : m.theirs));
+      body.appendChild(el('p', 'hint', 'G goals · A assists · Sh shots · T tackles won · F fouls · Fit stamina'));
+    }
+    body.scrollTop = force ? 0 : keep;
+  }
+
+  function playerTable(m, t) {
+    const w = el('div');
+    const rows = t.players.map(p => {
+      const cards = (p.red ? '<span class="rc"></span>' : '') + (p.yellow ? '<span class="yc"></span>' : '');
+      return `<tr class="${p.onPitch ? '' : 'off'}">
+        <td>${p.num}</td>
+        <td class="nm">${p.short || p.name}${cards}</td>
+        <td>${p.st.goals || ''}</td>
+        <td>${p.st.assists || ''}</td>
+        <td>${p.st.shots || ''}</td>
+        <td>${p.st.tacklesWon || ''}</td>
+        <td>${p.st.fouls || ''}</td>
+        <td>${p.onPitch ? Math.round(p.stam) + '%' : '—'}</td>
+        <td><b>${p.st.rating.toFixed(1)}</b></td></tr>`;
+    }).join('');
+    w.innerHTML = `<table class="ptab"><thead><tr>
+      <th>#</th><th>Player</th><th>G</th><th>A</th><th>Sh</th><th>T</th><th>F</th><th>Fit</th><th>Rat</th>
+      </tr></thead><tbody>${rows}</tbody></table>`;
+    return w;
   }
 
   /* ---------------------------------------------------------- HUD */
@@ -3442,9 +3680,6 @@ const UI = (function () {
       if (['throw', 'corner', 'block', 'save', 'miss', 'freekick'].indexOf(e.type) >= 0 && Math.random() < 0.55) continue;
       S.newsQ.push(e);
       if (S.newsQ.length > 4) S.newsQ.splice(0, S.newsQ.length - 4);
-      if (S.replays === 'all' && e.type === 'red') {
-        setTimeout(() => { if (S.match === m && !m.finished && !m.replay) Engine.startReplay(m); }, 700);
-      }
     }
     pumpNews();
   }
@@ -3731,6 +3966,7 @@ const UI = (function () {
     Engine.finalise(m);
     cancelAnimationFrame(S.raf);
     closeAllSheets();
+    $('#logPanel').classList.remove('open'); $('#logBtn').classList.remove('on');
     const drawn = m.home.score === m.away.score;
     if (S.fixture.ko && drawn) { startShootout(m); return; }
     recordAndShow(m, null);
@@ -4076,8 +4312,14 @@ const UI = (function () {
       $('#zoomBtn').classList.toggle('on', Renderer.zoomLabel() === 'Full');
       placeRadar();
     };
-    $('#replayBtn').onclick = () => { if (S.match) Engine.startReplay(S.match); };
+    $('#replayBtn').onclick = () => {
+      if (!S.match) return;
+      if (S.match.replay) { S.match.replay = null; return; }
+      Engine.startReplay(S.match);
+    };
     $('#menuBtn').onclick = pauseSheet;
+    $('#logBtn').onclick = toggleLog;
+    $('#logClose').onclick = toggleLog;
     $('#canvas').addEventListener('pointerdown', () => { if (S.match && S.match.replay) S.match.replay = null; });
   }
 
@@ -4098,6 +4340,10 @@ const UI = (function () {
         <p class="hint">The World Cup runs the real format: twelve groups of four, the top two from each plus the eight best third-placed teams into a round of 32, then knockout to the final. The Champions Cup is a straight knockout between the sixteen strongest nations. A friendly is one match against anyone you pick, and the shootout takes you straight to the spot.</p>
         <h2>Penalties</h2>
         <p class="hint">A shootout is played out rather than simulated. When your side is on the spot you pick one of six corners; when you are facing one you pick where to dive. Low corners are the hardest for a keeper to reach but the easiest to drag wide, and going down the middle only works while the keeper is still committing himself. Guess right as a keeper and you have a real chance of a save.</p>
+        <h2>Watching the numbers</h2>
+        <p class="hint">The <b>Log</b> button in the corner opens a panel over the match with the running commentary, the team stats and a table of every player — goals, assists, shots, tackles, fouls, cards and how much is left in their legs. The match keeps playing behind it, and the same button closes it again.</p>
+        <h2>Replays</h2>
+        <p class="hint">Nothing replays on its own. Tap <b>Replay</b> in the corner and you get the goal if one has just gone in, otherwise the last few seconds of play. Tap it again to cut back to the live match.</p>
         <h2>Speed</h2>
         <p class="hint">Match speed runs from normal up to three times, in quarter steps. Nudge it up when a match is settled and back down when it matters.</p>
         <h2>Reading the numbers</h2>
