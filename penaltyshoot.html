@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#0b1623"><title>World Cup • Penalty Nights</title>
+<style>
+:root{--bg:#0b1623;--panel:#142334;--line:#2b4054;--mint:#baff65;--gold:#ffda80;--muted:#a8bacb;--ink:#f4f8fb}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 70% 0,#223b47,transparent 60%),var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}button,select,input{font:inherit}button,select{cursor:pointer}button{border:1px solid var(--line);border-radius:12px;background:#203247;color:var(--ink);padding:12px 18px;font-weight:750;min-height:46px;transition:background .15s,transform .15s}button:hover{background:#304960}button:active{transform:translateY(1px)}button:disabled{opacity:.45;cursor:default}button:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--gold);outline-offset:4px}.primary{background:var(--mint);color:#183119;border-color:var(--mint)}.primary:hover{background:#d1ff99}.small{font-size:12px}.muted{color:var(--muted)}.eyebrow{color:var(--mint);font-size:11px;font-weight:850;letter-spacing:.18em;text-transform:uppercase}h1,h2,h3,p{margin-top:0}h1{font-size:clamp(35px,5vw,64px);line-height:1;letter-spacing:-.05em;margin-bottom:16px}h2{font-size:24px;letter-spacing:-.03em}h3{font-size:18px}main{max-width:1200px;margin:auto;padding:24px}header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:36px}.brand{font-weight:850;font-size:17px;letter-spacing:-.04em}.brand span{display:inline-flex;width:35px;height:35px;align-items:center;justify-content:center;border:1px solid #5a7154;border-radius:50%;color:var(--mint);margin-right:9px}.tag{font-size:11px;border:1px solid var(--line);border-radius:30px;padding:7px 10px;color:var(--muted)}.hero{display:flex;justify-content:space-between;align-items:center;gap:30px;margin:12px 0 25px}.hero p{max-width:630px;line-height:1.6}.hero-ball{font-size:92px;filter:drop-shadow(0 15px 35px #baff6530);transform:rotate(-12deg)}.choose-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}.panel{background:linear-gradient(140deg,#182b3d,#111f30);border:1px solid var(--line);border-radius:20px;padding:24px;min-width:0}.panel-head{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:15px}.panel-head h2{margin:0}.step{display:inline-grid;place-items:center;border:1px solid #587245;border-radius:50%;width:28px;height:28px;font-size:13px;color:var(--mint);margin-right:10px}select{width:100%;border:1px solid #43566a;border-radius:10px;padding:13px;background:#0e1b29;color:white;margin-bottom:18px}label{display:block;font-size:12px;font-weight:700;margin-bottom:8px;color:var(--muted)}.players{display:grid;grid-template-columns:1fr 1fr;gap:12px}.player{position:relative;text-align:left;border:1px solid #354758;border-radius:15px;padding:16px 12px;background:#172738;font-weight:400;min-width:0}.player.selected{border-color:var(--mint);background:linear-gradient(150deg,#2b4437,#172938)}.player.selected:after{content:'✓';position:absolute;top:10px;right:12px;color:var(--mint);font-weight:900}.shirt{display:block;width:76px;height:77px;margin:4px auto 12px;filter:drop-shadow(0 8px 6px #0004)}.player-name{font-size:15px;font-weight:800;min-height:42px;display:block;line-height:1.35}.role{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin:5px 0 12px}.stat{display:grid;grid-template-columns:1fr 28px;gap:4px;font-size:11px;margin:9px 0}.stat b{text-align:right;color:var(--mint)}.track{grid-column:1/-1;height:4px;background:#344656;border-radius:4px;overflow:hidden}.track i{display:block;background:var(--mint);height:100%;border-radius:4px}.settings{display:flex;align-items:end;gap:15px;margin-top:20px;flex-wrap:wrap}.settings>div{flex:1;min-width:160px}.settings select{margin:0}.settings>.primary{flex:1.4;min-width:200px;min-height:48px}.fine{font-size:12px;color:var(--muted);line-height:1.7;margin-top:17px}.fine a{color:#b9d0df}details{margin-top:20px;color:var(--muted);font-size:13px;line-height:1.65}summary{cursor:pointer;color:white;font-weight:650}details p{margin:12px 0 0}#arena[hidden],#setup[hidden],[hidden]{display:none!important}.arena-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:12px}.scoreboard{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:20px;background:#132233;border:1px solid var(--line);padding:18px 24px;border-radius:18px 18px 0 0}.team-right{text-align:right}.team-title{font-size:18px;font-weight:800}.team-player{font-size:12px;color:var(--muted);margin-top:4px}.score{font-size:40px;font-weight:900;letter-spacing:.05em;text-align:center}.round{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--mint);text-align:center}.dots{display:flex;gap:5px;margin-top:10px;flex-wrap:wrap}.team-right .dots{justify-content:flex-end}.dot{width:19px;height:19px;border-radius:50%;background:#2a3d50;font-size:12px;text-align:center;line-height:19px;font-weight:800;color:#bac9d5}.dot.goal{background:var(--mint);color:#183119}.dot.miss{background:#f58d85;color:#491b20}.pitch-wrap{position:relative;overflow:hidden;background:#18362b;touch-action:manipulation}canvas{width:100%;height:auto;display:block;aspect-ratio:1000/510;cursor:crosshair}.pitch-label{position:absolute;left:20px;top:16px;font-size:10px;letter-spacing:.15em;background:#091724b3;padding:8px 12px;border-radius:20px;color:#e1f3e8;pointer-events:none}.controls{background:#142334;border:1px solid var(--line);border-top:0;border-radius:0 0 18px 18px;padding:20px;display:grid;grid-template-columns:1fr 1.1fr;gap:25px}.turn-badge{font-size:11px;color:var(--mint);letter-spacing:.14em;font-weight:850}.status{font-size:24px;font-weight:850;letter-spacing:-.03em;line-height:1.15;margin:9px 0}.instruction{font-size:13px;color:var(--muted);line-height:1.55;margin-bottom:12px;min-height:40px}.power-row{display:flex;gap:10px;align-items:center;margin:12px 0;font-size:12px}.power-row input{flex:1;min-width:0;accent-color:var(--mint)}.timing-bar{height:18px;position:relative;background:linear-gradient(90deg,#e97875,#eac277 32%,#69a889 50%,#eac277 68%,#e97875);border-radius:6px;overflow:hidden;margin:8px 0}.sweet{position:absolute;top:0;bottom:0;background:var(--mint);border:2px solid #f0ffd8}.needle{position:absolute;top:0;bottom:0;width:4px;background:white;box-shadow:0 0 5px #000;transform:translateX(-50%)}.action-row{display:flex;gap:10px;margin-top:13px}.action-row button{flex:1}.target-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.target-grid button{padding:7px;font-size:12px;min-height:42px}.target-grid button.selected{border-color:var(--mint);background:#2b4437;color:var(--mint)}.grid-caption{font-size:11px;color:var(--muted);margin-bottom:8px}.hint{padding:10px 12px;border-left:3px solid var(--gold);background:#ffda800c;border-radius:0 8px 8px 0;font-size:12px;color:var(--gold);margin-bottom:12px}.bottom-bar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:15px;font-size:12px;color:var(--muted)}.history{margin-top:16px;display:flex;gap:7px;flex-wrap:wrap}.history span{border:1px solid var(--line);font-size:11px;color:var(--muted);padding:6px 8px;border-radius:6px}dialog{width:min(540px,calc(100% - 32px));border:1px solid #657b5d;border-radius:24px;background:#142334;color:white;padding:32px;text-align:center;box-shadow:0 25px 100px #0008}dialog::backdrop{background:#030a12bb;backdrop-filter:blur(5px)}dialog h2{font-size:35px;margin:10px 0}dialog p{line-height:1.6;color:var(--muted)}.medal{font-size:70px}.match-stats{display:flex;justify-content:space-around;margin:25px 0}.match-stats b{display:block;color:var(--mint);font-size:26px}.match-stats span{font-size:11px;color:var(--muted)}@media(max-width:650px){main{padding:14px}header{margin-bottom:25px}.tag{font-size:9px}.hero-ball{display:none}.hero{margin-bottom:15px}.choose-grid{grid-template-columns:1fr}.panel{padding:18px}.player-name{min-height:22px}.controls{grid-template-columns:1fr;gap:15px;padding:15px}.scoreboard{padding:13px 10px;gap:8px}.team-title{font-size:13px}.team-player{font-size:10px}.score{font-size:29px}.round{font-size:9px;max-width:100px}.dot{width:15px;height:15px;line-height:15px;font-size:10px}.pitch-label{font-size:8px;top:9px;left:9px;padding:5px 8px}.bottom-bar{align-items:flex-start}.hero p{font-size:14px}.arena-top{font-size:12px}.status{font-size:22px}.target-grid button{min-height:44px}h1{font-size:44px}}
+.team-toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:0 0 18px}.team-toolbar p{margin:0;line-height:1.5}.team-toolbar button{flex-shrink:0}.arena-top{flex-wrap:wrap}.arena-buttons{display:flex;gap:8px;flex-wrap:wrap}.team-title{overflow-wrap:anywhere}select{font-size:16px}@media(max-width:650px){.arena-buttons{width:100%}.arena-buttons button{padding:10px 12px;flex:1}.arena-buttons #switchTeams{flex:1.5}.team-toolbar{align-items:flex-start}.team-toolbar button{padding:10px 12px}.tag{max-width:140px;text-align:center}}
+
+/* Fit the active match to the usable viewport; keep setup naturally scrollable. */
+html{min-width:0}body{margin:0}main{padding-top:max(14px,env(safe-area-inset-top));padding-right:max(14px,env(safe-area-inset-right));padding-bottom:max(14px,env(safe-area-inset-bottom));padding-left:max(14px,env(safe-area-inset-left))}
+body.in-match main{max-width:1500px;height:100vh;height:var(--app-height,100dvh);padding:8px;padding-top:max(8px,env(safe-area-inset-top));padding-right:max(8px,env(safe-area-inset-right));padding-bottom:max(8px,env(safe-area-inset-bottom));padding-left:max(8px,env(safe-area-inset-left))}
+body.in-match header{display:none}
+body.in-match #arena{height:100%;min-height:0;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto minmax(90px,1fr) auto auto;gap:0}
+body.in-match .arena-top{margin:0 0 6px;gap:6px;flex-wrap:nowrap;min-width:0}
+body.in-match #matchTitle{font-size:10px;max-width:110px;line-height:1.3}
+body.in-match .arena-buttons{width:auto;min-width:0;flex-wrap:nowrap;margin-left:auto;gap:6px}
+body.in-match .arena-buttons button{font-size:12px;padding:8px 12px;min-height:44px}
+body.in-match .scoreboard{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:10px;padding:9px 14px}
+body.in-match .scoreboard>div{min-width:0}
+body.in-match .team-title{font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+body.in-match .team-player{font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+body.in-match .score{font-size:32px}body.in-match .dots{margin-top:5px;max-height:23px;overflow:auto;flex-wrap:nowrap}
+body.in-match .dot{flex-shrink:0}
+body.in-match .pitch-wrap{min-height:0;display:flex;align-items:center;justify-content:center;background:#102d25}
+body.in-match canvas{flex:none;max-width:100%;max-height:100%;width:auto;height:auto;aspect-ratio:1000/510}
+body.in-match .controls{padding:12px 16px;gap:16px;min-width:0}
+body.in-match .controls>div{min-width:0}
+body.in-match .status{font-size:23px;margin:5px 0}
+body.in-match .instruction{min-height:0;margin:5px 0 8px;font-size:12px}
+body.in-match .tip,body.in-match #tip{display:none}
+body.in-match .power-row{margin:6px 0;min-height:32px}
+body.in-match .action-row{margin-top:8px}
+body.in-match .bottom-bar{margin-top:5px;gap:6px}
+body.in-match .bottom-bar button{min-height:36px;padding:6px 10px;font-size:11px}
+body.in-match #sessionStats{font-size:10px}
+.bottom-actions{display:flex;gap:6px;flex-shrink:0}
+#historyDialog .history{max-height:55vh;overflow:auto;text-align:left;margin-bottom:16px}
+dialog{max-height:calc(var(--app-height,100dvh) - 24px);overflow:auto;overscroll-behavior:contain}
+@media(max-width:700px),(max-height:720px){
+body.in-match .controls{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:5px 10px;padding:8px 10px}
+body.in-match .controls>div{display:contents}
+body.in-match #turnBadge{grid-column:1/-1;grid-row:1;font-size:10px}
+body.in-match #status{grid-column:1/-1;grid-row:2;font-size:20px;margin:0}
+body.in-match #instruction{grid-column:1/-1;grid-row:3;margin:0;font-size:11px;line-height:1.35;min-height:0}
+body.in-match #scout{grid-column:1/-1;grid-row:4;padding:5px 8px;margin:0;font-size:11px}
+body.in-match #powerControls{grid-column:1;grid-row:5;min-width:0;align-self:center}
+body.in-match .controls .action-row{grid-column:1/-1;grid-row:6;margin-top:3px}
+body.in-match .controls .action-row button{min-height:44px;padding:9px}
+body.in-match #targets{grid-column:2;grid-row:5;align-self:center}
+body.in-match #powerControls[hidden]~.action-row{grid-row:6}
+body.in-match #targetCaption{display:none}
+body.in-match .target-grid button{font-size:10px;line-height:1.15;min-height:44px;padding:4px 2px}
+body.in-match .target-grid{gap:4px;grid-template-columns:repeat(3,minmax(0,1fr))}
+body.in-match .power-row{font-size:10px;gap:5px;margin:3px 0;flex-wrap:wrap}
+body.in-match .power-row input{min-width:50px;width:65px;min-height:26px}
+body.in-match #powerControls .small{font-size:10px;line-height:1.25}
+body.in-match .timing-bar{height:16px;margin:5px 0}
+body.in-match .scoreboard{padding:7px 9px;gap:7px}
+body.in-match .team-title{font-size:13px}body.in-match .team-player{font-size:10px}
+body.in-match .score{font-size:28px}body.in-match .round{font-size:8px}
+body.in-match .arena-buttons button{font-size:10px;padding:6px 8px}
+body.in-match #matchTitle{max-width:78px;font-size:9px}
+body.in-match .bottom-bar #exit{display:none}
+}
+@media(min-width:520px) and (max-height:600px) and (orientation:landscape){
+body.in-match #arena{grid-template-columns:minmax(0,1fr) clamp(250px,40vw,360px);grid-template-rows:auto auto minmax(90px,1fr) auto;column-gap:8px}
+body.in-match .arena-top{grid-column:1/-1;grid-row:1}
+body.in-match .scoreboard{grid-column:1;grid-row:2;border-radius:14px 14px 0 0}
+body.in-match .pitch-wrap{grid-column:1;grid-row:3;border-radius:0 0 14px 14px}
+body.in-match .controls{grid-column:2;grid-row:2/4;border:1px solid var(--line);border-radius:14px;align-content:center}
+body.in-match .bottom-bar{grid-column:1/-1;grid-row:4}
+body.in-match .pitch-label{font-size:8px;padding:4px 7px;top:5px;left:5px}
+}
+@media(max-width:360px){body.in-match main{padding:5px}body.in-match #matchTitle{max-width:65px}body.in-match .arena-buttons{gap:4px}body.in-match .arena-buttons button{padding:5px 7px}.brand{font-size:14px}.team-toolbar{flex-wrap:wrap}}
+
+
+@media(max-height:420px) and (orientation:landscape){
+body.in-match main{padding-top:max(4px,env(safe-area-inset-top));padding-bottom:max(4px,env(safe-area-inset-bottom))}
+body.in-match .controls{padding:6px;gap:3px 6px}
+body.in-match #turnBadge,body.in-match #instruction{display:none}
+body.in-match #status{font-size:18px}
+body.in-match #scout{font-size:10px;line-height:1.2;padding:3px 5px}
+body.in-match .controls .action-row{margin-top:0}
+}
+</style></head><body><main>
+<header><div class="brand"><span>⚽</span>PENALTY NIGHTS</div><div class="tag">WORLD CUP 2026 • 48 TEAMS</div></header>
+<section id="setup">
+<div class="hero"><div><p class="eyebrow">48 nations. One moment.</p><h1>Your country.<br>Your penalty.</h1><p class="muted">Pick your star from the 2026 World Cup squads.<br>Choose either country below, or swap sides in one tap.</p></div><div class="hero-ball" aria-hidden="true">⚽</div></div>
+<div class="team-toolbar"><p class="muted small" id="selectionNotice" role="status" aria-live="polite">Choose your country and your opponent. Both teams can be changed.</p><button id="swapTeams">⇄ Swap sides</button></div>
+<div class="choose-grid"><div class="panel"><div class="panel-head"><h2><span class="step">1</span>Your team</h2><span class="eyebrow">You control</span></div><label for="homeTeam">Choose a country</label><select id="homeTeam"></select><label>Choose your penalty taker</label><div id="homePlayers" class="players"></div></div>
+<div class="panel"><div class="panel-head"><h2><span class="step">2</span>Your opponent</h2><button id="randomTeam" class="small">Shuffle ↻</button></div><label for="awayTeam">Choose a country</label><select id="awayTeam"></select><label>Choose the opposing penalty taker</label><div id="awayPlayers" class="players"></div></div></div>
+<div class="settings"><div><label for="mode">Game mode</label><select id="mode"><option value="quick">Quick shootout</option><option value="cup">Cup run • win 5 rounds</option></select></div><div><label for="difficulty">Difficulty</label><select id="difficulty"><option value="easy">Rookie</option><option value="normal" selected>Professional</option><option value="hard">World class</option></select></div><button id="start" class="primary">Enter the stadium →</button></div>
+<p class="fine">Player stats are <strong>fictional arcade ratings out of 100</strong>, created for this game; they are not official FIFA or EA ratings or real career statistics. Higher accuracy reduces shot spread, power makes shots harder to save, and composure widens the timing sweet spot.</p>
+<details><summary>How to play & roster notes</summary><p><strong>Shoot:</strong> choose a target in the goal or use the six target buttons. Set your power, start the timing meter, then kick when the white marker reaches the green area. More power is harder to control. Aim near the posts for greater risk and reward.</p><p><strong>Save:</strong> read the opponent’s hint, select one of six areas, and commit your dive. Directions are always from your screen’s viewpoint. Hints are imperfect. Keyboard: 1–6 selects a target, Space starts/stops the meter or dives, P pauses.</p><p><strong>Change teams:</strong> use either country dropdown before playing. Swap sides exchanges both countries and their selected players. During a match, press <strong>Switch teams</strong> at the top, then confirm. You return to team selection; the current shootout and Cup run end. The next match starts at 0–0.</p><p>Each team gets up to five kicks, ending early when the other side cannot catch up. A tie goes to sudden death, with equal turns before deciding the winner. This arcade format lets your chosen star take every kick. Cup run is a simplified five-round knockout challenge using the 2026 countries, not a recreation of the full group stage or official bracket. Your first opponent is your selection; four new countries follow if you keep winning.</p><p>All 48 countries and two selected players per country are drawn from <a href="https://fdp.fifa.org/assetspublic/ce281/pdf/SquadLists-English.pdf" target="_blank" rel="noopener" style="color:#baff65">FIFA’s 2026 World Cup squad lists</a> (19 July 2026 edition; checked 9 September 2026). Game ratings are fictional, not official player statistics. Independent fan game; no affiliation with FIFA. Everything needed to play is contained in this file; the reference link is optional.</p></details>
+</section>
+<section id="arena" hidden>
+<div class="arena-top"><span id="matchTitle" class="eyebrow">Quick shootout</span><div class="arena-buttons"><button id="switchTeams" class="primary small">⇄ Switch teams</button><button id="sound" class="small" aria-pressed="false">Sound: off</button><button id="pause" class="small">Pause</button></div></div>
+<div class="scoreboard"><div><div id="homeName" class="team-title"></div><div id="homeStar" class="team-player"></div><div id="homeDots" class="dots" aria-label="Your kicks"></div></div><div><div id="score" class="score">0 : 0</div><div id="round" class="round">Kick 1 of 5</div></div><div class="team-right"><div id="awayName" class="team-title"></div><div id="awayStar" class="team-player"></div><div id="awayDots" class="dots" aria-label="Opponent kicks"></div></div></div>
+<div class="pitch-wrap"><canvas id="pitch" width="1000" height="510" aria-label="Penalty pitch. Choose a target using the six buttons below."></canvas><div id="pitchLabel" class="pitch-label">YOU ARE SHOOTING</div></div>
+<div class="controls"><div><div id="turnBadge" class="turn-badge">YOUR PENALTY</div><div id="status" class="status" role="status" aria-live="polite">Pick your corner.</div><p id="instruction" class="instruction"></p><div id="scout" class="hint" hidden></div><div id="powerControls"><label class="power-row" for="power">Shot power <input id="power" type="range" min="35" max="100" value="72"><output id="powerValue">72%</output></label><div class="small muted">Timing • stop inside the bright green zone</div><div class="timing-bar" aria-hidden="true"><div id="sweet" class="sweet"></div><div id="needle" class="needle" style="left:0%"></div></div></div><div class="action-row"><button id="action" class="primary">Start timing</button><button id="next" class="primary" hidden>Next kick →</button></div></div><div><div id="targetCaption" class="grid-caption">AIM • select a zone or tap anywhere inside the goal</div><div id="targets" class="target-grid"></div><p class="fine" id="tip">Corners beat the keeper. A well-timed shot keeps the ball on target.</p></div></div>
+<div class="bottom-bar"><span id="sessionStats"></span><div class="bottom-actions"><button id="showHistory" class="small">Kick history</button><button id="exit" class="small">Change teams</button></div></div>
+</section>
+<dialog id="result"><div class="medal" id="resultIcon">🏆</div><div class="eyebrow" id="resultTag">Full time</div><h2 id="resultTitle"></h2><p id="resultText"></p><div class="match-stats" id="resultStats"></div><div class="action-row"><button id="replay" class="primary">Play again</button><button id="resultHome">Choose teams</button></div></dialog>
+<dialog id="exitDialog"><h2>Switch teams?</h2><p>Your current shootout and Cup run will end. Choose new countries or swap sides, then start a fresh match at 0–0. Your completed-match record is kept.</p><div class="action-row"><button id="keepPlaying">Keep playing</button><button id="leave" class="primary">Choose new teams →</button></div></dialog>
+<dialog id="historyDialog"><h2>Kick history</h2><div id="history" class="history" aria-label="Shootout history"></div><button id="closeHistory" class="primary">Back to match</button></dialog>
+</main><script>
+'use strict';
+// Verified 2026 squad selections; original fictional gameplay ratings. No external assets.
+const DATA=[
+['Algeria','🇩🇿','#e8eee8','Riyad Mahrez',90,84,90,'Mohamed Amoura',85,88,83],
+['Argentina','🇦🇷','#83cce6','Lionel Messi',96,85,95,'Julián Álvarez',87,87,83],
+['Australia','🇦🇺','#f8c841','Mathew Leckie',79,82,81,'Nestory Irankunda',81,90,79],
+['Austria','🇦🇹','#d93845','Marko Arnautović',86,92,90,'Marcel Sabitzer',87,88,86],
+['Belgium','🇧🇪','#df334a','Kevin De Bruyne',90,92,88,'Romelu Lukaku',84,96,83],
+['Bosnia and Herzegovina','🇧🇦','#365bc0','Edin Džeko',88,91,93,'Ermedin Demirović',85,87,85],
+['Brazil','🇧🇷','#f7d744','Neymar',94,85,92,'Vinícius Júnior',90,91,87],
+['Canada','🇨🇦','#e94549','Jonathan David',86,85,85,'Alphonso Davies',81,88,79],
+['Cape Verde','🇨🇻','#3557b4','Ryan Mendes',83,83,88,'Jovane Cabral',82,87,81],
+['Colombia','🇨🇴','#ecd846','Luis Díaz',89,89,86,'James Rodríguez',91,84,91],
+['Croatia','🇭🇷','#efeeee','Luka Modrić',92,79,95,'Ivan Perišić',85,89,87],
+['Curaçao','🇨🇼','#3063c9','Leandro Bacuna',83,85,87,'Juninho Bacuna',83,87,82],
+['Czechia','🇨🇿','#d73b47','Patrik Schick',89,92,88,'Tomáš Souček',83,89,87],
+['DR Congo','🇨🇩','#71bde4','Yoane Wissa',86,88,84,'Cédric Bakambu',85,87,89],
+['Ecuador','🇪🇨','#f2d23c','Enner Valencia',86,89,86,'Moisés Caicedo',83,86,85],
+['Egypt','🇪🇬','#d83b3e','Mohamed Salah',94,90,93,'Omar Marmoush',88,92,85],
+['England','🏴󠁧󠁢󠁥󠁮󠁧󠁿','#f0f4fa','Harry Kane',94,94,92,'Bukayo Saka',88,82,86],
+['France','🇫🇷','#3650a4','Kylian Mbappé',93,95,90,'Ousmane Dembélé',91,89,89],
+['Germany','🇩🇪','#f2f3f2','Kai Havertz',87,86,87,'Jamal Musiala',91,84,87],
+['Ghana','🇬🇭','#f1f1ec','Jordan Ayew',84,84,89,'Antoine Semenyo',86,93,83],
+['Haiti','🇭🇹','#3559b9','Duckens Nazon',82,88,85,'Frantzdy Pierrot',81,91,82],
+['Iran','🇮🇷','#e8edeb','Mehdi Taremi',88,87,87,'Alireza Jahanbakhsh',84,86,87],
+['Iraq','🇮🇶','#2c8a61','Aymen Hussein',83,91,86,'Ali Jasim',82,83,79],
+['Ivory Coast','🇨🇮','#ef8b34','Franck Kessié',89,91,91,'Amad Diallo',87,83,83],
+['Japan','🇯🇵','#305fc0','Takefusa Kubo',89,82,85,'Ritsu Dōan',85,86,81],
+['Jordan','🇯🇴','#e6e9e7','Mousa Al-Tamari',85,86,84,'Ali Olwan',83,85,84],
+['Mexico','🇲🇽','#208354','Santiago Giménez',87,90,85,'Raúl Jiménez',88,89,90],
+['Morocco','🇲🇦','#d53d42','Brahim Díaz',89,84,87,'Achraf Hakimi',85,88,90],
+['Netherlands','🇳🇱','#ed882b','Memphis Depay',89,92,88,'Cody Gakpo',87,90,83],
+['New Zealand','🇳🇿','#edf2ee','Chris Wood',88,92,91,'Sarpreet Singh',83,80,83],
+['Norway','🇳🇴','#d63545','Erling Haaland',94,98,92,'Martin Ødegaard',92,83,92],
+['Panama','🇵🇦','#d73e48','José Fajardo',82,87,84,'Adalberto Carrasquilla',84,81,85],
+['Paraguay','🇵🇾','#e44a51','Miguel Almirón',86,83,86,'Julio Enciso',85,89,80],
+['Portugal','🇵🇹','#c62d45','Cristiano Ronaldo',93,97,95,'Bruno Fernandes',93,88,94],
+['Qatar','🇶🇦','#9b3059','Akram Afif',82,77,82,'Almoez Ali',79,84,78],
+['Saudi Arabia','🇸🇦','#298c64','Salem Al-Dawsari',85,83,86,'Saleh Al-Shehri',81,85,80],
+['Scotland','🏴󠁧󠁢󠁳󠁣󠁴󠁿','#2b437f','Scott McTominay',86,92,88,'John McGinn',85,85,87],
+['Senegal','🇸🇳','#ecefeb','Sadio Mané',90,89,90,'Ismaïla Sarr',83,87,80],
+['South Africa','🇿🇦','#edcf3e','Lyle Foster',83,88,82,'Teboho Mokoena',85,90,86],
+['South Korea','🇰🇷','#ec4c52','Son Heung-min',91,93,89,'Hwang Hee-chan',84,87,81],
+['Spain','🇪🇸','#cb3042','Lamine Yamal',92,85,89,'Ferran Torres',86,85,84],
+['Sweden','🇸🇪','#f0ce37','Alexander Isak',92,92,90,'Viktor Gyökeres',90,96,89],
+['Switzerland','🇨🇭','#da3540','Granit Xhaka',87,91,91,'Breel Embolo',83,93,80],
+['Tunisia','🇹🇳','#ededee','Elias Achouri',83,83,82,'Hannibal Mejbri',83,80,81],
+['Türkiye','🇹🇷','#d72f40','Hakan Çalhanoğlu',94,92,93,'Arda Güler',90,85,84],
+['United States','🇺🇸','#f1f3f7','Christian Pulisic',87,83,87,'Timothy Weah',82,88,79],
+['Uruguay','🇺🇾','#79c3e3','Darwin Núñez',86,94,84,'Federico Valverde',89,95,89],
+['Uzbekistan','🇺🇿','#eceff0','Eldor Shomurodov',85,87,87,'Abbosbek Fayzullaev',84,81,81]
+].map((r,id)=>({id,name:r[0],flag:r[1],color:r[2],players:[{name:r[3],accuracy:r[4],power:r[5],composure:r[6]},{name:r[7],accuracy:r[8],power:r[9],composure:r[10]}]}));
+const $=id=>document.getElementById(id), canvas=$('pitch'),ctx=canvas.getContext('2d');
+const ZONES=[{name:'Top left',x:295,y:197},{name:'Top centre',x:500,y:197},{name:'Top right',x:705,y:197},{name:'Bottom left',x:295,y:296},{name:'Bottom centre',x:500,y:296},{name:'Bottom right',x:705,y:296}];
+const DIFF={easy:{speed:.48,spread:.72,reach:86,hint:.86},normal:{speed:.70,spread:1,reach:105,hint:.68},hard:{speed:.97,spread:1.2,reach:127,hint:.48}};
+let selected={home:0,away:0},game=null,phase='setup',paused=false,aim={...ZONES[0]},chosenZone=0,meter=0,meterTime=0,anim=null,last=0,elapsed=0,soundOn=false,audioContext=null;
+let career={wins:0,played:0,goals:0,saves:0,cups:0};try{const s=JSON.parse(localStorage.getItem('penaltyNights.v1'));if(s)for(const k of Object.keys(career))if(Number.isFinite(s[k])&&s[k]>=0)career[k]=s[k]}catch(e){}
+function saveCareer(){try{localStorage.setItem('penaltyNights.v1',JSON.stringify(career))}catch(e){}}
+function shirt(color){return `<svg class="shirt" viewBox="0 0 100 100" aria-hidden="true"><path d="M30 12L12 22 2 44 22 54 28 43 28 88 72 88 72 43 78 54 98 44 88 22 70 12 60 18 40 18Z" fill="${color}" stroke="#ffffff44" stroke-width="2"/><path d="M40 18Q50 32 60 18" fill="none" stroke="#152738" stroke-width="4"/><path d="M33 38V80M67 38V80" stroke="#ffffff25" stroke-width="5"/><path d="M46 45L54 45 55 52 50 57 45 52Z" fill="#ffffffb0"/></svg>`}
+function renderPlayers(side){const t=DATA[+$(side+'Team').value];$(side+'Players').innerHTML=t.players.map((p,i)=>`<button class="player ${selected[side]===i?'selected':''}" aria-pressed="${selected[side]===i}" data-player="${i}" aria-label="Choose ${p.name}">${shirt(t.color)}<span class="player-name">${p.name}</span><div class="role">Arcade ratings / 100</div>${['accuracy','power','composure'].map(k=>`<div class="stat"><span>${k[0].toUpperCase()+k.slice(1)}</span><b>${p[k]}</b><span class="track"><i style="width:${p[k]}%"></i></span></div>`).join('')}</button>`).join('');$(side+'Players').querySelectorAll('button').forEach(b=>b.onclick=()=>{selected[side]=+b.dataset.player;renderPlayers(side)})}
+for(const side of ['home','away']){$(side+'Team').innerHTML=DATA.map(t=>`<option value="${t.id}">${t.flag} ${t.name}</option>`).join('');$(side+'Team').value=DATA.find(t=>t.name===(side==='home'?'Argentina':'France')).id;$(side+'Team').onchange=()=>{selected[side]=0;const other=side==='home'?'away':'home';if($(side+'Team').value===$(other+'Team').value){$(other+'Team').value=(+$(side+'Team').value+1)%DATA.length;selected[other]=0;renderPlayers(other)}renderPlayers(side);selectionNotice()};renderPlayers(side)}
+function selectionNotice(){const h=DATA[+$('homeTeam').value],a=DATA[+$('awayTeam').value];$('selectionNotice').textContent=`You: ${h.name} · Opponent: ${a.name}. Select a country below to change it.`}
+$('swapTeams').onclick=()=>{const h=$('homeTeam').value;$('homeTeam').value=$('awayTeam').value;$('awayTeam').value=h;[selected.home,selected.away]=[selected.away,selected.home];renderPlayers('home');renderPlayers('away');selectionNotice()};
+selectionNotice();
+$('randomTeam').onclick=()=>{const options=DATA.filter(t=>t.id!==+$('homeTeam').value&&t.id!==+$('awayTeam').value);$('awayTeam').value=options[Math.floor(Math.random()*options.length)].id;selected.away=0;renderPlayers('away');selectionNotice()};
+$('targets').innerHTML=ZONES.map((z,i)=>`<button data-zone="${i}" class="${i===0?'selected':''}" aria-pressed="${i===0}">${i+1} · ${z.name}</button>`).join('');$('targets').querySelectorAll('button').forEach(b=>b.onclick=()=>chooseZone(+b.dataset.zone));
+function chooseZone(i){if(paused||!['aim','timing','defend'].includes(phase))return;chosenZone=i;aim={...ZONES[i]};updateTargets()}
+function updateTargets(){$('targets').querySelectorAll('button').forEach((b,i)=>{b.classList.toggle('selected',chosenZone===i);b.setAttribute('aria-pressed',chosenZone===i);b.disabled=paused||!['aim','timing','defend'].includes(phase)})}
+canvas.addEventListener('pointerdown',e=>{if(paused||!['aim','timing','defend'].includes(phase))return;const r=canvas.getBoundingClientRect(),x=(e.clientX-r.left)*1000/r.width,y=(e.clientY-r.top)*510/r.height;if(x<255||x>745||y<167||y>329)return;if(phase==='defend'){chooseZone(ZONES.reduce((best,z,i)=>Math.hypot(z.x-x,z.y-y)<Math.hypot(ZONES[best].x-x,ZONES[best].y-y)?i:best,0))}else{aim={x,y};chosenZone=-1;updateTargets()}});
+$('power').oninput=()=>{$('powerValue').textContent=$('power').value+'%'};
+function beep(freq,duration=.1){if(!soundOn)return;try{audioContext=audioContext||new (window.AudioContext||window.webkitAudioContext)();audioContext.resume();const o=audioContext.createOscillator(),g=audioContext.createGain();o.type='sine';o.frequency.value=freq;g.gain.setValueAtTime(.08,audioContext.currentTime);g.gain.exponentialRampToValueAtTime(.001,audioContext.currentTime+duration);o.connect(g);g.connect(audioContext.destination);o.start();o.stop(audioContext.currentTime+duration)}catch(e){}}
+$('sound').onclick=()=>{soundOn=!soundOn;$('sound').textContent='Sound: '+(soundOn?'on':'off');$('sound').setAttribute('aria-pressed',soundOn);beep(660)};
+function newMatch(isNext=false){
+ if(!isNext){const home=DATA[+$('homeTeam').value],away=DATA[+$('awayTeam').value];const rest=DATA.filter(t=>t.id!==home.id&&t.id!==away.id);for(let i=rest.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[rest[i],rest[j]]=[rest[j],rest[i]]}game={home,away,hp:home.players[selected.home],ap:away.players[selected.away],mode:$('mode').value,difficulty:$('difficulty').value,stage:0,opponents:[away,...rest.slice(0,4)]}}
+ else{game.stage++;game.away=game.opponents[game.stage];game.ap=game.away.players[Math.floor(Math.random()*2)]}
+ game.h=[];game.a=[];game.goals=0;game.saves=0;game.perfect=0;game.finished=false;game.winner=null;game.log=[];game.cpu=null;paused=false;anim=null;
+ $('setup').hidden=true;$('arena').hidden=false;document.body.classList.add('in-match');fitViewport();requestAnimationFrame(fitPitch);$('result').close();$('homeName').textContent=game.home.flag+' '+game.home.name;$('awayName').textContent=game.away.flag+' '+game.away.name;$('homeStar').textContent=game.hp.name;$('awayStar').textContent=game.ap.name;$('matchTitle').textContent=game.mode==='cup'?['Round of 32','Round of 16','Quarter-final','Semi-final','Final'][game.stage]+' • Cup run':'Quick shootout';$('history').innerHTML='';$('pause').textContent='Pause';$('pause').disabled=false;updateScore();prepareTurn();window.scrollTo({top:0,behavior:'smooth'});
+}
+$('start').onclick=()=>newMatch();
+function total(a){return a.reduce((s,v)=>s+(v?1:0),0)}
+function decideWinner(h,a){const hs=total(h),as=total(a);if(h.length<=5&&a.length<=5){if(hs>as+(5-a.length))return 'home';if(as>hs+(5-h.length))return 'away'}if(h.length>=5&&a.length>=5&&h.length===a.length&&hs!==as)return hs>as?'home':'away';return null}
+function updateScore(){$('showHistory').disabled=game.h.length+game.a.length===0;$('score').textContent=total(game.h)+' : '+total(game.a);for(const [id,arr] of [['homeDots',game.h],['awayDots',game.a]]){$(id).innerHTML=Array.from({length:Math.max(5,arr.length)},(_,i)=>`<span class="dot ${i<arr.length?(arr[i]?'goal':'miss'):''}" title="Kick ${i+1}: ${i<arr.length?(arr[i]?'goal':'miss'):'pending'}">${i<arr.length?(arr[i]?'✓':'×'):'·'}</span>`).join('')}$('sessionStats').textContent=`Your record: ${career.wins} wins / ${career.played} matches · ${career.cups} cups`}
+function sweetWidth(){return .08+(game.hp.composure-70)*.004+(game.difficulty==='easy'?.05:game.difficulty==='hard'?-.02:0)}
+function prepareTurn(){
+ anim=null;meter=0;meterTime=0;const shooting=game.h.length===game.a.length;phase=shooting?'aim':'defend';aim={...ZONES[0]};chosenZone=0;
+ const kick=(shooting?game.h.length:game.a.length)+1;$('round').textContent=kick<=5?`Kick ${kick} of 5`:`Sudden death ${kick-5}`;
+ $('turnBadge').textContent=shooting?'YOUR PENALTY':'YOUR GOALKEEPER';$('pitchLabel').textContent=shooting?'YOU ARE SHOOTING':'YOU ARE SAVING';$('status').textContent=shooting?'Pick your corner.':'Make the big save.';
+ $('instruction').textContent=shooting?`${game.hp.name} is ready. Aim, set power, then time your kick.`:`${game.ap.name} is taking the penalty. Pick a zone and commit your dive.`;
+ $('powerControls').hidden=!shooting;$('power').disabled=false;$('action').hidden=false;$('action').disabled=false;$('action').textContent=shooting?'Start timing':'Dive & face the shot';$('next').hidden=true;$('next').disabled=false;$('scout').hidden=shooting;$('targetCaption').textContent=shooting?'AIM • choose a zone or tap inside the goal':'DIVE • directions are from your screen’s viewpoint';$('tip').textContent=shooting?'More power beats the keeper, but makes poor timing more costly.':'The scouting hint is a clue, not a guarantee. Choose both a side and a height.';
+ const w=sweetWidth();$('sweet').style.left=(.5-w/2)*100+'%';$('sweet').style.width=w*100+'%';$('needle').style.left='0%';
+ if(!shooting){const d=DIFF[game.difficulty],zone=Math.floor(Math.random()*6),target=ZONES[zone],spread=(100-game.ap.accuracy)*1.35;const x=target.x+(Math.random()-.5)*spread,y=target.y+(Math.random()-.5)*spread;const miss=Math.random()<(game.difficulty==='easy'?.16:game.difficulty==='hard'?.045:.085);game.cpu={zone,x:miss?(x<500?230:770):x,y,power:game.ap.power};const col=zone%3,hinted=Math.random()<d.hint?col:(col+1+Math.floor(Math.random()*2))%3;$('scout').textContent='Scout: '+game.ap.name+' may aim '+['to your left.','down the middle.','to your right.'][hinted]}
+ updateTargets();
+}
+$('action').onclick=()=>{if(paused)return;if(phase==='aim'){phase='timing';meterTime=0;$('action').textContent='KICK NOW!';$('status').textContent='Wait for green…';$('power').disabled=true;beep(350)}else if(phase==='timing')shoot();else if(phase==='defend')defend()};
+function shoot(){
+ const p=game.hp,d=DIFF[game.difficulty],power=+$('power').value/100,off=Math.max(0,Math.abs(meter-.5)-sweetWidth()/2),perfect=off===0;
+ const spread=((100-p.accuracy)*.65+off*230*(.35+power))*d.spread;
+ const x=aim.x+(Math.random()-.5)*spread*2,y=aim.y+(Math.random()-.5)*spread*1.6-off*Math.max(0,power-.67)*130;
+ const z=ZONES[Math.floor(Math.random()*6)],strength=power*p.power/100,reach=d.reach*(1.27-strength*.48),saved=Math.hypot(x-z.x,(y-z.y)*1.25)<reach;
+ const onTarget=x>260&&x<740&&y>172&&y<326,goal=onTarget&&!saved;
+ if(perfect)game.perfect++;startAnimation({x,y,kx:z.x,ky:z.y,goal,saved:onTarget&&saved,shooting:true,power:strength,message:!onTarget?'Off target!':saved?'The keeper saves!':perfect?'Perfect strike. GOAL!':'GOAL!',detail:!onTarget?'Try less power or stop closer to the green timing zone.':saved?'Good effort! Try another corner or add a little power.':perfect?'Beautiful timing — right in the sweet spot.':'You found the net. Now defend your goal.'});
+}
+function defend(){const s=game.cpu,z=ZONES[chosenZone],reach=(game.difficulty==='easy'?121:game.difficulty==='hard'?86:103)*(1.2-s.power/100*.2),onTarget=s.x>260&&s.x<740&&s.y>172&&s.y<326,saved=onTarget&&Math.hypot(s.x-z.x,(s.y-z.y)*1.25)<reach;startAnimation({x:s.x,y:s.y,kx:z.x,ky:z.y,goal:onTarget&&!saved,saved,shooting:false,power:s.power/100,message:saved?'WHAT A SAVE!':!onTarget?'They missed!':'Opponent scores.',detail:saved?'You read the shot and got behind the ball.':!onTarget?'Their shot goes wide. Back to the penalty spot.':'Reset, take a breath, and make your next kick count.'})}
+function startAnimation(a){phase='flight';anim={...a,t:0};$('action').disabled=true;$('status').textContent=a.shooting?'Here comes the shot…':'The opponent shoots…';$('instruction').textContent='';$('scout').hidden=true;updateTargets();beep(180,.12)}
+function finishShot(){
+ const a=anim,arr=a.shooting?game.h:game.a;arr.push(a.goal);if(a.shooting&&a.goal)game.goals++;if(!a.shooting&&a.saved)game.saves++;
+ phase='result';$('status').textContent=a.message;$('instruction').textContent=a.detail;$('action').hidden=true;$('next').hidden=false;game.winner=decideWinner(game.h,game.a);$('next').textContent=game.winner?'See result →':'Next kick →';
+ game.log.push(`${a.shooting?game.home.name:game.away.name} ${arr.length}: ${a.goal?'GOAL':a.saved?'SAVED':'MISS'}`);$('history').innerHTML=game.log.map(t=>`<span>${t}</span>`).join('');updateScore();updateTargets();beep(a.goal?680:290,.25)
+}
+$('next').onclick=()=>{if(paused||phase!=='result')return;if(game.winner)endMatch();else prepareTurn()};
+function endMatch(){phase='over';game.finished=true;const won=game.winner==='home',champion=won&&game.mode==='cup'&&game.stage===4;career.played++;career.wins+=won?1:0;career.goals+=game.goals;career.saves+=game.saves;career.cups+=champion?1:0;saveCareer();updateScore();$('pause').disabled=true;
+ $('resultIcon').textContent=champion?'🏆':won?'🥇':'⚽';$('resultTag').textContent=champion?'Cup run complete':game.mode==='cup'?'Cup run • '+(won?'through to the next round':'eliminated'):'Full time';$('resultTitle').textContent=champion?'World champions!':won?'You win the shootout!':'So close. Go again!';$('resultText').textContent=`${game.home.name} ${total(game.h)} – ${total(game.a)} ${game.away.name}. `+(champion?'Five rounds. One champion.':won?'Cool under pressure. Well played!':'Every penalty is a fresh chance to improve.');$('resultStats').innerHTML=`<div><b>${game.goals}</b><span>Your goals</span></div><div><b>${game.saves}</b><span>Your saves</span></div><div><b>${game.perfect}</b><span>Perfect timings</span></div>`;$('replay').textContent=won&&game.mode==='cup'&&!champion?'Next round →':'Play again';$('result').showModal();updateTargets()
+}
+$('replay').onclick=()=>newMatch(game.mode==='cup'&&game.winner==='home'&&game.stage<4);
+function goHome(){if(game){$('homeTeam').value=game.home.id;$('awayTeam').value=game.away.id;selected.home=game.home.players.indexOf(game.hp);selected.away=game.away.players.indexOf(game.ap);renderPlayers('home');renderPlayers('away')}$('result').close();$('exitDialog').close();$('arena').hidden=true;$('setup').hidden=false;document.body.classList.remove('in-match');phase='setup';paused=false;anim=null;game=null;selectionNotice();window.scrollTo({top:0,behavior:'smooth'});$('homeTeam').focus({preventScroll:true})}
+$('resultHome').onclick=goHome;$('result').addEventListener('cancel',e=>{e.preventDefault();goHome()});
+function togglePause(force){if(!game||phase==='over')return;paused=typeof force==='boolean'?force:!paused;$('pause').textContent=paused?'Resume':'Pause';$('action').disabled=paused||phase==='flight';$('next').disabled=paused;$('power').disabled=paused||phase!=='aim';updateTargets()}
+$('pause').onclick=()=>togglePause();$('exit').onclick=()=>{if(phase==='over'){goHome();return}togglePause(true);$('exitDialog').showModal()};$('keepPlaying').onclick=()=>{$('exitDialog').close();togglePause(false)};$('leave').onclick=goHome;$('exitDialog').addEventListener('cancel',()=>togglePause(false));document.addEventListener('visibilitychange',()=>{if(document.hidden&&game&&phase!=='over')togglePause(true)});
+$('switchTeams').onclick=()=>$('exit').click();
+window.addEventListener('keydown',e=>{if(!game||$('result').open||$('exitDialog').open||$('historyDialog').open||['INPUT','SELECT'].includes(document.activeElement.tagName))return;if(e.repeat)return;if(e.key.toLowerCase()==='p'){e.preventDefault();togglePause();return}if(paused)return;if(/^[1-6]$/.test(e.key)){e.preventDefault();chooseZone(+e.key-1)}if(e.code==='Space'){if(['BUTTON','SUMMARY'].includes(document.activeElement.tagName))return;e.preventDefault();if(phase==='result')$('next').click();else $('action').click()}});
+// Canvas stadium: all geometry and animation are embedded for offline play.
+function ellipse(x,y,rx,ry,color){ctx.fillStyle=color;ctx.beginPath();ctx.ellipse(x,y,rx,ry,0,0,Math.PI*2);ctx.fill()}
+function line(x1,y1,x2,y2,color,w=2){ctx.strokeStyle=color;ctx.lineWidth=w;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke()}
+function player(x,y,scale,color,angle=0,kick=false){ctx.save();ctx.translate(x,y);ctx.scale(scale,scale);ctx.rotate(angle);ctx.lineCap='round';ellipse(0,55,23,5,'#07180e44');line(-9,22,kick?-19:-13,49,'#d0a27f',9);line(9,22,kick?28:13,kick?34:49,'#d0a27f',9);line(-13,49,-20,50,'#111e2c',7);line(kick?28:13,kick?34:49,kick?35:20,kick?34:50,'#111e2c',7);ctx.fillStyle='#152c44';ctx.fillRect(-15,16,30,14);line(-15,-17,-29,kick?-4:4,color,10);line(15,-17,29,kick?-25:4,color,10);ctx.fillStyle=color;ctx.beginPath();ctx.moveTo(-16,-23);ctx.lineTo(16,-23);ctx.lineTo(16,19);ctx.lineTo(-16,19);ctx.closePath();ctx.fill();ellipse(0,-39,12,15,'#d0a27f');ellipse(0,-47,12,7,'#182433');ctx.fillStyle='#ffffffbb';ctx.fillRect(-3,-7,6,13);ctx.restore()}
+function keeper(x,y,t,dx,dy){ctx.save();ctx.translate(x,y);ctx.rotate((dx-500)/205*.88*t);const high=dy<230;ctx.lineCap='round';line(-9,18,-20,49,'#193440',10);line(9,18,20,49,'#193440',10);line(-20,49,-27,50,'#f5f6ef',7);line(20,49,27,50,'#f5f6ef',7);line(-15,-19,-35,-13-(high?25:0)*t,'#ffb45d',10);line(15,-19,35,-13-(high?25:0)*t,'#ffb45d',10);ellipse(-37,-13-(high?25:0)*t,7,8,'#fff9e8');ellipse(37,-13-(high?25:0)*t,7,8,'#fff9e8');ctx.fillStyle='#ffb45d';ctx.fillRect(-16,-27,32,48);ellipse(0,-44,12,14,'#bd8b6d');ellipse(0,-52,12,6,'#233036');ctx.restore()}
+function ball(x,y,r,rotation){ellipse(x,y,r,r,'#fafafa');ctx.save();ctx.translate(x,y);ctx.rotate(rotation);ctx.fillStyle='#172a36';ctx.beginPath();for(let i=0;i<5;i++){const a=i*Math.PI*2/5;ctx.lineTo(Math.cos(a)*r*.4,Math.sin(a)*r*.4)}ctx.closePath();ctx.fill();for(let i=0;i<5;i++){const a=i*Math.PI*2/5;ellipse(Math.cos(a)*r*.89,Math.sin(a)*r*.89,r*.2,r*.2,'#243344')}ctx.restore()}
+function render(){
+ if(!game)return;ctx.clearRect(0,0,1000,510);
+ const sky=ctx.createLinearGradient(0,0,0,200);sky.addColorStop(0,'#071426');sky.addColorStop(1,'#345264');ctx.fillStyle=sky;ctx.fillRect(0,0,1000,220);
+ // illuminated stands
+ ctx.fillStyle='#112b40';ctx.beginPath();ctx.moveTo(0,68);ctx.quadraticCurveTo(500,150,1000,68);ctx.lineTo(1000,220);ctx.lineTo(0,220);ctx.fill();
+ for(let row=0;row<9;row++)for(let col=0;col<91;col++){const x=col*11+(row%2)*4,y=94+row*12+Math.sin(col/90*Math.PI)*28;if(y>203)continue;ctx.fillStyle=['#83a3ad','#477280','#c7b184','#bacecf','#346077'][(col*7+row*11)%5];ctx.fillRect(x,y,3,4)}
+ line(0,86,1000,86,'#54757a',2);for(const x of [85,915]){const g=ctx.createRadialGradient(x,52,0,x,52,110);g.addColorStop(0,'#e5fcff65');g.addColorStop(1,'#e5fcff00');ctx.fillStyle=g;ctx.fillRect(x-110,0,220,180);ctx.fillStyle='#f2ffff';ctx.fillRect(x-44,42,88,8)}
+ ctx.fillStyle='#192d43';ctx.fillRect(0,204,1000,32);ctx.fillStyle='#acc6c5';ctx.font='bold 12px system-ui';ctx.textAlign='center';for(let x=115;x<1000;x+=250)ctx.fillText('P E N A L T Y  N I G H T S',x,224);
+ ctx.fillStyle='#287350';ctx.fillRect(0,236,1000,274);for(let i=0;i<6;i++){ctx.fillStyle=i%2?'#2d8055':'#28734e';ctx.fillRect(0,236+i*46,1000,46)}
+ line(250,330,95,510,'#d5ebc36b',3);line(750,330,905,510,'#d5ebc36b',3);line(150,446,850,446,'#d5ebc36b',3);line(358,335,325,382,'#d5ebc38c');line(642,335,675,382,'#d5ebc38c');line(325,382,675,382,'#d5ebc38c');ellipse(500,443,5,2,'#e6efd9');
+ // goal depth, net, posts
+ ctx.fillStyle='#071c284b';ctx.beginPath();ctx.moveTo(260,170);ctx.lineTo(740,170);ctx.lineTo(765,330);ctx.lineTo(235,330);ctx.closePath();ctx.fill();
+ for(let x=260;x<=740;x+=20)line(x,170,500+(x-500)*1.1,330,'#c5e5e42e',1);for(let y=170;y<=330;y+=16)line(260-(y-170)*.156,y,740+(y-170)*.156,y,'#c5e5e42e',1);
+ line(260,170,260,330,'#eafaf3',7);line(740,170,740,330,'#eafaf3',7);line(260,170,740,170,'#effff7',7);line(260,330,740,330,'#eafaf370',2);
+ const choosing=['aim','timing','defend'].includes(phase);
+ if(choosing){ZONES.forEach((z,i)=>{ctx.strokeStyle=i===chosenZone?'#baff65':'#edfce846';ctx.lineWidth=i===chosenZone?3:1;ctx.setLineDash([5,5]);ctx.strokeRect(z.x-27,z.y-19,54,38);ctx.setLineDash([]);ctx.fillStyle=i===chosenZone?'#baff65':'#edffe891';ctx.font='bold 12px system-ui';ctx.fillText(i+1,z.x,z.y+4)})}
+ let kx=500,ky=279,kt=0;if(anim){kt=Math.min(1,Math.max(0,(anim.t-.12)/.63));const ease=1-(1-kt)**3;kx=500+(anim.kx-500)*ease;ky=279+(anim.ky-270)*ease}ellipse(kx,333,35,6,'#122c2455');keeper(kx,ky,kt,anim?anim.kx:500,anim?anim.ky:270);
+ const shooting=phase==='defend'?false:anim?anim.shooting:true,team=shooting?game.home:game.away;
+ player(anim?440+Math.min(anim.t*120,47):440,415,1.05,team.color,0,anim&&anim.t>.08);
+ if(choosing){const pulse=1+Math.sin(elapsed*4)*.07;ctx.strokeStyle=phase==='defend'?'#ffda80':'#baff65';ctx.lineWidth=2;ctx.beginPath();ctx.arc(aim.x,aim.y,15*pulse,0,Math.PI*2);ctx.stroke();line(aim.x-23,aim.y,aim.x-8,aim.y,ctx.strokeStyle,2);line(aim.x+8,aim.y,aim.x+23,aim.y,ctx.strokeStyle,2);line(aim.x,aim.y-23,aim.x,aim.y-8,ctx.strokeStyle,2);line(aim.x,aim.y+8,aim.x,aim.y+23,ctx.strokeStyle,2)}
+ let bx=500,by=443,br=13;if(anim){const t=Math.min(1,anim.t/(.85-(anim.power||.7)*.2)),e=1-(1-t)**2;bx=500+(anim.x-500)*e;by=443+(anim.y-443)*e-Math.sin(t*Math.PI)*60;br=13-6*e;if(t===1&&anim.saved){by+=Math.min(30,(anim.t-.7)*40)}if(t===1&&anim.goal){bx+=(anim.x-500)*.015;by+=Math.min(12,Math.max(0,(anim.t-.8)*15))}}
+ ellipse(bx,Math.max(by+10,334),br*1.2,br*.25,'#102e2344');ball(bx,by,br,anim?anim.t*16:0);
+ if(phase==='result'){const a=anim;ctx.fillStyle='#071421d9';ctx.fillRect(295,62,410,55);ctx.fillStyle=a.goal?'#baff65':a.saved?'#ffda80':'#f4f8fb';ctx.font='900 28px system-ui';ctx.fillText(a.goal?'GOAL!':a.saved?'SAVED!':'OFF TARGET',500,98)}
+ if(paused){ctx.fillStyle='#061020bd';ctx.fillRect(0,0,1000,510);ctx.fillStyle='#f4f8fb';ctx.font='bold 38px system-ui';ctx.fillText('PAUSED',500,240);ctx.font='18px system-ui';ctx.fillText('Press Resume or P to continue',500,275)}
+}
+
+// Responsive sizing uses the real visible viewport and the pitch's available space.
+function fitViewport(){
+ const view=window.visualViewport;
+ // Preserve browser pinch zoom rather than resizing the game under a zoomed view.
+ if(!view||Math.abs(view.scale-1)<.05){
+  document.documentElement.style.setProperty('--app-height',Math.round(view?view.height:window.innerHeight)+'px');
+ }
+}
+function fitPitch(){
+ const box=canvas.parentElement;
+ if(!box||box.clientWidth===0||box.clientHeight===0)return;
+ const width=Math.min(box.clientWidth,box.clientHeight*1000/510),height=width*510/1000;
+ canvas.style.width=width+'px';canvas.style.height=height+'px';
+ const ratio=Math.min(window.devicePixelRatio||1,2);
+ const pixelsW=Math.max(1,Math.round(width*ratio)),pixelsH=Math.max(1,Math.round(height*ratio));
+ if(canvas.width!==pixelsW||canvas.height!==pixelsH){canvas.width=pixelsW;canvas.height=pixelsH;ctx.setTransform(pixelsW/1000,0,0,pixelsH/510,0,0)}
+}
+window.addEventListener('resize',()=>{fitViewport();fitPitch()});
+window.addEventListener('orientationchange',fitViewport);
+if(window.visualViewport)window.visualViewport.addEventListener('resize',fitViewport);
+if(window.ResizeObserver)new ResizeObserver(fitPitch).observe(canvas.parentElement);
+fitViewport();
+let historyWasPaused=false;
+$('showHistory').onclick=()=>{historyWasPaused=paused;togglePause(true);$('historyDialog').showModal()};
+function closeHistory(){if(game&&phase!=='over')togglePause(historyWasPaused)}
+$('closeHistory').onclick=()=>{$('historyDialog').close();closeHistory()};
+$('historyDialog').addEventListener('cancel',closeHistory);
+
+function frame(now){const dt=Math.min(.05,(now-(last||now))/1000);last=now;if(game&&!paused){elapsed+=dt;if(phase==='timing'){meterTime+=dt;meter=(1-Math.cos(meterTime*Math.PI*2*DIFF[game.difficulty].speed))/2;$('needle').style.left=meter*100+'%'}if(phase==='flight'&&anim){anim.t+=dt;if(anim.t>=1.25)finishShot()}}if(game)render();requestAnimationFrame(frame)}requestAnimationFrame(frame);
+</script></body></html>
