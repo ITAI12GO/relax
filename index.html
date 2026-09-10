@@ -637,17 +637,31 @@
      ===================================================================== */
   var memoryOnly = false, memoryData = null;
 
-  function load(){
-    try{
-      var raw = localStorage.getItem(STORE_KEY);
-      if(!raw) return DEFAULT_GAMES.slice();
-      var parsed = JSON.parse(raw);
-      return Array.isArray(parsed) ? parsed.map(clean) : DEFAULT_GAMES.slice();
-    }catch(e){
-      memoryOnly = true;
-      return memoryData ? memoryData.slice() : DEFAULT_GAMES.slice();
+  async function loadPublishedGames(){
+  try{
+    var response = await fetch("./games.json?v=" + Date.now(), {
+      cache: "no-store"
+    });
+
+    if(!response.ok){
+      throw new Error("games.json HTTP " + response.status);
     }
+
+    var data = await response.json();
+
+    if(!Array.isArray(data)){
+      throw new Error("games.json must contain an array");
+    }
+
+    games = data.map(clean);
+    render();
+
+  }catch(error){
+    console.error("Could not load games.json:", error);
+    games = DEFAULT_GAMES.map(clean);
+    render();
   }
+}
   function save(){
     memoryData = games.slice();
     try{ localStorage.setItem(STORE_KEY, JSON.stringify(games)); }
@@ -669,7 +683,7 @@
   /* =====================================================================
      4. State
      ===================================================================== */
-  var games   = load();
+  var games   = DEFAULT_GAMES.map(clean);
   var filter  = "all";
   var query   = "";
   var isAdmin = false;
@@ -1036,7 +1050,7 @@
     tTimer = setTimeout(function(){ el.classList.remove("show"); }, 2200);
   }
 
-  render();
+  render();loadPublishedGames();
 })();
 </script>
 
