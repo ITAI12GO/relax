@@ -1,0 +1,51 @@
+[
+  {
+    "title": "Tank Showdown",
+    "url": "tankshowdown.html",
+    "img": "art:tank",
+    "desc": "Turn-based artillery duel. Five hulls, a ridge of dirt between you, one shot a turn to find the angle.",
+    "status": "ready"
+  },
+  {
+    "title": "TRAPWIRE",
+    "url": "trapwire.html",
+    "img": "art:trap",
+    "desc": "Trap-laying arena brawler for two to four fighters. Six trap types, chain blasts, scan and disarm.",
+    "status": "ready"
+  },
+  {
+    "title": "Base Defense",
+    "url": "basedefense.html",
+    "img": "art:battle",
+    "desc": "Top-down auto-battler. Set the forces and the victory condition, then watch the match fight itself out.",
+    "status": "ready"
+  },
+  {
+    "title": "Soccer Legends",
+    "url": "pitchlegends.html",
+    "img": "art:pitch",
+    "desc": "Arcade football on a single screen.",
+    "status": "ready"
+  },
+  {
+    "title": "Marble Derby",
+    "url": "marblederby.html",
+    "img": "art:marble",
+    "desc": "Marble race down a twisting track. Pick a runner and watch the drop.",
+    "status": "ready"
+  },
+  {
+    "title": "F1 2026 Tech Explorer",
+    "url": "f1tech.html",
+    "img": "art:f1",
+    "desc": "Zoom from the whole 2026 car down to the carbon weave. Fifteen systems, five levels of magnification, eleven teams.",
+    "status": "ready"
+  },
+  {
+    "title": "World Cup Penalty Shootout",
+    "url": "penaltyshoot.html",
+    "img": "art:pitch",
+    "desc": "Choose your team and take part in a World Cup penalty shootout.",
+    "status": "ready"
+  }
+]
