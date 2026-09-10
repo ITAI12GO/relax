@@ -42,9 +42,9 @@
     "status": "ready"
   },
   {
-    "title": "World Cup Penalty Shootout",
+    "title": "Penalty Shootout",
     "url": "penaltyshoot.html",
-    "img": "art:pitch",
+    "img": "",
     "desc": "Choose your team and take part in a World Cup penalty shootout.",
     "status": "ready"
   }
