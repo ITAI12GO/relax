@@ -31,6 +31,14 @@
     "category": "Game",
     "status": "ready"
   },
+    {
+    "title": "Deadlight - Zombie",
+    "url": "deadlight.html",
+    "img": "",
+    "desc": "Play this game.",
+    "category": "Game",
+    "status": "ready"
+  },
   {
     "title": "Marble Derby",
     "url": "marblederby.html",
