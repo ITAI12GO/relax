@@ -47,6 +47,14 @@
     "category": "Game",
     "status": "ready"
   },
+   {
+    "title": "Hue and Seek",
+    "url": "hueandseek.html",
+    "img": "",
+    "desc": "Play this game.",
+    "category": "Game",
+    "status": "ready"
+  },
   {
     "title": "TRAPWIRE — Arena Trap Combat",
     "url": "trapwire.html",
