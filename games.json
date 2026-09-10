@@ -8,10 +8,10 @@
     "status": "ready"
   },
   {
-    "title": "DEADLIGHT — Offline Survival",
+    "title": "DEADLIGHT — Six Stages of Survival",
     "url": "deadlight.html",
     "img": "covers/deadlight.webp",
-    "desc": "Hold the perimeter. A tactical zombie survival game with remote explosives, evolving hordes, and an upgradeable arsenal.",
+    "desc": "Survive 30 waves across six zombie-infested stages. Control combat speed from 0.5× to 3×, upgrade your arsenal and resume from local checkpoints.",
     "category": "Game",
     "status": "ready"
   },
@@ -27,14 +27,6 @@
     "title": "Hue & Seek — Colour camouflage chase",
     "url": "hueandseek.html",
     "img": "covers/hueandseek.webp",
-    "desc": "Play this game.",
-    "category": "Game",
-    "status": "ready"
-  },
-    {
-    "title": "Deadlight - Zombie",
-    "url": "deadlight.html",
-    "img": "",
     "desc": "Play this game.",
     "category": "Game",
     "status": "ready"
