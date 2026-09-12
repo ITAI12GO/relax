@@ -15,6 +15,14 @@
     "category": "Game",
     "status": "ready"
   },
+    {
+    "title": "DEADLIGHT — Multiplayer (Co-op)",
+    "url": "deadlightcoop.html",
+    "img": "covers/deadlight.webp",
+    "desc": "Survive 30 waves across six zombie-infested stages. Control combat speed from 0.5× to 3×, upgrade your arsenal and resume from local checkpoints.",
+    "category": "Game",
+    "status": "ready"
+  },
   {
     "title": "F1 2026 · Technical Explorer",
     "url": "f1tech.html",
