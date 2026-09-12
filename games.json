@@ -15,11 +15,11 @@
     "category": "Game",
     "status": "ready"
   },
-    {
-    "title": "DEADLIGHT — Multiplayer (Co-op)",
+  {
+    "title": "Deadlight: Together — Co-op Defence",
     "url": "deadlightcoop.html",
-    "img": "covers/deadlight.webp",
-    "desc": "Survive 30 waves across six zombie-infested stages. Control combat speed from 0.5× to 3×, upgrade your arsenal and resume from local checkpoints.",
+    "img": "covers/deadlightcoop.webp",
+    "desc": "Play this game.",
     "category": "Game",
     "status": "ready"
   },
