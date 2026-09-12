@@ -1,0 +1,602 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1"><meta name="theme-color" content="#142322"><title>Deadlight: Together — Co-op Defence</title>
+<style>
+:root{color-scheme:dark;--bg:#101b1c;--panel:#1b2b2a;--line:#3b5049;--cream:#edf0df;--muted:#adbbb0;--mint:#75e6bf;--gold:#f2bd6d;--danger:#ed9c88}*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--cream);font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}button,input,textarea{font:inherit}button{cursor:pointer;color:inherit;border:1px solid var(--line);border-radius:9px;background:#213430;min-height:44px;font-weight:750;touch-action:manipulation;transition:background .15s,border-color .15s,transform .15s}button:hover{background:#30483f;border-color:#8aad92}button:active{transform:translateY(1px)}button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--gold);outline-offset:3px}button:disabled{opacity:.45;cursor:default}button.primary{background:var(--mint);border-color:var(--mint);color:#142d26}button.primary:hover{background:#a3f1d2}button.gold{background:var(--gold);border-color:var(--gold);color:#342a1a}input,textarea{user-select:text;-webkit-user-select:text;-webkit-touch-callout:default;touch-action:auto;border:1px solid #52675e;border-radius:8px;background:#142421;color:var(--cream);padding:12px;width:100%;font-size:16px}input::placeholder,textarea::placeholder{color:#91a496}label{font-size:12px;color:var(--muted);font-weight:700}small{font-size:11px;color:var(--muted)}[hidden]{display:none!important}.eyebrow{font-size:11px;letter-spacing:2.5px;font-weight:800;color:var(--gold)}.mono{font-variant-numeric:tabular-nums;font-family:ui-monospace,SFMono-Regular,Consolas,monospace}.subtle{color:var(--muted)}.hud{position:absolute;z-index:2;top:0;left:0;right:0;height:69px;display:flex;align-items:center;gap:22px;padding:9px 20px;padding-top:max(9px,env(safe-area-inset-top));background:#132321;border-bottom:1px solid var(--line)}.logo{font-size:19px;letter-spacing:2px;font-weight:950;line-height:1}.logo em{display:block;font-size:9px;letter-spacing:4px;font-style:normal;color:var(--mint);margin-top:6px}.stat{display:flex;flex-direction:column;gap:4px;min-width:85px}.stat b{font-size:15px}.stat small{font-size:9px;letter-spacing:1px}.coreTrack{height:4px;width:115px;background:#41534a}.coreTrack i{display:block;height:100%;background:var(--mint)}.hudRight{margin-left:auto;display:flex;align-items:center;gap:8px}.iconBtn{min-width:44px;padding:0 12px;font-size:18px}.salvage{color:var(--gold)}#arena{position:absolute;top:69px;left:0;width:100%;height:calc(100% - 143px);touch-action:none;display:block}.missionbar{position:absolute;top:82px;left:22px;z-index:2;pointer-events:none;max-width:65%}#mission{font-size:12px;font-weight:650;text-shadow:0 1px 3px #000}.roster{display:flex;gap:7px;margin-top:8px;flex-wrap:wrap}.member{font-size:10px;border:1px solid #4d696055;color:var(--member);padding:5px 8px;background:#142624c9;border-radius:5px}.dock{position:absolute;bottom:0;left:0;right:0;z-index:3;min-height:74px;background:#132321;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:center;gap:8px;padding:8px max(10px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left))}.ability{padding:5px 14px;display:flex;align-items:center;gap:11px;min-height:54px;text-align:left}.ability .glyph{font-size:23px;line-height:1}.glyph svg,.roleIcon svg{display:block;margin:auto}.iconBtn svg{vertical-align:middle}.ability strong{display:block;font-size:11px;letter-spacing:.2px}.ability small{display:block;margin-top:4px;font-size:10px}.ability kbd{font-family:inherit;opacity:.65;margin-right:5px}.health{display:flex;align-items:center;gap:12px;font-size:12px;padding:0 15px 0 5px}.health b{font-size:18px;color:var(--mint)}#gunLevel{color:var(--gold)}.extraActions{position:absolute;bottom:88px;right:18px;display:flex;gap:8px;z-index:3}.extraActions button{padding:0 12px;background:#21372de8;font-size:11px}.touchpad{position:absolute;left:max(20px,env(safe-area-inset-left));bottom:103px;z-index:3;pointer-events:none}#joystick{width:118px;height:118px;border:1px solid #b9e3cd66;border-radius:50%;background:#1c3b3466;position:relative;touch-action:none;pointer-events:auto}#joystick:before{content:'';position:absolute;inset:22px;border:1px solid #91c9b533;border-radius:50%}#knob{position:absolute;left:50%;top:50%;width:47px;height:47px;background:#85ceb56b;border:1px solid #c6f9e6;border-radius:50%;transform:translate(-50%,-50%);pointer-events:none}.autoLabel{display:block;text-align:center;color:#d3e4d7;font-size:9px;margin-top:8px;letter-spacing:1.4px}.overlay{position:fixed;z-index:8;inset:0;display:flex;justify-content:center;align-items:center;background:#0918169e;backdrop-filter:blur(6px);padding:22px;overflow:auto;touch-action:pan-y}.homePanel{width:min(1030px,100%);display:grid;grid-template-columns:1fr 440px;background:#152523f0;border:1px solid #6e826b;border-radius:18px;box-shadow:0 30px 100px #0009;overflow:hidden}.cover{padding:44px 38px;position:relative;overflow:hidden;background:linear-gradient(140deg,#263c32,#122523)}.cover:after{content:'04';position:absolute;bottom:-60px;right:-10px;font-size:230px;font-weight:900;color:#5e83631a;pointer-events:none}.title{font-size:clamp(39px,4.4vw,62px);font-weight:1000;letter-spacing:-2.5px;line-height:.96;margin:26px 0 0}.title span{display:block;color:var(--mint);font-size:.65em;letter-spacing:-1.5px;margin-top:9px}.tagline{font-size:16px;line-height:1.65;max-width:360px;color:#d5ddc9;margin:23px 0 28px}.badgeRow{display:flex;gap:7px;flex-wrap:wrap}.badge{font-size:10px;border:1px solid #75836a;border-radius:5px;padding:7px 9px;color:#d2d8b9;letter-spacing:.6px}.brief{margin-top:34px;border-top:1px solid #5c725755;padding-top:24px;display:grid;gap:13px}.briefItem{display:flex;gap:14px;align-items:center;font-size:12px;color:#c8d4c3}.briefItem b{font-size:18px;color:var(--gold);width:24px;text-align:center}.ready{padding:31px;background:#162422}.ready h2{font-size:20px;margin:0 0 20px}.ready label{display:block;margin-bottom:7px}.roles{display:grid;gap:7px;margin:13px 0 17px}.role{padding:10px 13px;display:flex;gap:13px;align-items:center;text-align:left;min-height:57px;background:#1d2d28}.role.selected{border-color:var(--mint);background:#294536}.roleIcon{font-size:24px;color:var(--mint);width:25px;text-align:center}.role strong{font-size:12px}.role small{display:block;font-size:10px;margin-top:4px}.wide{width:100%}.onlineRow{display:grid;grid-template-columns:1fr;gap:8px;margin-top:12px}.onlineRow button{font-size:12px}.joinRow{display:grid;grid-template-columns:1fr 83px;gap:8px;margin-top:8px}.joinRow input{font-size:12px;letter-spacing:1px;min-width:0}.joinRow button{font-size:11px}#status{font-size:11px;color:#b8cbb9;line-height:1.5;min-height:34px;margin:12px 0 0}.microButtons{display:flex;gap:8px;margin-top:11px}.microButtons button{font-size:9px;min-height:34px;padding:5px 10px;letter-spacing:.4px;background:transparent}.modal{position:relative;width:min(560px,100%);max-height:calc(100dvh - 35px);overflow:auto;padding:30px;border:1px solid #728670;border-radius:16px;background:#1a2e28;box-shadow:0 30px 100px #0009}.modal h2{font-size:27px;line-height:1.1;margin:12px 0 17px}.modal p{font-size:13px;line-height:1.6;color:#cad5c7}.modal a{color:var(--mint)}.modal .close{position:absolute;right:15px;top:14px;background:transparent;min-width:38px;min-height:38px;font-size:21px}.modal ul{padding-left:20px;font-size:13px;line-height:1.7;color:#d5ddcd}.modal li{margin-bottom:8px}.modal code{color:var(--gold);font-size:12px}#configInput{height:190px;font-size:12px;line-height:1.6;font-family:ui-monospace,monospace}#configError{color:#ffc0a3;min-height:20px;font-size:12px;margin:8px 0}.roomCode{font-size:clamp(20px,5vw,33px);letter-spacing:4px;font-weight:800;padding:18px 0;color:var(--gold)}.lobbyMember{padding:13px 4px;border-bottom:1px solid #64796655;display:flex;justify-content:space-between;gap:12px;font-size:13px}.lobbyMember small{font-size:11px}#lobbyPlayers{margin:16px 0 20px}.modalActions{display:flex;gap:8px;margin-top:16px}.modalActions button{flex:1;padding:10px}.manualGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.manualGrid p{margin:0;background:#263e33;border-radius:7px;padding:12px;font-size:12px}.manualGrid b{color:var(--gold)}#toast{position:fixed;z-index:15;top:max(85px,env(safe-area-inset-top));left:50%;transform:translate(-50%,-10px);opacity:0;pointer-events:none;padding:13px 18px;background:#e9efdc;color:#1d3226;border:1px solid #f7ffed;border-radius:8px;font-size:12px;font-weight:750;box-shadow:0 8px 30px #0005;max-width:90%;text-align:center;transition:opacity .2s,transform .2s}#toast.show{opacity:1;transform:translate(-50%,0)}body:not(.playing) .hud,body:not(.playing) .dock,body:not(.playing) .missionbar,body:not(.playing) .extraActions{visibility:hidden}body:not(.playing) #arena{top:0;height:100%}.legend{font-size:10px;line-height:1.7;margin-top:17px;color:#a6b7a4}.resultSeal{font-size:40px;color:var(--gold);margin:10px 0 20px}.netTag{font-size:9px;letter-spacing:1px;color:#a3c6ad}.onlineHint{color:#9ab09c;font-size:10px;line-height:1.5;margin:8px 0 0}
+@media(min-width:1500px){.hud{padding-left:32px;padding-right:32px}.ability{padding:6px 23px}.homePanel{transform:scale(1.06)}}
+@media(max-width:1000px){.ability{padding:5px 9px;gap:7px}.health{padding:0 5px;gap:8px}.hud{gap:15px}.ability .glyph{font-size:20px}.homePanel{grid-template-columns:1fr 380px}.cover{padding:34px 29px}.ready{padding:25px}.title{font-size:49px}}
+@media(max-width:740px){.overlay{padding:12px}.homePanel{display:block;max-width:440px;margin:auto}.cover{padding:25px 24px 20px}.cover .title{font-size:43px;margin-top:14px}.title span{display:inline;font-size:.52em;letter-spacing:-.6px;margin-left:6px}.tagline{font-size:12px;margin:14px 0;line-height:1.5}.brief{display:none}.badge{font-size:8px;padding:5px 7px}.ready{padding:22px 24px}.ready h2{font-size:17px;margin-bottom:14px}.roles{grid-template-columns:repeat(3,1fr);gap:6px}.role{padding:9px 5px;gap:5px;justify-content:center;flex-direction:column;text-align:center;min-height:65px}.role small{display:none}.roleIcon{font-size:22px}.role strong{font-size:10px}.hud{height:72px;padding:8px 10px;gap:12px}.logo{font-size:12px;letter-spacing:1px}.logo em{font-size:7px;letter-spacing:1.5px}.stat{min-width:0;gap:4px}.stat b{font-size:11px}.stat small{font-size:7px}.coreTrack{width:65px}.hudRight{gap:4px}.iconBtn{min-width:36px;min-height:39px;padding:0 7px;font-size:15px}.netTag{display:none}#arena{top:72px;height:calc(100% - 150px)}.missionbar{top:84px;left:12px;max-width:65%}#mission{font-size:10px}.roster{gap:4px}.member{font-size:8px;padding:4px}.dock{min-height:78px;justify-content:space-around;gap:4px;padding:7px 6px max(7px,env(safe-area-inset-bottom))}.ability{display:block;text-align:center;padding:4px 5px;flex:1;min-width:0;min-height:58px;border-radius:6px}.ability .glyph{display:block;font-size:18px;line-height:20px}.ability strong{font-size:8px;letter-spacing:0}.ability small{font-size:8px;margin-top:3px}.ability kbd{display:none}.health{display:none}.extraActions{bottom:94px;right:12px;gap:5px}.extraActions button{font-size:9px;padding:0 9px;min-height:42px}.touchpad{bottom:99px;left:16px}#joystick{width:108px;height:108px}.modal{padding:25px 22px}.modal h2{font-size:23px}.modal p,.modal ul{font-size:12px}.manualGrid{gap:7px}.manualGrid p{font-size:11px;padding:10px}.legend{display:none}}
+@media(max-height:580px) and (orientation:landscape){.overlay{padding:8px}.homePanel{display:grid;grid-template-columns:1fr 340px;max-width:820px;max-height:96dvh;overflow:auto}.cover{padding:24px}.cover .title{font-size:41px}.tagline{font-size:12px;margin:15px 0}.brief{display:none}.ready{padding:16px 22px}.ready h2{margin-bottom:10px;font-size:16px}.ready input{padding:8px}.roles{display:grid;grid-template-columns:repeat(3,1fr);margin:8px 0 10px}.role{display:block;text-align:center;min-height:47px;padding:5px}.roleIcon{font-size:16px;display:block;width:auto}.role strong{font-size:9px}.role small{display:none}.onlineRow{margin-top:8px}.joinRow{margin-top:6px}#status{font-size:10px;margin-top:7px;min-height:25px}.microButtons{margin-top:5px}.legend{display:none}.hud{height:49px;padding:4px 12px}.logo{font-size:13px}.logo em{display:none}.stat{flex-direction:row;align-items:center;gap:6px}.stat small{font-size:8px}.coreTrack{width:65px}.stat b{font-size:11px}.iconBtn{min-height:35px}#arena{top:49px;height:calc(100% - 112px)}.missionbar{top:58px;left:12px}.dock{min-height:63px;padding:5px 12px}.ability{display:flex;flex:0;padding:4px 14px;min-height:48px;text-align:left}.ability strong{font-size:9px}.ability small{font-size:8px}.ability .glyph{font-size:20px}.extraActions{bottom:74px}.touchpad{bottom:74px}#joystick{width:94px;height:94px}.autoLabel{display:none}.member{font-size:8px;padding:3px 6px}.roster{margin-top:5px}#mission{font-size:9px}.modal{max-height:96dvh}.health{display:none}}
+@media(max-width:480px){.hud{gap:8px;padding-left:9px;padding-right:9px}.coreTrack{width:48px}.stat b{font-size:10px}.hudRight{gap:3px}.hudRight .iconBtn{min-width:33px;padding:0 6px}#fullscreen{display:none}.stat small{font-size:6.5px}.logo{font-size:11px}.logo em{font-size:6px;letter-spacing:1.2px}}
+@media(max-height:580px) and (orientation:landscape){.ability{flex:0 1 auto;padding:4px 8px}.ability strong,.ability small{white-space:nowrap}.nearCore{display:none}.ability .glyph svg{width:21px;height:21px}}
+@media(max-width:360px){.hud .logo{display:none}.hud{gap:7px}}
+@media(prefers-reduced-motion:reduce){button,#toast{transition:none}}
+
+/* Expanded role controls keep the battlefield visible. */
+.roles{display:grid;grid-template-columns:1fr 1fr;gap:8px}.role{min-height:68px;padding:10px;gap:8px}.roleIcon{flex-shrink:0}.role small{font-size:9px;line-height:1.4}.roleHint{font-size:10px;line-height:1.5;color:#b8cdb9;min-height:30px;margin:8px 0 13px}.roleReadout{font-size:10px;color:#d3e5c4;margin-top:7px;text-shadow:0 1px 3px #000}.actionButtons{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;width:min(1040px,100%)}.actionButtons .ability{width:100%;min-width:0;justify-content:center;padding:7px 10px}.actionButtons strong{font-size:10px;white-space:nowrap}.actionButtons small{font-size:10px}.detonate{border-color:#b98351;background:#443321}.readyToBlast{background:#eeb765!important;color:#2d251a;border-color:#ffe1a4}.readyToBlast small{color:#44321b}.paceLabel{font-size:9px;display:flex;align-items:center;gap:5px;padding:4px 7px;border-radius:8px;background:#21372de8;border:1px solid #607663}#pace{color:#e8eddf;background:#162c25;border:0;font-size:12px;padding:8px 2px;min-height:34px;touch-action:manipulation}.workshopModal{width:min(850px,96vw);padding:28px}.upgradeCards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.upgradeCard{display:flex;flex-direction:column;align-items:stretch;gap:9px;text-align:left;padding:14px;min-height:154px}.upgradeCategory{font-size:8px;letter-spacing:1.7px;color:var(--gold)}.upgradeCard strong{font-size:14px}.upgradeDescription{font-size:11px;line-height:1.5;color:#bcd2be;flex:1}.upgradeBottom{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:#95e3ba}.upgradeCard:disabled{opacity:.6}.shopWallet{display:flex;justify-content:space-between;border:1px solid #566c57;padding:12px;border-radius:8px;font-size:13px}.shopWallet b{color:var(--gold)}.shopNote{font-size:11px!important}.payloadControls{display:flex;gap:6px;flex-wrap:wrap;margin:14px 0}.payloadControls span{width:100%;font-size:9px;letter-spacing:1px;color:var(--gold)}.payloadControls button{padding:8px 12px;font-size:10px;flex:1}.payloadControls .selected{background:#42634b;border-color:#9bf1c4}.missionbar{max-width:70%}.cover .brief{margin-top:23px;padding-top:21px}.touchpad{bottom:108px}.extraActions{bottom:87px}
+@media(max-width:740px){.roles{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}.role{padding:8px 2px;min-height:59px}.role strong{font-size:8px}.role small{display:none}.roleHint{font-size:10px;min-height:30px;margin-bottom:12px}.actionButtons{gap:4px}.actionButtons .ability{display:flex;flex-direction:column;gap:3px;padding:4px 1px;min-height:62px}.actionButtons .glyph{font-size:21px;line-height:22px}.actionButtons strong{font-size:7px;letter-spacing:-.1px}.actionButtons small{font-size:8px;white-space:nowrap}.dock{min-height:78px;padding-left:5px;padding-right:5px}.roleReadout{font-size:9px;max-width:230px}.extraActions{bottom:90px;right:9px;gap:4px}.extraActions button{padding:0 7px;font-size:8px}.paceLabel{font-size:7px;padding:3px 5px;gap:3px}#pace{font-size:10px;min-height:32px}.upgradeCards{grid-template-columns:1fr 1fr;gap:8px}.upgradeCard{min-height:150px;padding:11px;gap:7px}.upgradeCard strong{font-size:12px}.upgradeDescription{font-size:10px}.workshopModal{padding:22px 16px}.touchpad{bottom:110px}}
+@media(max-height:580px) and (orientation:landscape){.homePanel{grid-template-columns:1fr 365px}.roles{grid-template-columns:repeat(4,minmax(0,1fr));margin:7px 0}.role{min-height:44px;padding:5px 2px}.role small{display:none}.role strong{font-size:8px}.roleHint{font-size:9px;min-height:0;margin:5px 0 9px}.actionButtons{max-width:1050px;gap:5px}.actionButtons .ability{display:flex;flex-direction:row;padding:4px 5px;min-height:47px;gap:6px}.actionButtons strong{font-size:8px}.actionButtons small{font-size:8px}.actionButtons .glyph{font-size:20px}.dock{min-height:61px}.extraActions{bottom:72px}.touchpad{bottom:76px}.roleReadout{font-size:8px;margin-top:4px}.upgradeCards{grid-template-columns:repeat(3,1fr)}.workshopModal{padding:20px}.cover .tagline{margin:15px 0}.cover .brief{display:none}}
+
+.workshopModal>.close{position:sticky;top:0;float:right;margin-top:-10px;margin-right:-6px;background:#294835;z-index:4}
+</style></head><body>
+<header class="hud"><div class="logo">DEADLIGHT<em>TOGETHER</em></div><div class="stat"><small>MISSION</small><b id="wave" class="mono">BUILD · 18s</b></div><div class="stat"><small>CORE <span id="coreText">240</span></small><div class="coreTrack"><i id="coreFill" style="width:100%"></i></div></div><div class="stat salvage"><small>SHARED SALVAGE</small><b class="mono">◆ <span id="scrap">110</span></b></div><div class="hudRight"><span id="roomTag" class="netTag">SOLO</span><button id="helpBtn" class="iconBtn" aria-label="How to play">?</button><button id="pauseBtn" class="iconBtn" aria-label="Pause mission">Ⅱ</button><button id="fullscreen" class="iconBtn" aria-label="Fullscreen"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9V3h6m6 0h6v6M3 15v6h6m6 0h6v-6"/></svg></button></div></header>
+<canvas id="arena" aria-label="Shared outpost defence game map"></canvas>
+<div class="missionbar"><div id="mission">Fortify, upgrade, and collect supplies</div><div class="roster" id="roster"></div><div id="roleReadout" class="roleReadout"></div></div>
+<div class="extraActions"><label class="paceLabel">PACE <select id="pace" aria-label="Mission speed, host controlled"><option value="0.75">0.75×</option><option value="1" selected>1×</option><option value="1.5">1.5×</option><option value="2">2×</option></select></label><button id="nextBtn" data-action="next">NEXT WAVE <span class="subtle">[N]</span></button><button data-action="ping">◎ PING / HELP</button></div>
+<div id="touch" class="touchpad" hidden><div id="joystick" aria-label="Move joystick"><div id="knob"></div></div><span class="autoLabel">MOVE · AUTO-FIRE ON</span></div>
+<nav class="dock" aria-label="Role abilities"><div id="actionButtons" class="actionButtons"></div></nav>
+<section id="home" class="overlay"><div class="homePanel"><div class="cover"><div class="eyebrow">A COOPERATIVE SURVIVAL MISSION</div><h1 class="title">DEADLIGHT<span>TOGETHER.</span></h1><p class="tagline">One outpost. One shared supply.<br>Make it through the night — together.</p><div class="badgeRow"><span class="badge">1–4 PLAYERS</span><span class="badge">30 WAVES · 6 CHAPTERS</span><span class="badge">CROSS-DEVICE CO-OP</span></div><div class="brief"><div class="briefItem"><b>01</b><span><strong>Build your line.</strong> Fortify the core and upgrade.</span></div><div class="briefItem"><b>02</b><span><strong>Watch each other.</strong> Revive, heal, and cover.</span></div><div class="briefItem"><b>03</b><span><strong>Spend as a squad.</strong> Every crate helps everyone.</span></div></div><div class="legend">WASD / arrow keys to move · automatic targeting and fire<br>Hold mouse to aim manually · touch joystick on mobile<br>Best played with sound. No downloads or accounts for solo.</div></div><div class="ready"><h2>Assemble your squad.</h2><label for="name">CALL SIGN</label><input id="name" maxlength="16" value="Survivor" autocomplete="off"><div class="roles"><button class="role selected" data-role="ranger"><span class="roleIcon"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="6"/><path d="M12 2v5m0 10v5M2 12h5m10 0h5"/></svg></span><span><strong>RANGER</strong><small>Overdrive · dash · rapid fire</small></span></button><button class="role" data-role="medic"><span class="roleIcon">✚</span><span><strong>MEDIC</strong><small>Healing pulse · medical station</small></span></button><button class="role" data-role="engineer"><span class="roleIcon">▥</span><span><strong>ENGINEER</strong><small>Roaming K9 · reinforced barriers</small></span></button><button class="role" data-role="demo"><span class="roleIcon">✹</span><span><strong>DEMOLITION</strong><small>Remote bombs · cluster · EMP</small></span></button></div><p class="roleHint" id="roleHint">Ranger: rapid fire, Overdrive and dash. All roles can plant and detonate bombs.</p><button id="solo" class="primary wide">PLAY SOLO</button><div class="onlineRow"><button id="createRoom" class="gold">CREATE ONLINE ROOM</button></div><div class="joinRow"><input id="roomInput" placeholder="6-digit room code" maxlength="6" inputmode="numeric" pattern="[0-9]{6}" autocomplete="off" aria-label="Room code"><button id="joinRoom">JOIN ROOM</button></div><p id="status" role="status">Play solo or create a room for your squad</p><div class="microButtons"><button id="soundBtn">SFX ON</button><button id="musicBtn">MUSIC OFF</button></div></div></div></section>
+
+<section id="lobby" class="overlay" hidden><div class="modal"><div class="eyebrow">SQUAD CHANNEL OPEN</div><h2>Nobody fights alone.</h2><p>Open this same game on another device, choose a role, and enter this code. Join before the mission starts.</p><div id="code" class="roomCode mono"></div><button id="copyCode" class="wide">COPY ROOM CODE</button><div id="lobbyPlayers"></div><p id="lobbyStatus" role="status"></p><p class="onlineHint">The host must keep this tab in the foreground. Up to four players share one map. Rooms last up to six hours.</p><div class="modalActions"><button id="leaveLobby">LEAVE</button><button id="startOnline" class="primary">START MISSION</button></div></div></section>
+<section id="workshop" class="overlay" hidden><div class="modal workshopModal"><button id="closeWorkshop" class="close" aria-label="Close workshop">×</button><div class="eyebrow">COMPONENT UPGRADES</div><h2 id="workshopTitle">Squad workshop</h2><div class="shopWallet">Shared salvage <b>◆ <span id="shopScrap">0</span></b></div><p class="shopNote">Each purchase uses squad salvage. Upgrade between waves: the mission continues while this menu is open.</p><div id="payloadControls" class="payloadControls" hidden><span>DEMO PAYLOAD · new bombs</span><button data-payload="blast">C4 BLAST</button><button data-payload="cryo">CRYO FREEZE</button><button data-payload="fire">FIRE FIELD</button></div><div id="upgradeCards" class="upgradeCards"></div></div></section>
+<section id="help" class="overlay" hidden><div class="modal"><button id="closeHelp" class="close" aria-label="Close field manual">×</button><div class="eyebrow">FIELD MANUAL · 30 WAVES</div><h2>Specialists survive together.</h2><div class="manualGrid"><p><b>Move &amp; shoot</b><br>WASD / arrows or touch joystick. Automatic fire and reload. Hold mouse to aim. T reloads early.</p><p><b>Plant &amp; detonate</b><br>B plants at your feet. E detonates your own charges after a 0.5s arming delay. Squad and core take no blast damage.</p><p><b>Engineer</b><br>C builds barriers. G deploys K9s that patrol outward, hunt across the entire map, and cross allied barriers. Upgrade their weapons, batteries and pack size.</p><p><b>Medic</b><br>H heals nearby allies. V drops a 40s healing station. Stand near a fallen teammate to revive; triage upgrades speed this up.</p><p><b>Demolition</b><br>V plants a cluster charge. X triggers EMP to stun enemies. Choose C4, cryo or fire in the Workshop. E detonates all your armed charges.</p><p><b>Ranger</b><br>X activates Overdrive. Space dashes with brief protection. Specialist upgrades add piercing rounds and longer Overdrive.</p><p><b>Upgrade components</b><br>U opens the Workshop. Improve damage, firing rate, magazine, reload, armour, movement, explosives and your specialist equipment.</p><p><b>Protect the core</b><br>R repairs nearby. Everyone shares salvage and core hull upgrades. Q pings for help. The host controls mission pace.</p></div><p>30 waves in six chapters. Runner rushes, armoured sieges and a boss every fifth wave. Clear waves to earn salvage, healing and a 20-second rebuilding break.</p><p>Solo: an emergency respawn costs 30 core health. Co-op: stand near downed allies to revive them. The mission ends if every connected player is down.</p><button id="leaveGame" class="wide">LEAVE MISSION</button></div></section>
+<section id="result" class="overlay" hidden><div class="modal"><div class="resultSeal">✦</div><div class="eyebrow">MISSION REPORT</div><h2 id="resultTitle"></h2><p id="resultDesc"></p><p id="resultStats" class="mono"></p><button id="backHome" class="primary wide">BACK TO BASE</button></div></section>
+<div id="toast" role="status" aria-live="polite"></div>
+<script>
+/* DEADLIGHT CO-OP · Firebase transport. No SDK is fetched until connect(). */
+(() => {
+  'use strict';
+  const VERSION = '12.19.0';
+  const ROOM_TTL = 6 * 60 * 60 * 1000;
+  const noop = () => {};
+  const cleanName = value => String(value || 'Survivor').replace(/[\u0000-\u001f<>]/g, '').trim().slice(0, 18) || 'Survivor';
+  function randomCode() {
+    // Rejection sampling avoids modulo bias across the 900,000 six-digit codes.
+    const range = 900000, limit = Math.floor(4294967296 / range) * range;
+    const values = new Uint32Array(1);
+    do { crypto.getRandomValues(values); } while (values[0] >= limit);
+    return String(100000 + values[0] % range);
+  }
+  function message(error) {
+    const code = String(error?.code || '');
+    if (/operation-not-allowed/.test(code)) return 'Enable Anonymous sign-in in Firebase Authentication, then try again.';
+    if (/invalid-api-key|invalid-app-credential|project-not-found/.test(code)) return 'Check the Firebase web configuration, especially apiKey and projectId.';
+    if (/unauthorized-domain/.test(code)) return 'Add this website domain to Firebase Authentication → Settings → Authorized domains.';
+    if (/permission.denied/i.test(code + error?.message)) return 'Room unavailable, full or already started. Check the code and publish the supplied database rules.';
+    if (/network-request-failed|Failed to fetch|importing a module/.test(code + error?.message)) return 'Cannot reach Firebase. Check your internet connection and try again.';
+    return error?.message || 'Connection failed. Please try again.';
+  }
+  class CoopNetwork {
+    constructor({ onState = noop, onMembers = noop, onInputs = noop, onStatus = noop, onClosed = noop } = {}) {
+      Object.assign(this, { onState, onMembers, onInputs, onStatus, onClosed });
+      this.uid = ''; this.code = ''; this.isHost = false; this.connected = false;
+      this.members = {}; this.offset = 0; this._unsubs = []; this._disconnects = [];
+      this._seq = 0; this._lastSeq = -1; this._generation = 0; this._lastStatus = '';
+      this._connectEpoch = 0; this._baseUnsubs = [];
+    }
+    _status(value) { if (value !== this._lastStatus) { this._lastStatus = value; this.onStatus(value); } }
+    _error(error) { const text = message(error); this._status(text); return new Error(text); }
+    async connect(config) {
+      if (this.db) return this;
+      if (!config || !config.apiKey || !config.projectId || !config.databaseURL) {
+        throw new Error('Add your Firebase web configuration, including databaseURL, in Online setup.');
+      }
+      this._status('Connecting to Firebase…');
+      const epoch = ++this._connectEpoch;
+      let timer;
+      const checkActive = () => { if (epoch !== this._connectEpoch) throw new Error('Connection cancelled.'); };
+      const connection = (async () => {
+        const [appSDK, authSDK, dbSDK] = await Promise.all([
+          import(`https://www.gstatic.com/firebasejs/${VERSION}/firebase-app.js`),
+          import(`https://www.gstatic.com/firebasejs/${VERSION}/firebase-auth.js`),
+          import(`https://www.gstatic.com/firebasejs/${VERSION}/firebase-database.js`)
+        ]);
+        checkActive();
+        this.sdk = dbSDK; this.appSDK = appSDK;
+        this.app = appSDK.initializeApp(config, 'deadlight-' + randomCode());
+        const auth = authSDK.getAuth(this.app);
+        // Each open page gets its own player. A reload starts a new session.
+        await authSDK.setPersistence(auth, authSDK.inMemoryPersistence);
+        checkActive();
+        const credential = await authSDK.signInAnonymously(auth);
+        checkActive();
+        this.uid = credential.user.uid;
+        this.db = dbSDK.getDatabase(this.app);
+        let ready;
+        const connected = new Promise(resolve => { ready = resolve; });
+        this._baseUnsubs = [
+          dbSDK.onValue(dbSDK.ref(this.db, '.info/serverTimeOffset'), snap => { this.offset = Number(snap.val()) || 0; }),
+          dbSDK.onValue(dbSDK.ref(this.db, '.info/connected'), snap => {
+            this.connected = snap.val() === true;
+            if (this.connected) ready();
+            if (!this.code) return;
+            if (this.connected) this._presence().catch(error => this._status(message(error)));
+            else this._status('Connection lost. Reconnecting…');
+          })
+        ];
+        // .info values are local SDK metadata; listen to them instead of issuing a server get().
+        await connected;
+        checkActive();
+        this._status('Connected. Create a room or join a friend.');
+        return this;
+      })();
+      try {
+        return await Promise.race([connection, new Promise((_, reject) => {
+          timer = setTimeout(() => reject(new Error('Connection timed out. Check your internet connection and Firebase configuration, then try again.')), 20000);
+        })]);
+      } catch (error) {
+        ++this._connectEpoch;
+        await this._disposeConnection();
+        throw this._error(error);
+      } finally { clearTimeout(timer); }
+    }
+    _profile(profile) {
+      return { uid: this.uid, name: cleanName(profile?.name), role: ['ranger', 'medic', 'engineer', 'demo'].includes(profile?.role) ? profile.role : 'ranger', online: false };
+    }
+    _setMembers(slots) {
+      const members = {};
+      Object.values(slots || {}).forEach(m => { if (m?.uid) members[m.uid] = { name: cleanName(m.name), role: m.role, online: m.online === true }; });
+      this.members = members;
+      this.onMembers(members);
+      return members;
+    }
+    _ref(path = '') { return this.sdk.ref(this.db, 'rooms/' + this.code + (path ? '/' + path : '')); }
+    async create(profile) {
+      if (!this.db) throw new Error('Connect to Firebase first.');
+      if (this.code) await this.leave({ keepConnection: true });
+      let lastError;
+      for (let attempt = 0; attempt < 3; attempt++) {
+        const code = randomCode();
+        const record = {
+          meta: { host: this.uid, status: 'lobby', hostOnline: false, createdAt: this.sdk.serverTimestamp(), expiresAt: Date.now() + this.offset + ROOM_TTL - 60000 },
+          members: { p0: this._profile(profile) }
+        };
+        try {
+          // Create-only security rule makes this collision-safe without a public room read.
+          await this.sdk.set(this.sdk.ref(this.db, 'rooms/' + code), record);
+          this.code = code; this.slot = 'p0'; this.isHost = true;
+          await this._watch();
+          this._status('Room ready. Share the code with up to three friends.');
+          return code;
+        } catch (error) { lastError = error; if (this.code) { await this.leave({ keepConnection: true }); break; } }
+      }
+      throw this._error(lastError);
+    }
+    async join(rawCode, profile) {
+      if (!this.db) throw new Error('Connect to Firebase first.');
+      if (this.code) await this.leave({ keepConnection: true });
+      const code = String(rawCode || '').toUpperCase().replace(/[\s-]/g, '');
+      if (!/^[0-9]{6}$/.test(code)) throw new Error('Enter the 6-digit room code shared by your host.');
+      this._status('Joining room…');
+      try {
+        const meta = (await this.sdk.get(this.sdk.ref(this.db, `rooms/${code}/meta`))).val();
+        if (!meta || meta.expiresAt <= Date.now() + this.offset) throw new Error('This room has expired. Ask the host to create a new room.');
+        if (meta.status !== 'lobby') throw new Error('This mission has already started. Ask the host to create a new room.');
+        if (!meta.hostOnline) throw new Error('The host is offline. Ask them to return to the room.');
+        let slot = '';
+        // Each claim is checked atomically on the server. Only p0–p3 exist in the rules.
+        // Two simultaneous joiners cannot overwrite each other or exceed four players.
+        for (const candidate of ['p1', 'p2', 'p3']) {
+          try { await this.sdk.set(this.sdk.ref(this.db, `rooms/${code}/members/${candidate}`), this._profile(profile)); slot = candidate; break; }
+          catch (error) { if (!/permission.denied/i.test(String(error?.code) + error?.message)) throw error; }
+        }
+        if (!slot) throw new Error('Room is full or the mission has started. Ask the host for a new room.');
+        this.code = code; this.slot = slot; this.isHost = false;
+        await this._watch();
+        this._status('Joined. Waiting for the host to launch the mission.');
+        return code;
+      } catch (error) { if (this.code) await this.leave({ keepConnection: true }); throw this._error(error); }
+    }
+    async _watch() {
+      const generation = ++this._generation;
+      this._lastSeq = -1; this._seq = 0; this._closed = false; this._lastStateAt = Date.now(); this._roomStatus = 'lobby';
+      const listen = (path, handler) => this._unsubs.push(this.sdk.onValue(this._ref(path), snap => {
+        if (generation === this._generation) handler(snap.val());
+      }, error => {
+        if (generation === this._generation && this.code) this._finish('Room access ended. The host may have closed the room, or it expired.');
+      }));
+      listen('meta', meta => {
+        if (!meta || meta.status === 'closed') { this._finish('The host closed this room. Create or join a new room.'); return; }
+        this._roomStatus = meta.status; this._hostOnline = meta.hostOnline;
+        if (meta.expiresAt <= Date.now() + this.offset) { this._finish('This room expired. Create a new room to play again.'); return; }
+        clearTimeout(this._expiryTimer);
+        this._expiryTimer = setTimeout(() => this._finish('This room expired. Create a new room to play again.'), Math.max(1, meta.expiresAt - Date.now() - this.offset));
+        if (!this.isHost && !meta.hostOnline) this._status('Host disconnected. Waiting for them to reconnect…');
+        else if (!this.isHost && meta.status === 'lobby') this._status('Joined. Waiting for the host to launch the mission.');
+      });
+      listen('members', slots => this._setMembers(slots));
+      if (this.isHost) listen('inputs', inputs => {
+        const parsed = {};
+        Object.entries(inputs || {}).forEach(([uid, packet]) => {
+          try { const value = JSON.parse(packet.payload); if (value && typeof value === 'object') parsed[uid] = { ...value, _at: packet.sentAt }; } catch (_) {}
+        });
+        this.onInputs(parsed);
+      });
+      else listen('state', packet => {
+        if (!packet || packet.seq <= this._lastSeq) return;
+        try {
+          const state = JSON.parse(packet.payload);
+          if (!state || typeof state !== 'object') return;
+          this._lastSeq = packet.seq; this._lastStateAt = Date.now();
+          this.onState(state);
+          this._status(state.paused ? 'Host paused. Waiting…' : 'Squad synchronised');
+        } catch (_) { this._status('Could not read the latest game update. Waiting for the next one…'); }
+      });
+      this._staleTimer = setInterval(() => {
+        if (!this.isHost && this._roomStatus === 'playing' && Date.now() - this._lastStateAt > 5000) this._status('Waiting for host updates. Keep the host game open.');
+      }, 2000);
+      await this._presence();
+    }
+    async _presence() {
+      if (!this.code || this._closed || this._presenceBusy) return;
+      this._presenceBusy = true;
+      const generation = this._generation;
+      try {
+        const refs = [this._ref(`members/${this.slot}/online`)];
+        if (this.isHost) refs.push(this._ref('meta/hostOnline'));
+        for (const reference of refs) {
+          const handler = this.sdk.onDisconnect(reference);
+          await handler.set(false);
+          if (generation !== this._generation) { await handler.cancel(); return; }
+          this._disconnects.push(handler);
+          await this.sdk.set(reference, true);
+        }
+        this.connected = true;
+        if (this._roomStatus === 'playing') this._status('Squad synchronised');
+      } finally { this._presenceBusy = false; }
+    }
+    async start() {
+      if (!this.code || !this.isHost) throw new Error('Only the host can launch the mission.');
+      if (!this.connected) throw new Error('Reconnect before launching the mission.');
+      if (this._starting || this._roomStatus === 'playing') throw new Error('This mission has already started.');
+      this._starting = true;
+      try {
+        await this.sdk.set(this._ref('meta/status'), 'playing');
+        // New joins are now closed. Read the final roster before creating players.
+        return this._setMembers((await this.sdk.get(this._ref('members'))).val());
+      }
+      catch (error) { throw this._error(error); }
+      finally { this._starting = false; }
+    }
+    sendInput(input) {
+      if (!this.code || !this.connected || this._closed || this._inputBusy) return false;
+      const payload = JSON.stringify(input);
+      if (payload.length > 2048) return false;
+      this._inputBusy = true;
+      this.sdk.set(this._ref('inputs/' + this.uid), { payload, sentAt: this.sdk.serverTimestamp() })
+        .catch(error => this._status(message(error))).finally(() => { this._inputBusy = false; });
+      return true;
+    }
+    publish(state) {
+      if (!this.code || !this.isHost || !this.connected || this._closed || this._publishBusy) return false;
+      const payload = JSON.stringify(state);
+      if (payload.length > 100000) { this._status('Game update too large. Reduce the number of active entities.'); return false; }
+      this._publishBusy = true;
+      this.sdk.set(this._ref('state'), { payload, sentAt: this.sdk.serverTimestamp(), seq: ++this._seq })
+        .catch(error => this._status(message(error))).finally(() => { this._publishBusy = false; });
+      return true;
+    }
+    _finish(reason) {
+      if (this._closed || !this.code) return;
+      this._closed = true;
+      clearInterval(this._staleTimer); clearTimeout(this._expiryTimer);
+      this.onClosed(reason);
+    }
+    async _disposeConnection() {
+      this._baseUnsubs.splice(0).forEach(unsubscribe => unsubscribe());
+      const db = this.db, app = this.app;
+      this.db = null; this.app = null; this.uid = ''; this.connected = false;
+      if (db) this.sdk.goOffline(db);
+      if (app) await this.appSDK.deleteApp(app).catch(noop);
+    }
+    async leave({ keepConnection = false } = {}) {
+      const code = this.code, slot = this.slot, isHost = this.isHost;
+      const uid = this.uid, db = this.db;
+      ++this._generation;
+      if (!keepConnection) ++this._connectEpoch;
+      this._unsubs.splice(0).forEach(unsubscribe => unsubscribe());
+      clearInterval(this._staleTimer); clearTimeout(this._expiryTimer);
+      this.code = ''; this.slot = ''; this.isHost = false; this.members = {};
+      this._closed = false; this._lastStatus = ''; this._lastSeq = -1;
+      this._inputBusy = false; this._publishBusy = false;
+      const disconnects = this._disconnects.splice(0);
+      const cleanup = async () => {
+        if (code && db) {
+          try {
+            if (isHost) await this.sdk.remove(this.sdk.ref(db, 'rooms/' + code));
+            else await this.sdk.update(this.sdk.ref(db, 'rooms/' + code), { [`members/${slot}`]: null, [`inputs/${uid}`]: null });
+          } catch (_) { /* The room may already be closed or expired. */ }
+        }
+        await Promise.allSettled(disconnects.map(handler => handler.cancel()));
+      };
+      // Firebase queues writes while offline. Leaving the screen must remain immediate.
+      await Promise.race([cleanup(), new Promise(resolve => setTimeout(resolve, 1200))]);
+      if (!keepConnection) await this._disposeConnection();
+    }
+  }
+  window.CoopNetwork = CoopNetwork;
+})();
+
+</script>
+<script>
+/* Deadlight: Together — original canvas game. No external assets required for solo play. */
+(() => {
+'use strict';
+const $=id=>document.getElementById(id), canvas=$('arena'),ctx=canvas.getContext('2d');
+// Paste the public Firebase WEB app configuration here to enable online play for everybody.
+// Never put a service account, database secret, or private key in this file.
+const FIREBASE_CONFIG = {
+  databaseURL: "https://deadlight-a0a0e-default-rtdb.asia-southeast1.firebasedatabase.app/",
+  apiKey: "AIzaSyBDpfshoHSeWgCq7z_YuOVjU9dVdVWSq4o",
+  authDomain: "deadlight-a0a0e.firebaseapp.com",
+  projectId: "deadlight-a0a0e",
+  storageBucket: "deadlight-a0a0e.firebasestorage.app",
+  messagingSenderId: "826027874767",
+  appId: "1:826027874767:web:b01aa9152e5206fd831aba",
+  measurementId: "G-2MPZGG9PCP"
+};
+
+
+
+
+const WORLD={w:1600,h:1100}, CENTER={x:800,y:550};
+const COLORS=['#65edcb','#f9bd62','#92aaff','#ff93be'];
+const TOTAL_WAVES=30;
+const CHAPTERS=['Quarantine Gate','Rail Yard','Foundry','Blackout District','Breach Line','Dawn Extraction'];
+const ROLES={
+ ranger:{title:'Ranger',desc:'Overdrive · dash · rapid fire',actions:['overdrive','dash']},
+ engineer:{title:'Engineer',desc:'Roaming K9 · reinforced barriers',actions:['barrier','dog']},
+ medic:{title:'Medic',desc:'Healing pulse · medical station',actions:['heal','station']},
+ demo:{title:'Demolition',desc:'Cluster charges · EMP · payloads',actions:['cluster','emp']}
+};
+const UPGRADES={
+ power:{title:'Firepower',desc:'+11 bullet damage per level.',max:6,base:45,step:30},
+ cycle:{title:'Fire rate',desc:'Shoot 15% faster per level.',max:5,base:50,step:35},
+ magazine:{title:'Magazine',desc:'+6 rounds per magazine.',max:4,base:40,step:25},
+ reload:{title:'Reload system',desc:'Reload 0.22 seconds faster.',max:4,base:45,step:25},
+ armor:{title:'Body armour',desc:'+25 maximum health and 5% damage reduction.',max:4,base:55,step:30},
+ boots:{title:'Mobility',desc:'+8% movement speed.',max:3,base:40,step:25},
+ blast:{title:'Explosives',desc:'+65 blast damage and +15 blast radius. New charges.',max:4,base:55,step:35},
+ core:{title:'Outpost hull · shared',desc:'+90 core capacity and restore 60 core health.',max:4,base:90,step:60,shared:true},
+ barrier:{title:'Barrier plating',desc:'+110 health for barriers you build.',max:4,base:50,step:30,role:'engineer'},
+ dogPower:{title:'K9 weapon',desc:'+10 dog damage per shot. New deployments.',max:4,base:65,step:40,role:'engineer'},
+ battery:{title:'K9 battery',desc:'+10 seconds of autonomous patrol per deployment.',max:4,base:60,step:40,role:'engineer'},
+ pack:{title:'K9 pack',desc:'+1 dog allowed active at a time.',max:2,base:130,step:110,role:'engineer'},
+ medicine:{title:'Medical equipment',desc:'Stronger pulse and station healing.',max:4,base:55,step:35,role:'medic'},
+ triage:{title:'Triage systems',desc:'Faster revives and shorter healing cooldown.',max:3,base:65,step:35,role:'medic'},
+ charges:{title:'Charge harness',desc:'+2 armed charges allowed at a time.',max:3,base:55,step:30,role:'demo'},
+ emp:{title:'EMP capacitor',desc:'+60 EMP radius and +0.7 seconds of stun.',max:3,base:65,step:40,role:'demo'},
+ overdrive:{title:'Overdrive capacitor',desc:'+2 seconds of Overdrive and shorter cooldown.',max:3,base:70,step:40,role:'ranger'},
+ penetration:{title:'Piercing rounds',desc:'Each shot also hits another nearby enemy for +25% damage per level.',max:3,base:80,step:50,role:'ranger'}
+};
+const ICONS={bomb:'◉',detonate:'ϟ',barrier:'▥',dog:'K9',heal:'✚',station:'⊕',cluster:'✹',emp:'◎',overdrive:'»',dash:'➜',repair:'⌁',workshop:'↟'};
+const ACTION_NAMES={bomb:'PLANT BOMB',detonate:'DETONATE',barrier:'BARRIER',dog:'ROAMING K9',heal:'HEAL PULSE',station:'MED STATION',cluster:'CLUSTER',emp:'EMP PULSE',overdrive:'OVERDRIVE',dash:'DASH',repair:'REPAIR CORE',workshop:'WORKSHOP'};
+const COSTS={bomb:20,barrier:25,dog:65,heal:30,station:45,cluster:50,emp:30,repair:30};
+const HOTKEYS={bomb:'B',detonate:'E',barrier:'C',dog:'G',heal:'H',station:'V',cluster:'V',emp:'X',overdrive:'X',dash:'Space',repair:'R',workshop:'U'};
+const level=(p,k)=>p.up?.[k]||0;
+const magSize=p=>18+6*level(p,'magazine');
+const maxDogs=p=>1+level(p,'pack');
+const bombLimit=p=>(p.role==='demo'?6:3)+2*level(p,'charges');
+const upgradeLevel=(p,k)=>UPGRADES[k].shared?(state.teamUp[k]||0):level(p,k);
+const upgradeCost=(p,k)=>UPGRADES[k].base+UPGRADES[k].step*upgradeLevel(p,k);
+function makeState(){return {version:2,t:0,phase:'prep',timer:20,wave:0,kills:0,scrap:220,speed:1,teamUp:{core:0},base:{...CENTER,hp:300,max:300},players:[],enemies:[],barriers:[],dogs:[],bombs:[],stations:[],explosions:[],zones:[],pickups:[],shots:[],bolts:[],pings:[],spawnLeft:0,spawnCd:0,paused:false,mission:CHAPTERS[0]}}
+function player(id,name,r,index){return {id,name:name.slice(0,16),role:r,color:index,x:800+(index%2?70:-70),y:550+(index<2?95:-95),hp:100,max:100,level:1,up:{},ammo:18,reload:0,cd:0,healCd:0,dogCd:0,stationCd:0,empCd:0,burstCd:0,dashCd:0,bombCd:0,boost:0,down:0,revive:0,inv:2,online:true,vx:0,vy:0,facing:-Math.PI/2,payload:'blast',notice:'',noticeId:0}}
+function tell(p,message){p.notice=message;p.noticeId=(p.noticeId||0)+1;if(p.id===me){lastNotice=p.noticeId;toast(message)}}
+function spend(cost,p){if(state.scrap<cost){tell(p,'Need '+cost+' shared salvage. Collect crates or clear enemies.');return false}state.scrap-=cost;return true}
+function damage(target,amount){if(target.inv||target.hp<=0)return;target.hp=Math.max(0,target.hp-amount*(target.up?1-.05*level(target,'armor'):1));}
+function explosion(x,y,r,damageAmount,payload='blast',owner=''){
+ const event={id:++uidCounter,x,y,r,t:state.t,payload};state.explosions.push(event);
+ for(const e of state.enemies){const d=dist(e,event);if(e.hp>0&&d<r){hit(e,damageAmount*(1-.25*d/r));if(payload==='cryo'){e.frozen=Math.max(e.frozen||0,5);e.stun=Math.max(e.stun||0,1.5)}}}
+ if(payload==='fire')state.zones.push({id:++uidCounter,x,y,r:r*.8,ttl:6,damage:damageAmount*.09});
+ if(state.explosions.length>24)state.explosions.splice(0,state.explosions.length-24);
+}
+function handleAction(p,a){
+ if(!p||!p.online||typeof a.type!=='string')return;
+ if(a.type==='ping'){state.pings.push({x:p.x,y:p.y,t:state.t,id:p.id});return}
+ if(p.hp<=0||['lost','won'].includes(state.phase))return;
+ if(a.type.startsWith('buy:')){const k=a.type.slice(4),u=UPGRADES[k];if(!Object.hasOwn(UPGRADES,k)||!u||u.role&&u.role!==p.role)return;const l=upgradeLevel(p,k);if(l>=u.max){tell(p,'This component is fully upgraded.');return}if(!spend(upgradeCost(p,k),p))return;
+  if(u.shared){state.teamUp[k]=l+1;state.base.max+=90;state.base.hp=Math.min(state.base.max,state.base.hp+60)}else{p.up[k]=l+1;if(k==='power')p.level=l+2;if(k==='armor'){p.max+=25;p.hp=Math.min(p.max,p.hp+25)}}tell(p,u.title+' upgraded to '+(l+1)+'.');return;}
+ if(a.type.startsWith('payload:')){const v=a.type.slice(8);if(p.role==='demo'&&['blast','cryo','fire'].includes(v)){p.payload=v;tell(p,'Payload selected: '+v.toUpperCase()+'. Applies to new bombs.')}return}
+ if(a.type.startsWith('speed:')){const n=Number(a.type.slice(6));if(p.id===me&&(mode==='solo'||net?.isHost)&&[.75,1,1.5,2].includes(n))state.speed=n;return}
+ const common=['bomb','detonate','repair','next','reload'];
+ if(!common.includes(a.type)&&!ROLES[p.role].actions.includes(a.type))return;
+ if(a.type==='reload'){if(p.reload<=0&&p.ammo<magSize(p))p.reload=Math.max(.65,1.85-.22*level(p,'reload'));return}
+ if(a.type==='bomb'||a.type==='cluster'){
+  if(p.bombCd>0)return;const n=state.bombs.filter(b=>b.owner===p.id).length;if(n>=bombLimit(p)){tell(p,'Charge limit reached. Detonate your armed bombs first.');return}
+  if(!spend(a.type==='cluster'?50:20,p))return;const l=level(p,'blast');state.bombs.push({id:++uidCounter,owner:p.id,color:p.color,x:p.x,y:p.y,t:state.t,cluster:a.type==='cluster',payload:a.type==='cluster'?'blast':p.payload,r:135+l*15+(p.role==='demo'?25:0),damage:(150+l*65)*(p.role==='demo'?1.35:1)});p.bombCd=.3;return;
+ }
+ if(a.type==='detonate'){
+  const armed=state.bombs.filter(b=>b.owner===p.id&&state.t-b.t>=.5);if(!armed.length){tell(p,'Plant a bomb, wait half a second, then detonate.');return}
+  const ids=new Set(armed.map(b=>b.id));state.bombs=state.bombs.filter(b=>!ids.has(b.id));for(const b of armed){explosion(b.x,b.y,b.r,b.damage,b.payload,p.id);if(b.cluster){for(let i=0;i<4;i++){const a=i*Math.PI/2;explosion(clamp(b.x+Math.cos(a)*110,20,1580),clamp(b.y+Math.sin(a)*110,20,1080),95,b.damage*.6,'blast',p.id)}}}tell(p,'Detonated '+armed.length+' charge'+(armed.length>1?'s':'')+'.');return;
+ }
+ if(a.type==='barrier'){
+  const angle=p.facing,spot={x:clamp(p.x+Math.cos(angle)*62,40,1560),y:clamp(p.y+Math.sin(angle)*62,40,1060)};
+  if(dist(spot,state.base)<90||state.barriers.some(b=>dist(b,spot)<65)||state.players.some(q=>dist(q,spot)<38)){tell(p,'Move into open ground to build.');return}if(state.barriers.length>=20){tell(p,'The squad already has 20 barriers.');return}
+  if(spend(25,p)){const hp=240+level(p,'barrier')*110;state.barriers.push({...spot,id:++uidCounter,hp,max:hp,kind:'barrier'})}return;
+ }
+ if(a.type==='repair'){if(dist(p,state.base)>155){tell(p,'Move inside the core repair circle.');return}if(state.base.hp>=state.base.max){tell(p,'The core is fully repaired.');return}if(spend(30,p))state.base.hp=Math.min(state.base.max,state.base.hp+(p.role==='engineer'?100:65));return}
+ if(a.type==='heal'){if(p.healCd>0)return;const targets=state.players.filter(q=>q.hp>0&&q.hp<q.max&&dist(p,q)<250);if(!targets.length){tell(p,'No injured allies in range.');return}if(spend(30,p)){for(const q of targets)q.hp=Math.min(q.max,q.hp+65+level(p,'medicine')*18);p.healCd=12-level(p,'triage')*2;state.pings.push({x:p.x,y:p.y,t:state.t,heal:true})}return}
+ if(a.type==='station'){if(p.stationCd>0)return;if(state.stations.filter(s=>s.owner===p.id).length>=2){tell(p,'Two medical stations are already active.');return}if(spend(45,p)){state.stations.push({id:++uidCounter,owner:p.id,x:p.x,y:p.y,ttl:40,r:170,rate:4+level(p,'medicine')*2});p.stationCd=18}return}
+ if(a.type==='dog'){if(p.dogCd>0)return;if(state.dogs.filter(d=>d.owner===p.id).length>=maxDogs(p)){tell(p,'K9 pack deployed. Upgrade K9 Pack for extra dogs.');return}if(spend(65,p)){state.dogs.push({id:++uidCounter,owner:p.id,x:p.x+24,y:p.y+15,ttl:35+level(p,'battery')*10,damage:26+level(p,'dogPower')*10,cd:0,patrol:state.dogs.length%8,behavior:'PATROL'});p.dogCd=8}return}
+ if(a.type==='emp'){if(p.empCd>0)return;if(spend(30,p)){const r=260+level(p,'emp')*60;for(const e of state.enemies)if(dist(e,p)<r)e.stun=Math.max(e.stun||0,(3+level(p,'emp')*.7)*(e.type==='boss'?.5:1));state.explosions.push({id:++uidCounter,x:p.x,y:p.y,r,t:state.t,payload:'emp'});p.empCd=18}return}
+ if(a.type==='overdrive'){if(p.burstCd>0)return;p.boost=8+level(p,'overdrive')*2;p.burstCd=30-level(p,'overdrive')*3;tell(p,'Overdrive active. Hold the line!');return}
+ if(a.type==='dash'){if(p.dashCd>0)return;for(let i=0;i<10;i++)moveCircle(p,Math.cos(p.facing)*15,Math.sin(p.facing)*15,15);p.inv=Math.max(p.inv,.7);p.dashCd=5;return}
+ if(a.type==='next'&&p.id===me&&(mode==='solo'||net?.isHost)&&state.phase==='prep')state.timer=0;
+}
+function spawn(){
+ const edge=Math.floor(random(0,4)),x=edge<2?(edge===0?25:1575):random(50,1550),y=edge>=2?(edge===2?25:1075):random(50,1050),r=Math.random();let type='walker';
+ if(state.wave>=2&&r<.27)type='runner';if(state.wave>=3&&r>.78)type='brute';if(state.wave>=5&&r>.59&&r<=.78)type='spitter';
+ if(state.wave%5===3&&r<.65)type='runner';if(state.wave%5===4&&r>.5)type='brute';if(state.wave%5===0&&state.spawnLeft===1)type='boss';
+ const t=TYPES[type],factor=1+(state.wave-1)*.07+(state.players.length-1)*.20;state.enemies.push({id:++uidCounter,type,x,y,hp:Math.round(t.hp*factor),max:Math.round(t.hp*factor),cd:0,stun:0,frozen:0});
+}
+function beginWave(){state.wave++;state.phase='wave';state.spawnLeft=10+state.wave*3+Math.max(0,state.players.length-1)*5;state.spawnCd=.2;state.mission=CHAPTERS[Math.min(5,Math.floor((state.wave-1)/5))];sound('wave');toast('WAVE '+state.wave+' / 30 · '+(state.wave%5===0?'BREACHER BOSS':state.wave%5===3?'RUNNER RUSH':state.wave%5===4?'ARMOURED SIEGE':state.mission));}
+function simulateSupport(dt){
+ for(const d of state.dogs){
+  d.ttl-=dt;d.cd-=dt;let target=null,best=Infinity;
+  for(const e of state.enemies){if(e.hp<=0)continue;const score=dist(d,e)+(dist(e,state.base)<250?-200:0);if(score<best){best=score;target=e}}
+  let pos;if(target){pos=target;d.behavior='HUNT'}else{const angle=d.patrol*Math.PI/4;pos={x:800+Math.cos(angle)*600,y:550+Math.sin(angle)*405};d.behavior='PATROL';if(dist(d,pos)<35)d.patrol=(d.patrol+1)%8}
+  const dd=dist(d,pos),stop=target?145:12;if(dd>stop){const step=Math.min(dd-stop,245*dt);d.x=clamp(d.x+(pos.x-d.x)/dd*step,20,1580);d.y=clamp(d.y+(pos.y-d.y)/dd*step,20,1080)}
+  if(target&&dd<300&&d.cd<=0){hit(target,d.damage);shot(d,target,'#8aacff');d.cd=.23}
+ }
+ state.dogs=state.dogs.filter(d=>d.ttl>0);
+ for(const s of state.stations){s.ttl-=dt;for(const p of state.players)if(p.online&&p.hp>0&&dist(s,p)<s.r)p.hp=Math.min(p.max,p.hp+s.rate*dt)}state.stations=state.stations.filter(s=>s.ttl>0);
+ for(const z of state.zones){z.ttl-=dt;for(const e of state.enemies)if(e.hp>0&&dist(e,z)<z.r)hit(e,z.damage*dt)}state.zones=state.zones.filter(z=>z.ttl>0);
+ state.explosions=state.explosions.filter(x=>state.t-x.t<.9);
+}
+
+const TYPES={walker:{hp:38,speed:43,damage:8,r:14,color:'#9da887'},runner:{hp:24,speed:95,damage:5,r:11,color:'#efbb72'},brute:{hp:160,speed:28,damage:15,r:23,color:'#bc8190'},spitter:{hp:65,speed:40,damage:8,r:15,color:'#a19adf'},boss:{hp:700,speed:22,damage:25,r:38,color:'#ee785f'}};
+let mode='menu',net=null,me='solo',state=null,role='ranger',connected=false;
+let members={},remoteInputs={},lastActions={},lastTime=0,sendAt=0,publishAt=0,lastStateAt=0,lastHudAt=0;
+let cw=0,ch=0,dpr=1,cam={x:800,y:550,z:1},keys={},stick={id:null,x:0,y:0},seq=0,actionQueue=[],pendingActions=[];
+let pause=false,menuPause=false,isTouch=matchMedia('(pointer:coarse)').matches,shotSeen=new Set(),visuals=new Map(),outcomeShown=false;
+let soundOn=true,musicOn=false,audioCtx=null,musicTimer=null,toastTimer,uidCounter=0,lastErrorAt=0;
+const input={x:0,y:0,aim:0,manual:false};
+const random=(a,b)=>a+Math.random()*(b-a),dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
+const storeGet=k=>{try{return localStorage.getItem(k)}catch{return null}},storeSet=(k,v)=>{try{localStorage.setItem(k,v)}catch{}};
+function sound(type){if(!soundOn)return;try{audioCtx ||= new (window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==='suspended')audioCtx.resume();const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.connect(g);g.connect(audioCtx.destination);const now=audioCtx.currentTime;
+const spec={boom:[85,27,.55,.16],shot:[180,60,.045,.025],hit:[100,40,.09,.05],buy:[380,740,.14,.07],heal:[500,960,.25,.07],fail:[130,60,.2,.06],wave:[240,580,.35,.08],pickup:[700,1100,.1,.05],revive:[440,900,.4,.09]}[type]||[400,500,.1,.03];
+o.type=type==='shot'?'triangle':'sine';if(type==='boom'){const buffer=audioCtx.createBuffer(1,Math.ceil(audioCtx.sampleRate*.4),audioCtx.sampleRate),data=buffer.getChannelData(0);for(let i=0;i<data.length;i++)data[i]=(Math.random()*2-1)*(1-i/data.length);const source=audioCtx.createBufferSource(),ng=audioCtx.createGain();source.buffer=buffer;source.connect(ng);ng.connect(audioCtx.destination);ng.gain.setValueAtTime(.13,now);ng.gain.exponentialRampToValueAtTime(.001,now+.4);source.start(now);source.stop(now+.4)}o.frequency.setValueAtTime(spec[0],now);o.frequency.exponentialRampToValueAtTime(spec[1],now+spec[2]);g.gain.setValueAtTime(spec[3],now);g.gain.exponentialRampToValueAtTime(.001,now+spec[2]);o.start();o.stop(now+spec[2]);}catch{}}
+function music(){clearInterval(musicTimer);if(!musicOn)return;try{audioCtx ||= new (window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==='suspended')audioCtx.resume()}catch{return}let n=0;musicTimer=setInterval(()=>{if(!musicOn||document.hidden||!audioCtx||audioCtx.state!=='running')return;try{const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.connect(g);g.connect(audioCtx.destination);o.type='sine';o.frequency.value=[110,130.81,98,146.83][n++%4];g.gain.setValueAtTime(.018,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+1.8);o.start();o.stop(audioCtx.currentTime+2)}catch{}},2100)}
+function toast(msg){$('toast').textContent=msg;$('toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('show'),3200)}
+function boot(){state=makeState();outcomeShown=false;visuals.clear();shotSeen.clear();blastSeen.clear();lastNotice=0;menuRole='';lastActions={};actionQueue=[];pendingActions=[];seq=0;pause=false;menuPause=false;lastStateAt=performance.now();$('home').hidden=true;$('lobby').hidden=true;$('result').hidden=true;$('help').hidden=true;$('workshop').hidden=true;document.body.classList.add('playing');$('touch').hidden=!isTouch;$('pauseBtn').disabled=mode==='online'&&!net?.isHost;resize();sound('wave');music()}
+function startSolo(){mode='solo';me='solo';boot();state.players=[player(me,$('name').value.trim()||'Survivor',role,0)];hud();toast('Collect salvage. Protect the core. Plant, detonate, upgrade. Survive 30 waves.');$('roomTag').textContent='SOLO'}
+async function startOnline(){if(!net?.isHost)return;$('startOnline').disabled=true;try{await net.start();boot();state.players=Object.entries(members).map(([id,p],i)=>player(id,p.name,p.role,i));state.scrap=220+60*(state.players.length-1);hud();net.publish(pack())}catch(e){toast(e.message)}finally{$('startOnline').disabled=false}}
+function showHome(){mode='menu';pause=false;document.body.classList.remove('playing');$('home').hidden=false;$('lobby').hidden=true;$('result').hidden=true;$('help').hidden=true;$('workshop').hidden=true;$('touch').hidden=true;$('status').textContent='Play solo or create a room for your squad';state=makeState();state.players=[player('preview','You','ranger',0)];for(let i=0;i<20;i++)state.enemies.push({id:'a'+i,type:i%4?'walker':'runner',x:random(100,1500),y:random(90,990),hp:40,max:40,cd:0});resize()}
+async function leave(){if(net){await net.leave();net=null}connected=false;showHome()}
+function getInput(){if(!$('workshop').hidden)return {x:0,y:0,aim:input.aim,manual:false,actions:pendingActions.slice(-12)};let x=(keys.KeyD||keys.ArrowRight?1:0)-(keys.KeyA||keys.ArrowLeft?1:0)+stick.x,y=(keys.KeyS||keys.ArrowDown?1:0)-(keys.KeyW||keys.ArrowUp?1:0)+stick.y;const m=Math.hypot(x,y);if(m>1){x/=m;y/=m}input.x=x;input.y=y;return {x,y,aim:input.aim,manual:input.manual,actions:pendingActions.slice(-12)}}
+function action(name){if(mode==='menu'||!document.body.classList.contains('playing')||state?.paused||pause||menuPause)return;sound('pickup');const a={id:++seq,type:name};pendingActions.push(a);if(pendingActions.length>12)pendingActions.shift();if(mode==='solo'||net?.isHost)actionQueue.push({uid:me,...a});else if(net)net.sendInput(getInput());}
+function shot(a,b,color='#f9c969'){state.shots.push({id:++uidCounter,x:a.x,y:a.y,tx:b.x,ty:b.y,c:color,t:state.t});if(state.shots.length>28)state.shots.shift()}
+function hit(e,n){e.hp-=n;if(e.hp<=0&&!e.dead){e.dead=true;state.kills++;if(state.pickups.length<120&&Math.random()<.8)state.pickups.push({id:++uidCounter,x:e.x,y:e.y,value:e.type==='boss'?80:e.type==='brute'?15:6});}}
+function moveCircle(p,dx,dy,r){const nx=clamp(p.x+dx,r,WORLD.w-r),ny=clamp(p.y+dy,r,WORLD.h-r);if(!state.barriers.some(b=>b.hp>0&&Math.abs(nx-b.x)<31+r&&Math.abs(p.y-b.y)<17+r))p.x=nx;if(!state.barriers.some(b=>b.hp>0&&Math.abs(p.x-b.x)<31+r&&Math.abs(ny-b.y)<17+r))p.y=ny;}
+function simulation(dt){if(state.paused||pause||menuPause||!['prep','wave'].includes(state.phase))return;dt*=state.speed;state.t+=dt;
+const self=getInput();for(const p of state.players){if(mode==='online'){p.online=members[p.id]?.online!==false&&!!members[p.id]}
+let i=p.id===me?self:remoteInputs[p.id]||{x:0,y:0,actions:[]};if(p.id!==me&&Date.now()+(net?.offset||0)-(i._at||0)>1500)i={x:0,y:0,actions:[]};
+if(p.id!==me&&Array.isArray(i.actions)){for(const a of i.actions){if(a&&Number.isSafeInteger(a.id)&&a.id>(lastActions[p.id]||0)){lastActions[p.id]=a.id;actionQueue.push({uid:p.id,id:a.id,type:a.type})}}}
+for(const k of ['cd','healCd','dogCd','stationCd','empCd','burstCd','dashCd','bombCd','boost','inv'])p[k]=Math.max(0,p[k]-dt);if(p.reload>0){p.reload=Math.max(0,p.reload-dt);if(p.reload===0)p.ammo=magSize(p)}p.vx=0;p.vy=0;
+if(!p.online)continue;if(p.hp<=0){p.down+=dt;continue}let ix=Number.isFinite(i.x)?clamp(i.x,-1,1):0,iy=Number.isFinite(i.y)?clamp(i.y,-1,1):0,m=Math.max(1,Math.hypot(ix,iy));const speed=190*(1+.08*level(p,'boots'));p.vx=ix/m*speed;p.vy=iy/m*speed;if(Math.hypot(p.vx,p.vy)>1)p.facing=Math.atan2(p.vy,p.vx);if(i.manual&&Number.isFinite(i.aim))p.facing=i.aim;moveCircle(p,p.vx*dt,p.vy*dt,15);
+let target=null,closest=420+p.level*12;for(const e of state.enemies){if(e.hp<=0)continue;let d=dist(p,e);if(i.manual&&Number.isFinite(i.aim)){let a=Math.atan2(e.y-p.y,e.x-p.x)-i.aim;a=Math.atan2(Math.sin(a),Math.cos(a));if(Math.abs(a)>.6)continue}if(d<closest){closest=d;target=e}}
+if(target&&p.cd===0&&p.reload<=0){if(p.ammo>0){const dmg=20+level(p,'power')*11;hit(target,dmg);shot(p,target,COLORS[p.color]);if(p.role==='ranger'&&level(p,'penetration')){const extra=state.enemies.find(e=>e!==target&&e.hp>0&&dist(target,e)<110);if(extra){hit(extra,dmg*.25*level(p,'penetration'));shot(target,extra,COLORS[p.color])}}p.ammo--;p.cd=(p.role==='ranger'?.24:.32)/(1+level(p,'cycle')*.15)/(p.boost>0?1.8:1)}if(p.ammo<=0)p.reload=Math.max(.65,1.85-.22*level(p,'reload'))}
+for(let k=state.pickups.length-1;k>=0;k--){const item=state.pickups[k];if(dist(p,item)<44){state.scrap+=item.value;state.pickups.splice(k,1);if(item.crate)p.hp=Math.min(p.max,p.hp+20);if(p.id===me)sound('pickup')}}
+}
+for(const a of actionQueue.splice(0))handleAction(state.players.find(p=>p.id===a.uid),a);
+for(const p of state.players.filter(p=>p.hp<=0&&p.online)){const helper=state.players.find(q=>q.hp>0&&q.online&&dist(q,p)<78);p.revive=helper?p.revive+dt/(helper.role==='medic'?Math.max(.8,1.8-level(helper,'triage')*.25):3):Math.max(0,p.revive-dt*.3);if(p.revive>=1){p.hp=60;p.revive=0;p.down=0;p.inv=3;sound('revive');toast(p.name+' is back in the fight.')}if(mode==='solo'&&p.down>4&&state.base.hp>30){state.base.hp-=30;p.hp=70;p.down=0;p.x=800;p.y=650;p.inv=4;toast('Emergency respawn · core lost 30 health.')}}
+simulateSupport(dt);
+for(const e of state.enemies){if(e.hp<=0)continue;const t=TYPES[e.type];e.cd-=dt;e.stun=Math.max(0,(e.stun||0)-dt);e.frozen=Math.max(0,(e.frozen||0)-dt);if(e.stun>0)continue;let target=state.base;let near=dist(e,state.base)-30;for(const p of state.players){if(p.hp>0&&p.online&&dist(e,p)<Math.min(near,260)){near=dist(e,p);target=p}}
+for(const b of state.barriers){const dd=dist(e,b);if(b.hp>0&&dd<Math.min(near+15,110)){target=b;near=dd}}
+const dd=dist(e,target),reach=target===state.base?72:target.kind==='barrier'?43:t.r+14;
+if(e.type==='spitter'&&dd<280&&dd>reach){if(e.cd<=0){state.bolts.push({x:e.x,y:e.y,vx:(target.x-e.x)/dd*170,vy:(target.y-e.y)/dd*170,ttl:2.4});e.cd=2}}else if(dd>reach){const speed=t.speed*(1+state.wave*.012)*(e.frozen>0?.4:1);e.x+=(target.x-e.x)/dd*speed*dt;e.y+=(target.y-e.y)/dd*speed*dt}else if(e.cd<=0){if(!target.inv){damage(target,t.damage*(1+state.wave*.025));if(target.id===me)sound('hit')}e.cd=1}
+}
+for(const b of state.bolts){b.x+=b.vx*dt;b.y+=b.vy*dt;b.ttl-=dt;const target=state.players.find(p=>p.hp>0&&p.online&&dist(p,b)<21)||state.barriers.find(p=>p.hp>0&&dist(p,b)<35)||(dist(state.base,b)<62?state.base:null);if(target){if(!target.inv)damage(target,10+state.wave*.15);b.ttl=0}}
+state.bolts=state.bolts.filter(b=>b.ttl>0);state.barriers=state.barriers.filter(b=>b.hp>0);state.enemies=state.enemies.filter(e=>e.hp>0);state.shots=state.shots.filter(s=>state.t-s.t<.3);state.pings=state.pings.filter(p=>state.t-p.t<3);
+if(state.phase==='prep'){state.timer-=dt;if(state.timer<=0)beginWave()}
+else{state.spawnCd-=dt;if(state.spawnLeft>0&&state.spawnCd<=0&&state.enemies.length<85){spawn();state.spawnLeft--;state.spawnCd=Math.max(.18,.8-state.wave*.035)}if(state.spawnLeft===0&&state.enemies.length===0){if(state.wave===TOTAL_WAVES)state.phase='won';else{state.phase='prep';state.timer=20;state.scrap+=70+state.wave*4+state.players.length*15;state.players.forEach(p=>{if(p.hp>0)p.hp=Math.min(p.max,p.hp+20);else{p.hp=50;p.down=0;p.inv=3;p.revive=0}});for(let i=0;i<3;i++)state.pickups.push({id:++uidCounter,x:random(230,1370),y:random(160,940),value:25,crate:true});toast('Wave cleared! Shared salvage awarded. Rebuild together.');sound('wave')}}}
+if(state.base.hp<=0||(mode==='online'&&state.players.filter(p=>p.online).length>0&&state.players.filter(p=>p.online).every(p=>p.hp<=0)))state.phase='lost';
+}
+function pack(){// Quantisation reduces realtime bandwidth; shots remain lightweight visual events.
+return JSON.parse(JSON.stringify(state,(k,v)=>typeof v==='number'?Math.round(v*10)/10:v));}
+function receiveState(s){if(!s||!Array.isArray(s.players)||net?.isHost)return;if(s.version!==2){toast('The host has an older game version. Refresh both devices and create a new room.');return;}if(mode!=='online'||!document.body.classList.contains('playing')){mode='online';boot();$('roomTag').textContent=net.code}state=s;lastStateAt=performance.now();}
+function circle(x,y,r,c){ctx.fillStyle=c;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill()}
+function line(x,y,tx,ty,c,w=1){ctx.strokeStyle=c;ctx.lineWidth=w;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(tx,ty);ctx.stroke()}
+function label(text,x,y,color='#b9c6c0',size=11){ctx.fillStyle=color;ctx.font=`600 ${size}px system-ui`;ctx.textAlign='center';ctx.fillText(text,x,y)}
+function bar(x,y,w,h,value,color){ctx.fillStyle='#142123';ctx.fillRect(x-w/2,y,w,h);ctx.fillStyle=color;ctx.fillRect(x-w/2,y,w*clamp(value,0,1),h)}
+function rounded(x,y,w,h,r,fill,stroke){ctx.beginPath();ctx.roundRect(x,y,w,h,r);if(fill){ctx.fillStyle=fill;ctx.fill()}if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=1;ctx.stroke()}}
+function render(dt){if(!state)return;ctx.setTransform(dpr,0,0,dpr,0,0);ctx.fillStyle='#111b1c';ctx.fillRect(0,0,cw,ch);
+const self=state.players.find(p=>p.id===me)||state.players[0]||CENTER;cam.z=clamp(Math.min(cw/1240,ch/800),.66,1.2);if(mode==='menu')cam.z=Math.max(cw/1600,ch/1100);let targetX=self.x*.65+800*.35,targetY=self.y*.65+550*.35;if(mode==='menu'){targetX=800;targetY=550}cam.x+= (clamp(targetX,Math.min(800,cw/2/cam.z),Math.max(800,1600-cw/2/cam.z))-cam.x)*Math.min(1,dt*6);cam.y+=(clamp(targetY,Math.min(550,ch/2/cam.z),Math.max(550,1100-ch/2/cam.z))-cam.y)*Math.min(1,dt*6);
+ctx.save();ctx.translate(cw/2,ch/2);ctx.scale(cam.z,cam.z);ctx.translate(-cam.x,-cam.y);
+ctx.fillStyle='#152324';ctx.fillRect(0,0,1600,1100);ctx.strokeStyle='#203031';ctx.lineWidth=1;ctx.beginPath();for(let x=0;x<=1600;x+=80){ctx.moveTo(x,0);ctx.lineTo(x,1100)}for(let y=0;y<=1100;y+=80){ctx.moveTo(0,y);ctx.lineTo(1600,y)}ctx.stroke();
+ctx.fillStyle='#192a2b';ctx.fillRect(690,0,220,1100);ctx.fillRect(0,450,1600,200);ctx.setLineDash([12,18]);line(800,0,800,1100,'#344341',2);line(0,550,1600,550,'#344341',2);ctx.setLineDash([]);
+for(const [x,y,w,h]of [[130,125,260,125],[1190,125,245,130],[125,860,270,110],[1210,865,245,110]]){rounded(x,y,w,h,10,'#1c2c2c','#354241');for(let i=0;i<4;i++)line(x+20,y+20+i*25,x+w-20,y+20+i*25,'#263938',2);label('SUPPLY SECTOR',x+w/2,y+h/2+5,'#49605a',12)}
+ctx.strokeStyle='#807047';ctx.lineWidth=5;ctx.strokeRect(15,15,1570,1070);
+circle(800,550,142,'#243833');ctx.setLineDash([9,9]);ctx.strokeStyle='#567463';ctx.lineWidth=2;ctx.beginPath();ctx.arc(800,550,142,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);
+rounded(748,498,104,104,17,'#324943','#72a78c');rounded(770,520,60,60,9,'#203a35');circle(800,550,16+Math.sin(state.t*3)*2,state.base.hp>80?'#67e5bd':'#f4846f');line(782,550,818,550,'#e8fff2',4);line(800,532,800,568,'#e8fff2',4);label('OUTPOST CORE',800,477,'#a4c5b5',12);bar(800,618,110,5,state.base.hp/state.base.max,'#6adfb7');
+drawEquipment();
+for(const b of state.barriers){rounded(b.x-32,b.y-18,64,36,6,'#677473','#aab3a2');line(b.x-20,b.y-12,b.x-20,b.y+12,'#394745',3);line(b.x+20,b.y-12,b.x+20,b.y+12,'#394745',3);bar(b.x,b.y+24,56,4,b.hp/b.max,'#d8be7b')}
+for(const a of state.pickups){const bob=Math.sin(state.t*3+a.id)*2;rounded(a.x-10,a.y-10+bob,20,20,4,a.crate?'#9d8350':'#607e69','#e3d494');label('+',a.x,a.y+5+bob,'#eaffd8',15)}
+for(const p of state.pings){const age=state.t-p.t;ctx.strokeStyle=p.heal?'#63e8b4':'#ffc861';ctx.lineWidth=3;ctx.globalAlpha=Math.max(0,1-age/3);ctx.beginPath();ctx.arc(p.x,p.y,(p.heal?100:25)+age*35,0,Math.PI*2);ctx.stroke();if(!p.heal)label('HELP HERE',p.x,p.y-40,'#ffd695');ctx.globalAlpha=1}
+for(const e of state.enemies){const t=TYPES[e.type];const key='e'+e.id,v=visuals.get(key)||{x:e.x,y:e.y};v.x+=(e.x-v.x)*Math.min(1,dt*13);v.y+=(e.y-v.y)*Math.min(1,dt*13);visuals.set(key,v);circle(v.x+2,v.y+4,t.r+1,'#0c151655');circle(v.x,v.y,t.r,e.stun>0?'#9cceef':e.frozen>0?'#badce2':t.color);circle(v.x-4,v.y-3,2,'#172729');circle(v.x+5,v.y-3,2,'#172729');if(e.type==='brute'||e.type==='boss'){ctx.strokeStyle='#593e42';ctx.lineWidth=4;ctx.strokeRect(v.x-t.r*.65,v.y-t.r*.5,t.r*1.3,t.r)}if(e.hp<e.max)bar(v.x,v.y-t.r-10,t.r*2,3,e.hp/e.max,'#ea8b75');if(e.type==='boss')label('BREACHER',v.x,v.y-t.r-19,'#ffb891',11)}
+for(const d of state.dogs){rounded(d.x-16,d.y-9,32,18,5,'#769ad7','#bfd4ff');for(const ox of [-10,10]){line(d.x+ox,d.y-7,d.x+ox+Math.sin(state.t*14)*4,d.y-15,'#b5c9ee',3);line(d.x+ox,d.y+7,d.x+ox-Math.sin(state.t*14)*4,d.y+15,'#b5c9ee',3)}circle(d.x+13,d.y,4,'#6affd6');label(d.behavior+' '+Math.ceil(d.ttl)+'s',d.x,d.y-22,'#afc5f4',10)}
+for(const p of state.players){const key='p'+p.id,v=visuals.get(key)||{x:p.x,y:p.y};let tx=p.x,ty=p.y;if(mode==='online'&&!net?.isHost&&p.id===me&&!state.paused){const age=clamp((performance.now()-lastStateAt)/1000,0,.22);tx+=input.x*190*(1+.08*level(p,'boots'))*age*state.speed;ty+=input.y*190*(1+.08*level(p,'boots'))*age}v.x+=(tx-v.x)*Math.min(1,dt*17);v.y+=(ty-v.y)*Math.min(1,dt*17);visuals.set(key,v);ctx.globalAlpha=p.online?1:.32;const c=COLORS[p.color%4];circle(v.x+2,v.y+5,18,'#09141499');if(p.id===me){ctx.strokeStyle=c;ctx.lineWidth=2;ctx.beginPath();ctx.arc(v.x,v.y,24,0,Math.PI*2);ctx.stroke()}
+if(p.hp<=0){circle(v.x,v.y,15,'#bc7975');label('+',v.x,v.y+8,'#fff3eb',23);label('STAND NEAR TO REVIVE',v.x,v.y-30,'#ffd1ae',10);bar(v.x,v.y+28,55,5,p.revive,'#ffd184')}
+else{circle(v.x,v.y,16,c);rounded(v.x-11,v.y-5,22,8,3,'#203935');circle(v.x+7,v.y-1,2,'#eaffeb');const angle=p.id===me&&input.manual?input.aim:Math.hypot(p.vx,p.vy)>1?Math.atan2(p.vy,p.vx):-Math.PI/2;line(v.x+Math.cos(angle)*10,v.y+Math.sin(angle)*10,v.x+Math.cos(angle)*28,v.y+Math.sin(angle)*28,'#d7e3d3',6);bar(v.x,v.y+29,44,4,p.hp/p.max,c);if(p.inv>0){ctx.strokeStyle='#c1fff480';ctx.beginPath();ctx.arc(v.x,v.y,28,0,Math.PI*2);ctx.stroke()}}
+label(p.name+(p.online?'':' · offline'),v.x,v.y-31,c,12);ctx.globalAlpha=1}
+for(const b of state.bolts){circle(b.x,b.y,5,'#c5a8e9');circle(b.x,b.y,2,'#fff3ff')}
+for(const s of state.shots){const age=state.t-s.t;if(age>.26)continue;ctx.globalAlpha=Math.max(0,1-age/.26);line(s.x,s.y,s.tx,s.ty,s.c,2);circle(s.tx,s.ty,5,s.c);ctx.globalAlpha=1;if(!shotSeen.has(s.id)){shotSeen.add(s.id);if(dist(self,s)<600)sound('shot')}}if(shotSeen.size>500)shotSeen=new Set(state.shots.map(s=>s.id));
+drawExplosions();ctx.restore();
+if(mode!=='menu'){drawMinimap();if(self.hp<=0)label(mode==='solo'?'Emergency respawn in '+Math.max(0,Math.ceil(4-self.down))+'…':'You are down. Ping your squad for a revive.',cw/2,ch*.35,'#ffcfb4',16);const stalled=mode==='online'&&!net?.isHost&&performance.now()-lastStateAt>3500;if(state.paused||pause||menuPause||stalled){ctx.fillStyle='#091516b8';ctx.fillRect(0,0,cw,ch);label(stalled?'WAITING FOR HOST':state.paused||pause?'MISSION PAUSED':'FIELD MANUAL',cw/2,ch/2,'#e8eedf',22);label(stalled?'The host must stay connected with the game open.':'Stay together. Your mission will continue here.',cw/2,ch/2+30,'#adbdaf',12)}}
+}
+function drawMinimap(){const w=isTouch?98:140,h=w*1100/1600,x=cw-w-15,y=14;rounded(x,y,w,h,6,'#0a151ddd','#51665f');const dot=(p,c,r)=>circle(x+p.x/1600*w,y+p.y/1100*h,r,c);dot(state.base,'#6ce4b9',4);for(const e of state.enemies)dot(e,'#c9957c',1.5);for(const d of state.dogs)dot(d,'#99bfff',2.5);for(const b of state.bombs)dot(b,'#ffc465',2);for(const p of state.players)dot(p,p.hp>0?COLORS[p.color%4]:'#f2696c',3)}
+function resize(){if(document.body.classList.contains('playing')){const top=document.querySelector('.hud').getBoundingClientRect().height,bottom=document.querySelector('.dock').getBoundingClientRect().height;canvas.style.top=top+'px';canvas.style.height=Math.max(100,window.innerHeight-top-bottom)+'px'}else{canvas.style.top='0px';canvas.style.height='100%'}const r=canvas.getBoundingClientRect();cw=r.width;ch=r.height;dpr=Math.min(2,window.devicePixelRatio||1);canvas.width=Math.round(cw*dpr);canvas.height=Math.round(ch*dpr)}
+function frame(now){const dt=Math.min(.05,(now-lastTime)/1000||.016);lastTime=now;const playing=document.body.classList.contains('playing');if(playing&&(mode==='solo'||(mode==='online'&&net?.isHost))){if(mode==='online'&&!net.connected){pause=true;state.paused=true}simulation(dt);if(mode==='online'&&now-publishAt>167){publishAt=now;net.publish(pack())}}
+if(playing&&mode==='online'&&now-sendAt>100){sendAt=now;net?.sendInput(getInput())}render(dt);if(now-lastHudAt>140){hud();lastHudAt=now}requestAnimationFrame(frame)}
+function setStatus(s){$('status').textContent=s;$('lobbyStatus').textContent=s;connected=!/disconnected|failed/i.test(s)}
+function showMembers(m){members=m;$('lobbyPlayers').replaceChildren(...Object.entries(m).map(([id,p],i)=>{const el=document.createElement('div');el.className='lobbyMember';const a=document.createElement('span');a.style.color=COLORS[i%4];a.textContent=p.name+(id===me?' (you)':'');const b=document.createElement('small');b.textContent=(ROLES[p.role]?.title||p.role)+(p.online?' · ready':' · offline');el.append(a,b);return el}));$('startOnline').hidden=!net?.isHost;$('startOnline').textContent='Start mission · '+Object.values(m).filter(m=>m.online).length+' player(s)';}
+async function online(create){const config=FIREBASE_CONFIG;if(!create&&!/^[0-9]{6}$/.test($('roomInput').value.trim())){setStatus('Enter the six-digit code shared by your host.');$('roomInput').focus();return}if(!config?.databaseURL){setStatus('Online play is unavailable. Please ask the game owner to check the connection.');return}if(net)await net.leave();setStatus('Connecting to the squad channel…');$('createRoom').disabled=true;$('joinRoom').disabled=true;try{net=new window.CoopNetwork({onState:receiveState,onMembers:showMembers,onInputs:inputs=>{remoteInputs=inputs},onStatus:setStatus,onClosed:reason=>{toast(reason);$('lobbyStatus').textContent=reason;if(document.body.classList.contains('playing')){pause=true;state.paused=true}}});await net.connect(config);me=net.uid;const profile={name:$('name').value.trim().slice(0,16)||'Survivor',role};if(create)await net.create(profile);else await net.join($('roomInput').value.trim().toUpperCase().replace(/\s|-/g,''),profile);mode='online';$('home').hidden=true;$('lobby').hidden=false;$('code').textContent=net.code;$('roomTag').textContent=net.code;showMembers(members);sound('buy')}catch(e){setStatus(e.message||'Could not connect. Check Firebase setup.');toast(e.message||'Connection failed');if(net)await net.leave();net=null}finally{$('createRoom').disabled=false;$('joinRoom').disabled=false}}
+$('roomInput').addEventListener('input',()=>{$('roomInput').value=$('roomInput').value.replace(/[^0-9]/g,'').slice(0,6)});
+$('solo').onclick=startSolo;$('createRoom').onclick=()=>online(true);$('joinRoom').onclick=()=>online(false);$('startOnline').onclick=startOnline;$('leaveLobby').onclick=leave;$('leaveGame').onclick=leave;$('backHome').onclick=leave;
+$('closeWorkshop').onclick=()=>{$('workshop').hidden=true};$('pace').onchange=()=>action('speed:'+$('pace').value);document.querySelectorAll('[data-payload]').forEach(b=>b.onclick=()=>action('payload:'+b.dataset.payload));
+$('copyCode').onclick=async()=>{try{await navigator.clipboard.writeText(net.code);toast('Room code copied. Send it to your teammate.')}catch{toast('Your room code is '+net.code)}};
+document.querySelectorAll('[data-role]').forEach(b=>b.onclick=()=>{role=b.dataset.role;$('roleHint').textContent=ROLES[role].title+': '+ROLES[role].desc+'. All roles can plant and detonate bombs.';document.querySelectorAll('[data-role]').forEach(el=>el.classList.toggle('selected',el===b))});
+document.querySelectorAll('[data-action]').forEach(b=>b.onclick=()=>action(b.dataset.action));
+$('soundBtn').onclick=()=>{soundOn=!soundOn;$('soundBtn').textContent=soundOn?'SFX ON':'SFX OFF';if(soundOn)sound('pickup')};$('musicBtn').onclick=()=>{musicOn=!musicOn;$('musicBtn').textContent=musicOn?'MUSIC ON':'MUSIC OFF';sound('pickup');music()};
+$('pauseBtn').onclick=()=>{if(mode==='online'&&!net?.isHost)return;pause=!pause;state.paused=pause;if(mode==='online')net.publish(pack())};
+$('helpBtn').onclick=()=>{$('help').hidden=false;if(mode==='solo')menuPause=true};$('closeHelp').onclick=()=>{$('help').hidden=true;menuPause=false};
+$('fullscreen').onclick=async()=>{try{if(!document.fullscreenElement)await document.documentElement.requestFullscreen();else await document.exitFullscreen()}catch{toast('Fullscreen is unavailable here. Landscape gives a wider view.')}};
+window.addEventListener('resize',resize);new ResizeObserver(resize).observe(canvas);new ResizeObserver(resize).observe(document.querySelector('.dock'));
+window.addEventListener('keydown',e=>{if(/INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName))return;if(!$('workshop').hidden){if(e.code==='Escape')$('closeWorkshop').click();return;}if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space'].includes(e.code))e.preventDefault();keys[e.code]=true;if(e.repeat)return;if(e.code==='KeyU'){openWorkshop();return}const hero=state.players.find(p=>p.id===me),a={KeyB:'bomb',KeyE:'detonate',KeyC:'barrier',KeyR:'repair',KeyH:'heal',KeyG:'dog',KeyT:'reload',KeyV:hero?.role==='medic'?'station':'cluster',KeyX:hero?.role==='demo'?'emp':'overdrive',Space:'dash',KeyQ:'ping',KeyN:'next'}[e.code];if(a)action(a);if(e.code==='Escape'&&mode!=='menu')$('pauseBtn').click()});
+window.addEventListener('keyup',e=>keys[e.code]=false);window.addEventListener('blur',()=>{keys={};resetStick()});
+function resetStick(){stick.id=null;stick.x=0;stick.y=0;$('knob').style.transform='translate(-50%,-50%)'}
+const joy=$('joystick');joy.addEventListener('pointerdown',e=>{e.preventDefault();stick.id=e.pointerId;joy.setPointerCapture(e.pointerId);dragStick(e);sound('pickup')});function dragStick(e){if(e.pointerId!==stick.id)return;const r=joy.getBoundingClientRect(),x=e.clientX-r.left-r.width/2,y=e.clientY-r.top-r.height/2,m=Math.max(38,Math.hypot(x,y));stick.x=x/m;stick.y=y/m;$('knob').style.transform=`translate(calc(-50% + ${stick.x*35}px),calc(-50% + ${stick.y*35}px))`}
+joy.addEventListener('pointermove',dragStick);joy.addEventListener('pointerup',resetStick);joy.addEventListener('pointercancel',resetStick);joy.addEventListener('lostpointercapture',resetStick);
+canvas.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse'){input.manual=true;aim(e)}else{isTouch=true;$('touch').hidden=false}sound('pickup')});canvas.addEventListener('pointermove',aim);function aim(e){if(e.pointerType!=='mouse')return;const r=canvas.getBoundingClientRect(),p=state?.players.find(p=>p.id===me);if(p)input.aim=Math.atan2((e.clientY-r.top-ch/2)/cam.z+cam.y-p.y,(e.clientX-r.left-cw/2)/cam.z+cam.x-p.x)}window.addEventListener('pointerup',()=>input.manual=false);canvas.addEventListener('contextmenu',e=>e.preventDefault());
+document.addEventListener('visibilitychange',()=>{keys={};resetStick();if(document.hidden&&mode!=='menu'){if(mode==='solo'||net?.isHost){pause=true;state.paused=true;if(net?.isHost)net.publish(pack())}else net?.sendInput({x:0,y:0,actions:[]})}});
+let lastNotice=0,menuRole='',shopRole='',blastSeen=new Set();
+function buildActionMenu(p){
+ if(menuRole===p.role)return;menuRole=p.role;
+ const actions=['bomb','detonate',...ROLES[p.role].actions,'repair','workshop'];
+ $('actionButtons').replaceChildren(...actions.map(k=>{const b=document.createElement('button');b.className='ability'+(k==='detonate'?' detonate':'');b.id=k==='workshop'?'upgradeBtn':k+'Btn';b.dataset.ability=k;b.innerHTML='<span class="glyph">'+ICONS[k]+'</span><span><strong>'+ACTION_NAMES[k]+'</strong><small></small></span>';b.onclick=()=>k==='workshop'?openWorkshop():action(k);return b}));
+ resize();
+}
+function openWorkshop(){
+ if(mode==='menu')return;keys={};resetStick();const p=state.players.find(p=>p.id===me);if(!p)return;shopRole=p.role;
+ $('workshopTitle').textContent=ROLES[p.role].title+' workshop';$('workshop').hidden=false;
+ $('upgradeCards').replaceChildren(...Object.entries(UPGRADES).filter(([k,u])=>!u.role||u.role===p.role).map(([k,u])=>{
+  const b=document.createElement('button');b.className='upgradeCard';b.dataset.upgrade=k;b.innerHTML='<span class="upgradeCategory">'+(u.shared?'SQUAD':u.role?'SPECIALIST':'PERSONAL')+'</span><strong>'+u.title+'</strong><span class="upgradeDescription">'+u.desc+'</span><span class="upgradeBottom"><b class="upgradeRank"></b><b class="upgradePrice"></b></span>';b.onclick=()=>action('buy:'+k);return b;
+ }));$('payloadControls').hidden=p.role!=='demo';updateWorkshop(p);
+}
+function updateWorkshop(p){
+ if($('workshop').hidden)return;$('shopScrap').textContent=state.scrap;
+ for(const b of $('upgradeCards').children){const k=b.dataset.upgrade,u=UPGRADES[k],l=upgradeLevel(p,k),max=l>=u.max;b.querySelector('.upgradeRank').textContent=l+' / '+u.max;b.querySelector('.upgradePrice').textContent=max?'MAXED':'◆ '+upgradeCost(p,k);b.disabled=max||p.hp<=0||state.paused||pause||state.scrap<upgradeCost(p,k)}
+ for(const b of document.querySelectorAll('[data-payload]'))b.classList.toggle('selected',b.dataset.payload===p.payload);
+}
+function hud(){
+ if(!state)return;const p=state.players.find(p=>p.id===me)||state.players[0];
+ $('wave').textContent=state.phase==='prep'?'BUILD · '+Math.max(0,Math.ceil(state.timer))+'s':'WAVE '+state.wave+' / '+TOTAL_WAVES;
+ $('coreFill').style.width=clamp(state.base.hp/state.base.max*100,0,100)+'%';$('coreText').textContent=Math.ceil(state.base.hp);$('scrap').textContent=state.scrap;
+ $('mission').textContent=state.phase==='prep'?'Rearm · collect supplies · upgrade components':state.mission+' · '+(state.spawnLeft+state.enemies.length)+' hostiles';
+ $('roster').replaceChildren(...state.players.map(q=>{const el=document.createElement('span');el.className='member';el.style.setProperty('--member',COLORS[q.color%4]);el.textContent=q.name+' '+(q.hp<=0?'✚':Math.ceil(q.hp)+'♥');return el}));
+ if(p){
+  buildActionMenu(p);$('roleReadout').textContent=ROLES[p.role].title+' · '+(p.reload>0?'RELOADING '+p.reload.toFixed(1)+'s':p.ammo+'/'+magSize(p))+' · ♥ '+Math.ceil(p.hp)+'/'+p.max;
+  const armed=state.bombs.filter(b=>b.owner===p.id).length;
+  for(const b of $('actionButtons').children){const k=b.dataset.ability;let cd=({dog:p.dogCd,heal:p.healCd,station:p.stationCd,emp:p.empCd,overdrive:p.burstCd,dash:p.dashCd,bomb:p.bombCd,cluster:p.bombCd})[k]||0;
+   let line=k==='bomb'?armed+'/'+bombLimit(p)+' · ◆20':k==='detonate'?armed+' ARMED':k==='workshop'?'COMPONENTS':cd>0?Math.ceil(cd)+'s':COSTS[k]?'◆ '+COSTS[k]:'READY';
+   if(k==='dog'){const dogs=state.dogs.filter(d=>d.owner===p.id);if(dogs.length)line=dogs.length+'/'+maxDogs(p)+' · '+Math.ceil(Math.max(...dogs.map(d=>d.ttl)))+'s'}
+   if(k==='overdrive'&&p.boost>0)line='ACTIVE '+Math.ceil(p.boost)+'s';b.querySelector('small').textContent=line;
+   b.title=ACTION_NAMES[k]+' ['+HOTKEYS[k]+']';b.disabled=k!=='workshop'&&(p.hp<=0||cd>0||state.paused||pause||k==='detonate'&&!armed);b.classList.toggle('readyToBlast',k==='detonate'&&armed>0);
+  }
+  if(p.noticeId&&p.noticeId!==lastNotice){lastNotice=p.noticeId;toast(p.notice)}updateWorkshop(p);
+ }
+ $('pace').value=String(state.speed);$('pace').disabled=mode==='online'&&!net?.isHost;
+ $('nextBtn').hidden=!(state.phase==='prep'&&(mode==='solo'||net?.isHost));$('pauseBtn').textContent=pause?'▶':'Ⅱ';
+ if(['won','lost'].includes(state.phase)&&!outcomeShown){outcomeShown=true;$('workshop').hidden=true;$('result').hidden=false;$('resultTitle').textContent=state.phase==='won'?'EVERYONE COMES HOME.':'THE OUTPOST FELL.';$('resultDesc').textContent=state.phase==='won'?'Thirty waves. Six chapters. One squad. Mission complete.':'Rebuild your plan. Plant charges, upgrade components, and protect each other.';$('resultStats').textContent=state.kills+' hostiles stopped · '+state.wave+' waves reached';sound(state.phase==='won'?'revive':'fail')}
+}
+function drawEquipment(){
+ for(const z of state.zones){circle(z.x,z.y,z.r,'#d6752b25');for(let i=0;i<10;i++){const a=i*2.4+state.t*.6;circle(z.x+Math.cos(a)*z.r*.7,z.y+Math.sin(a)*z.r*.7,6+Math.sin(state.t*8+i)*3,'#ffb05788')}}
+ for(const s of state.stations){circle(s.x,s.y,s.r,'#62dba915');ctx.strokeStyle='#7cecba77';ctx.setLineDash([6,9]);ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);rounded(s.x-18,s.y-18,36,36,6,'#2d6751','#9cedc6');label('+',s.x,s.y+9,'#d8fff0',30);label('MED '+Math.ceil(s.ttl)+'s',s.x,s.y-30,'#93e4b7',11)}
+ for(const b of state.bombs){const c=b.payload==='cryo'?'#9bddff':b.payload==='fire'?'#ff9571':'#ffcc74';const own=b.owner===me;
+  if(own){ctx.strokeStyle=c+'40';ctx.lineWidth=1;ctx.setLineDash([5,9]);ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,Math.PI*2);ctx.stroke();ctx.setLineDash([])}
+  circle(b.x,b.y,14,'#342e23');ctx.strokeStyle=c;ctx.lineWidth=2;ctx.beginPath();ctx.arc(b.x,b.y,14,0,Math.PI*2);ctx.stroke();circle(b.x,b.y,4,Math.sin(state.t*8)>0?c:'#755e3c');if(b.cluster){circle(b.x-8,b.y-5,3,c);circle(b.x+8,b.y-5,3,c)}
+  label(b.cluster?'CLUSTER':b.payload==='blast'?'C4':b.payload.toUpperCase(),b.x,b.y-23,c,10);label(own?'YOUR CHARGE':'ALLY CHARGE',b.x,b.y+29,COLORS[b.color%4],8);
+ }
+}
+function drawExplosions(){
+ for(const e of state.explosions){const age=state.t-e.t;if(age<0||age>.9)continue;const f=age/.9,c=e.payload==='emp'||e.payload==='cryo'?'#8edbff':e.payload==='fire'?'#ff9464':'#ffcb70';ctx.globalAlpha=Math.max(0,(1-f)*.55);circle(e.x,e.y,e.r*Math.min(1,.25+f*2),c);ctx.strokeStyle=c;ctx.lineWidth=5*(1-f)+1;ctx.beginPath();ctx.arc(e.x,e.y,e.r*(.3+f*.7),0,Math.PI*2);ctx.stroke();for(let i=0;i<12;i++){const a=i*Math.PI/6;line(e.x+Math.cos(a)*e.r*f*.4,e.y+Math.sin(a)*e.r*f*.4,e.x+Math.cos(a)*e.r*f,e.y+Math.sin(a)*e.r*f,c,3)}ctx.globalAlpha=1;
+  if(!blastSeen.has(e.id)){blastSeen.add(e.id);sound(e.payload==='emp'?'heal':'boom')}
+ }if(blastSeen.size>200)blastSeen=new Set(state.explosions.map(e=>e.id));
+}
+
+// Read-only diagnostics for local validation. No shortcut mutates gameplay state.
+window.deadlightDebug=()=>({mode,phase:state?.phase,wave:state?.wave,players:state?.players?.map(p=>({...p})),enemies:state?.enemies.length,scrap:state?.scrap,barriers:state?.barriers.length,dogs:state?.dogs.length,dogDetails:state?.dogs.map(d=>({...d})),bombs:state?.bombs.map(b=>({...b})),stations:state?.stations.length,explosions:state?.explosions.length,teamUp:state?.teamUp,totalWaves:TOTAL_WAVES,speed:state?.speed,base:state?.base,canvas:{w:cw,h:ch},paused:pause});
+showHome();requestAnimationFrame(frame);
+})();
+
+</script>
+</body></html>
