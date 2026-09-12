@@ -7,11 +7,11 @@
     "category": "Game",
     "status": "ready"
   },
-   {
-    "title": "Bolt Pit",
+  {
+    "title": "BOLT PIT — Robot Combat",
     "url": "boltpit.html",
-    "img": "",
-    "desc": "Play this game.",
+    "img": "covers/boltpit.webp",
+    "desc": "Build a combat robot, battle the AI or a friend on one device, and upgrade your way to the championship.",
     "category": "Game",
     "status": "ready"
   },
