@@ -7,6 +7,14 @@
     "category": "Game",
     "status": "ready"
   },
+   {
+    "title": "Bolt Pit",
+    "url": "boltpit.html",
+    "img": "",
+    "desc": "Play this game.",
+    "category": "Game",
+    "status": "ready"
+  },
   {
     "title": "DEADLIGHT — Tactical Defence",
     "url": "deadlight.html",
