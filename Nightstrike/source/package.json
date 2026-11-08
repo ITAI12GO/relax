@@ -1,0 +1,11 @@
+{
+  "name": "nightstrike",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "python3 -m http.server 4173 --directory dist",
+    "check": "node --check dist/app.js && node --check dist/engine.js && node --check dist/renderer.js && node --check dist/audio.js",
+    "build": "python3 build.py",
+    "test": "node check-game.mjs && node check-ui.mjs && node check-renderer.mjs"
+  }
+}

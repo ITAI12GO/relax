@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#081817"><meta name="description" content="You are the ball. Own the night. A 3D football arcade game with 15 stages across three chapters, flaming tricks, and unlockable ball skins.">
+  <title>Nightstrike — Play the Night</title>
+  <link rel="icon" href="icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="icon-192.png"><link rel="manifest" href="manifest.webmanifest"><link rel="stylesheet" href="style.css">
+</head>
+<body>
+ <main id="game" aria-label="Nightstrike football game">
+  <canvas id="stadium" aria-label="3D football stadium. Drag left and right to steer the ball, or use arrow keys. Press Space to pass." tabindex="0"></canvas>
+  <div class="vignette"></div><div class="grain"></div>
+  <header class="topbar">
+   <button id="brand" class="brand" aria-label="Nightstrike home"><span class="brand-mark">N<span>↗</span></span><span>NIGHTSTRIKE<small>FOOTBALL AFTER DARK</small></span></button>
+   <div class="top-center"><span class="live-dot"></span> NIGHT SESSION <span class="divider">/</span> <span id="topLevel">THE FLOODLIGHTS ARE ON</span></div>
+   <div class="top-actions"><div class="wallet"><span class="coin-symbol">◈</span><span id="wallet">0</span></div><button id="sound" class="icon-btn" aria-label="Mute sound" title="Toggle sound">♪</button><button id="pause" class="icon-btn hidden" aria-label="Pause game">Ⅱ</button><button id="settings" class="icon-btn" aria-label="Game settings" title="Game settings">⚙</button><button id="fullscreen" class="icon-btn desktop-only" aria-label="Full screen" title="Full screen">⛶</button><button id="help" class="icon-btn" aria-label="How to play">?</button></div>
+  </header>
+
+  <section id="home" class="home-screen">
+   <div class="hero-copy"><div class="eyebrow"><span></span> THIS IS YOUR TURF.</div><h1>OWN THE<br><em>NIGHT.</em></h1><p>One ball. A whole new game.<br>Find your flow. Leave them chasing.</p><div class="hero-details"><span>15 STAGES</span><span>45 STARS</span><span>ONE BEAUTIFUL GAME</span></div></div>
+   <div class="arena-tag"><span class="live-dot"></span><span id="arenaName">EMERALD PARK</span><small>UNDER THE LIGHTS</small></div><div class="scene-label"><span class="label-line"></span><span>THE BALL IS IN<br><b>YOUR CONTROL.</b></span></div>
+   <div class="home-bottom">
+    <div class="match-card"><div class="card-top"><div><span class="eyebrow">YOUR NEXT CHALLENGE</span><h2 id="nextName">First lights</h2></div><span class="level-number" id="nextNumber">01<span>/ 15</span></span></div><div class="match-meta"><span><i class="live-dot"></i> NIGHT STADIUM</span><span id="nextStars">☆☆☆</span></div><button class="primary" id="play">KICK OFF <span>↗</span></button><div class="quick-buttons"><button id="levels">THE JOURNEY <span>↗</span></button><button id="skins">BALL LOCKER <span>◈</span></button></div></div>
+    <div class="tutorial-strip"><div><span class="instruction-icon">↔</span><b>DRAG TO DRIBBLE</b><small>Slip past the red lanes.</small></div><div><span class="instruction-icon">⇄</span><b>LINK UP. HEAT UP.</b><small>Nutmegs + one-twos = fire.</small></div><div><span class="instruction-icon">⌾</span><b>PICK YOUR MOMENT</b><small>Beat the keeper. Hit the net.</small></div></div>
+   </div>
+   <div class="home-footer"><span>TOUCH. KEYBOARD. YOUR GAME.</span><span>DRAG / ARROW KEYS <b>·</b> SPACE TO PASS <b>·</b> HOLD F TO FOCUS</span></div>
+  </section>
+
+  <section id="hud" class="hud hidden" aria-label="Match status">
+   <div class="run-header"><div><span class="eyebrow" id="levelLabel">CHALLENGE 01 / 15</span><h2 id="levelTitle">First lights</h2></div><div class="run-stats"><div><small>TRICKS / TARGET</small><b id="tricks">0 / 3</b></div><div><small>COINS</small><b id="runCoins">00</b></div><div><small>LIVES</small><b id="lives" class="lives">● ● ●</b></div></div></div>
+   <div class="combo-card" id="comboCard"><b id="comboMultiplier">×1</b><span id="comboText">BUILD YOUR STREAK</span><i><em id="comboTimer"></em></i></div><div class="progress-track"><div id="progressFill"></div><span>GOAL ↗</span></div>
+   <div class="heat-card"><div><span id="heatLabel">HEAT</span><strong id="heatValue">0<span>%</span></strong></div><div class="heat-track"><span id="heatFill"></span></div><small id="heatHint">TRICKS FUEL THE FIRE</small></div>
+   <div id="trickToast" class="trick-toast" aria-live="polite"></div>
+   <div id="gameHint" class="game-hint">DRAG TO STEER <span>·</span> DODGE THE RED LANES</div>
+   <div class="play-controls">
+    <div id="joystick" class="joystick" role="group" aria-label="Drag thumbstick to steer"><div class="joystick-ring"><span>←</span><span>→</span><i id="stick"></i></div><small>STEER</small></div>
+    <div class="drag-reminder" id="dragReminder"><span>↔</span> DRAG ANYWHERE TO STEER</div>
+    <div class="action-stack"><button id="focus" class="focus-btn" aria-label="Hold to slow time; keyboard hold F"><span class="focus-icon">◉</span><b>FOCUS<small id="focusHint">HOLD / F</small></b><i><em id="focusFill"></em></i></button><button id="pass" class="pass-btn"><span class="pass-icon">⇄</span><span>ONE-TWO<small id="passHint">SPACE / TAP</small></span><span class="cooldown" id="cooldown"></span></button></div>
+   </div>
+  </section>
+
+  <section id="aimPanel" class="aim-panel hidden"><span class="eyebrow">MAKE IT COUNT</span><h2 id="aimTitle">FIND THE CORNER.</h2><p>The orange zone is the keeper’s reach.<br>Tap when the moving target turns mint.</p><div class="aim-meter"><div id="keeperZone"></div><span id="aimMarker"></span><span class="goal-line"></span></div><button id="aimFocus" class="aim-focus" aria-label="Hold to slow the target; keyboard hold F">◉ HOLD TO FOCUS <span id="aimFocusMeter">65%</span></button><button id="shoot" class="primary shoot-btn">STRIKE <span>↗</span></button><small>TAP STRIKE / SPACE</small></section>
+
+  <div id="modal" class="modal hidden"><section class="dialog" id="dialog" role="dialog" aria-modal="true" aria-labelledby="dialogTitle"><button id="closeModal" class="close-btn" aria-label="Close">×</button><div id="modalContent"></div></section></div>
+  <div id="celebration" class="celebration hidden" aria-live="polite"><small id="celebrationLabel">A BEAUTIFUL FINISH</small><strong id="celebrationText">GOAL!</strong><span id="celebrationBonus"></span></div><div id="hitFlash" class="hit-flash"></div><input id="progressImport" type="file" accept="application/json,.json" hidden>
+  <div id="smallToast" class="small-toast" role="status"></div>
+  <div id="boot" class="boot"><span class="brand-mark">N<span>↗</span></span><p>LIGHTING UP THE STADIUM</p></div>
+ </main>
+ <script type="module" src="app.js"></script>
+</body>
+</html>
